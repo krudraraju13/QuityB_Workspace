@@ -764,7 +764,6 @@ if HAS_STREAMLIT and st.runtime.exists():
                     key=f"check_{item['name']}",
                     help=f"Interval: every {item['interval']:,} miles." if isinstance(item['interval'], int) else f"Interval: {item['interval']}"
                 )
-                st.caption(f"**Description:** {item['description']}")
                 st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
         else:
             st.success(f"🎉 No specific maintenance services are scheduled exactly at **{mileage:,} miles**! But you can still complete and log any item below.")
@@ -781,37 +780,34 @@ if HAS_STREAMLIT and st.runtime.exists():
         st.markdown("#### 🔴 High Priority\n*Replacements & Critical Protections*")
         for item in high_items:
             interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            label = f"Check to Complete: **{item['name']}** ({interval_str})"
+            label = f"{item['name']} ({interval_str})"
             completed_checks[item["name"]] = st.checkbox(
                 label,
                 key=f"check_{item['name']}",
                 help=f"Description: {item['description']}"
             )
-            st.caption(f"**Description:** {item['description']}")
             st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
             
         st.markdown("#### 🟡 Medium Priority\n*System Inspections & Safety Sweeps*")
         for item in med_items:
             interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            label = f"Check to Complete: **{item['name']}** ({interval_str})"
+            label = f"{item['name']} ({interval_str})"
             completed_checks[item["name"]] = st.checkbox(
                 label,
                 key=f"check_{item['name']}",
                 help=f"Description: {item['description']}"
             )
-            st.caption(f"**Description:** {item['description']}")
             st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
             
         st.markdown("#### 🟢 Low Priority\n*Lubrication & General Upkeep*")
         for item in low_items:
             interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            label = f"Check to Complete: **{item['name']}** ({interval_str})"
+            label = f"{item['name']} ({interval_str})"
             completed_checks[item["name"]] = st.checkbox(
                 label,
                 key=f"check_{item['name']}",
                 help=f"Description: {item['description']}"
             )
-            st.caption(f"**Description:** {item['description']}")
             st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
 
         # 💾 Form notes and Save button for the entire list
@@ -1071,18 +1067,51 @@ if HAS_STREAMLIT and st.runtime.exists():
         
         st.markdown(
             """
-            ### 🔧 Critical Torque Specifications
-            *Grounded in factory specifications every DIY owner should follow to avoid stripping aluminum threads:*
+            ### 🔧 Critical DIY Torque Specifications (Grounded in Subimods DIY Guide)
+            *Grounded in factory and performance specialist specifications to prevent stripping aluminum threads or catastrophic failures:*
             
-            | Component | Torque Specification | Notes / Risks |
+            ##### ⚙️ Engine Core Torque Specs
+            | Component | Torque Spec | Notes / Operational Risks |
             | :--- | :--- | :--- |
-            | **Spark Plugs** | **18–23 N·m (13–17 ft-lb)** | Essential for aluminum heads to prevent stripping threads or cracking ceramic. |
-            | **Ignition Coil Bolts** | **16 N·m (11.8 ft-lb)** | Prevent loose coils causing misfires or vibrations under high boost. |
-            | **Valve Cover Bolts** | **4.5–6.3 N·m (3.3–4.7 ft-lb)** | Very low torque. Overtightening warps covers and causes severe oil leaks. |
-            | **Wheel Lug Nuts** | **120–127 N·m (89–94 ft-lb)** | Avoids warped brake rotors and stud failure from impact gun overtorquing. |
-            | **Intake Manifold Bolts** | **24 N·m (18 ft-lb)** | Prevents dynamic vacuum and boost leaks which skew engine AFR. |
-            | **Front Brembo Caliper Bolts** | **114 N·m (80 ft-lb) with anti-seize** | Corrected Brembo spec. Manual correctly says 80 ft-lb, but incorrect in some old manuals. |
-            | **Rear Brembo Caliper Bolts** | **71.5 N·m (52.8 ft-lb)** | Proper spec for aluminum rear calipers. |
+            | **Spark Plugs (Dry)** | **13–17 ft-lb (18–23 N·m)** | Dry threads. Essential for aluminum cylinder heads to prevent thread stripping or ceramic fracture. |
+            | **Ignition Coil Bolts** | **11.8 ft-lb (16 N·m)** | Prevents electrical vibration misfires under boost. |
+            | **Valve Cover Bolts** | **4.7–5.8 ft-lb (6.4–7.8 N·m)** | Very low torque. Overtightening warps covers and causes severe oil leaks. |
+            | **Intake Manifold Bolts** | **17–20 ft-lb (23–27 N·m)** | Prevents vacuum/boost leaks skewing engine air-fuel ratios (AFR). |
+            | **Exhaust Manifold / Header Studs** | **22–29 ft-lb (30–39 N·m)** | Exhaust heat cycling. Apply anti-seize. |
+            | **Timing Belt Tensioner Bolt** | **28–29 ft-lb (38–39 N·m)** | Crucial. Improper torque causes timing belt slip and catastrophic piston-to-valve contact. |
+            | **Cylinder Head Bolts (TTY)** | **TTY (14 -> 51 ft-lb -> 90° -> 90°)** | Torque-to-Yield. Never reuse stretched head bolts. Must be replaced every time. |
+            | **Engine Oil Filter** | **Hand-tight + ¾ turn** | Lightly lubricate gasket with clean oil. Do not tighten with a wrench. |
+
+            ##### 🛢️ Drivetrain & Fluid Plugs
+            | Component / Plug | Torque Spec | Notes / Operational Risks |
+            | :--- | :--- | :--- |
+            | **Oil Pan Drain Plug** | **33 ft-lb (45 N·m)** | Always use a new copper/aluminum crush gasket (11126AA000) to prevent pan stripping. |
+            | **Transmission Drain/Fill Plugs** | **33 ft-lb (45 N·m)** | Check fill plug removes safely before draining fluid so you don't strand the car. |
+            | **Rear Differential Drain/Fill Plugs** | **36–43 ft-lb (49–58 N·m)** | Differential case plugs. Always clean magnetic tips of metal shavings. |
+            | **Pitch Stop Mount Bolts** | **35–49 ft-lb (47–66 N·m)** | Protects stamped firewall brackets from welds tearing. |
+            | **Rear Subframe Bolts** | **55–69 ft-lb (75–94 N·m)** | Re-torque in cross-pattern if installing lockdown sleeves. |
+
+            ##### 🚙 Suspension, Chassis & Wheels
+            | Component / Fastener | Torque Spec | Notes / Operational Risks |
+            | :--- | :--- | :--- |
+            | **Wheel Lug Nuts (Alloy)** | **89–94 ft-lb (120–127 N·m)** | Always torque in star pattern. Prevents warped brake rotors and sheared studs. |
+            | **Front & Rear Axle Nut** | **140–174 ft-lb (190–236 N·m)** | Mandatory to stake/cotter pin the nut after final torque to prevent backup. |
+            | **Strut Top Nut** | **14–17 ft-lb (19–23 N·m)** | Hold the central shaft with an Allen key while tightening the nut. |
+            | **Strut-to-Knuckle Bolts** | **112–133 ft-lb (152–180 N·m)** | Upper cam bolt controls camber setting. |
+            | **Front Lower Control Arm Bolts** | **74–96 ft-lb (100–130 N·m)** | Torque with vehicle's weight fully loaded on suspension. |
+            | **Rear Lower Control Arm Bolts** | **59–73 ft-lb (80–99 N·m)** | Tighten loaded. |
+            | **Sway Bar End Link Nuts** | **28–33 ft-lb (38–45 N·m)** | Check link alignment to prevent binding noise. |
+            | **Sway Bar Bracket Bolts** | **18–25 ft-lb (24–34 N·m)** | Ensure bushing is perfectly centered. |
+
+            ##### 🛑 Calipers & Brake Plumbing
+            | Fastener | Torque Spec | Notes / Operational Risks |
+            | :--- | :--- | :--- |
+            | **Front Brembo-to-Knuckle Bolts** | **80 ft-lb (114 N·m)** | *Corrected Spec.* Original FSM incorrectly lists 114.3 ft-lb, stripping caliper ears. |
+            | **Rear Brembo-to-Knuckle Bolts** | **52.8 ft-lb (71.5 N·m)** | Proper spec for aluminum rear calipers. |
+            | **Brake Hose Banjo Bolt** | **13–15 ft-lb (18–20 N·m)** | Sourced from Subimods. Use new washers on both sides of banjo fitting. |
+            | **Front Brake Caliper Bracket Bolts** | **59–79 ft-lb (80–107 N·m)** | Non-Brembo bracket mounts. |
+            | **Front Brake Caliper Slide Pin Bolts** | **17–25 ft-lb (23–34 N·m)** | Grease pins with high-temp brake grease. |
+            | **Rear Brake Caliper Bracket Bolts** | **34–52 ft-lb (46–70 N·m)** | Lower than front bracket mounts. |
             """
         )
         
@@ -1150,7 +1179,25 @@ elif HAS_RICH:
                 
             elif choice == "3":
                 print_banner()
-                console.print(Panel("[bold green]🔧 CRITICAL TORQUE SPECIFICATIONS[/bold green]\n"                                    "• [cyan]Spark Plugs:[/cyan] 18-23 N·m (13-17 ft-lb) — prevent cylinder head thread stripping\n"                                    "• [cyan]Ignition Coil Bolt:[/cyan] 16 N·m (11.8 ft-lb) — prevent engine misfires under boost\n"                                    "• [cyan]Valve Cover Bolts:[/cyan] 3.3–4.7 ft-lb — very low! Prevent warping gaskets\n"                                    "• [cyan]Wheel Lug Nuts:[/cyan] 89-94 ft-lb (120-127 N·m) — FSM spec\n"                                    "• [cyan]Front Brembo Calipers:[/cyan] 80 ft-lb (114 N·m) with anti-seize — corrected spec\n"                                    "• [cyan]Intake Manifold Bolts:[/cyan] 18 ft-lb — prevent boost/vacuum leaks\n\n"                                    "[bold yellow]📖 RECALLS & CRITICAL TSB ADVICE[/bold yellow]\n"                                    "• [red]The 5-Minute Dipstick Rule (NHTSA TSB):[/red] Wait 5 min after shutdown on flat ground to let oil settle before measuring.\n"                                    "• [red]Interference Engine warning:[/red] Sapped timing belt destroys cylinder heads. Replace water pump/tensioner all-at-once.\n"                                    "• [red]Tire Sizing AWD Rule:[/red] Tread depth matching within 1/16 in prevents center diff failure.",                                    title="Subaru WRX STI Reference Sheets"))
+                console.print(Panel("[bold green]🔧 CRITICAL DIY TORQUE SPECIFICATIONS (Subimods DIY Guide)[/bold green]\n"
+                                    "• [cyan]Spark Plugs (Dry):[/cyan] 13-17 ft-lb (18-23 N·m) — prevent cylinder head thread stripping\n"
+                                    "• [cyan]Ignition Coil Bolts:[/cyan] 11.8 ft-lb (16 N·m) — prevent electrical misfires under boost\n"
+                                    "• [cyan]Valve Cover Bolts:[/cyan] 4.7-5.8 ft-lb (6.4-7.8 N·m) — prevent warp & oil leakage\n"
+                                    "• [cyan]Intake Manifold Bolts:[/cyan] 17-20 ft-lb (23-27 N·m) — prevent boost/vacuum leaks\n"
+                                    "• [cyan]Exhaust Manifold/Headers:[/cyan] 22-29 ft-lb (30-39 N·m) — apply anti-seize\n"
+                                    "• [cyan]Timing Belt Tensioner Bolt:[/cyan] 28-29 ft-lb (38-39 N·m) — prevent timing belt slip\n"
+                                    "• [cyan]Wheel Lug Nuts (Alloy):[/cyan] 89-94 ft-lb (120-127 N·m) — prevent warped rotors\n"
+                                    "• [cyan]Front & Rear Axle Nuts:[/cyan] 140-174 ft-lb (190-236 N·m) — stake/pin after final torque\n"
+                                    "• [cyan]Front Brembo Caliper Bolts:[/cyan] 80 ft-lb (114 N·m) with anti-seize — corrected spec\n"
+                                    "• [cyan]Rear Brembo Caliper Bolts:[/cyan] 52.8 ft-lb (71.5 N·m) — proper aluminum caliper spec\n"
+                                    "• [cyan]Brake Hose Banjo Bolt:[/cyan] 13-15 ft-lb (18-20 N·m) — replace crush washers on both sides\n"
+                                    "• [cyan]Transmission Drain/Fill Plugs:[/cyan] 33 ft-lb (45 N·m) — check fill removes safely first\n"
+                                    "• [cyan]Rear Diff Drain/Fill Plugs:[/cyan] 36-43 ft-lb (49-58 N·m) — GL-5 gear oil spec\n"
+                                    "• [cyan]Strut-to-Knuckle Bolts:[/cyan] 112-133 ft-lb (152-180 N·m) — controls camber setting\n\n"
+                                    "[bold yellow]📖 RECALLS & CRITICAL TSB ADVICE[/bold yellow]\n"
+                                    "• [red]The 5-Minute Dipstick Rule (NHTSA TSB):[/red] Wait 5 min after shutdown on flat ground to let oil settle before measuring.\n"
+                                    "• [red]Interference Engine warning:[/red] Sapped timing belt destroys cylinder heads. Replace water pump/tensioner all-at-once.\n"
+                                    "• [red]Tire Sizing AWD Rule:[/red] Tread depth matching within 1/16 in prevents center diff failure.",                                    title="Subaru WRX STI Reference Sheets"))
                 input("\nPress Enter to return to main menu...")
                 
             elif choice == "2":
