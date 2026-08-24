@@ -744,8 +744,18 @@ if HAS_STREAMLIT and st.runtime.exists():
         "📖 Subaru Reference Guide"
     ])
 
-    mileage = 105000
-    severe = False
+    with tab_checklist:
+        col_mil, col_sev = st.columns(2)
+        with col_mil:
+            mileage = st.number_input("Current Odometer Mileage (mi):", min_value=0, max_value=500000, value=105000, step=1000)
+        with col_sev:
+            st.markdown("<div style='height: 32px;'></div>", unsafe_allow_html=True)
+            severe = st.checkbox(
+                "Severe Driving Conditions", 
+                value=False,
+                help="Trigger shorter intervals (e.g., oil every 3,000 miles). Conditions include repeated short distances (< 5 mi), rough/mudy/salty/snowy roads, high humidity/mountains, or extremely cold weather."
+            )
+        st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
 
     is_primary = True
 
