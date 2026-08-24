@@ -702,6 +702,28 @@ def save_history(entry):
 if HAS_STREAMLIT and st.runtime.exists():
     st.set_page_config(page_title="Subaru STI Maintenance Tracker", page_icon="🏎️", layout="wide")
 
+    @st.dialog("Confirm Service Log")
+    def confirm_save_dialog(completed_list, mileage, severe):
+        st.markdown("##### Are you sure you want to save the following completed items to your service history?")
+        for item in completed_list:
+            st.markdown(f"- ✅ **{item}**")
+        st.markdown("<br>", unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Confirm", type="primary", use_container_width=True):
+                new_entry = {
+                    "date": datetime.date.today().isoformat(),
+                    "mileage": mileage,
+                    "severe_mode": severe,
+                    "completed_items": completed_list
+                }
+                save_history(new_entry)
+                st.success("✅ Service logged successfully!")
+                st.rerun()
+        with col2:
+            if st.button("Cancel", use_container_width=True):
+                st.rerun()
+
     st.markdown(
         """
         <div style='background-color:#1e3d59;padding:15px;border-radius:10px;text-align:center;'>
@@ -729,8 +751,21 @@ if HAS_STREAMLIT and st.runtime.exists():
     scheduler = MaintenanceScheduler(mileage, severe, primary_mode=is_primary)
     schedule_items = scheduler.get_schedule()
 
+    # Load history to filter checked/completed items at the current mileage
+    history = load_history()
+    completed_items_at_current_mileage = set()
+    if history:
+        for entry in history:
+            if entry.get("mileage") == mileage:
+                for item in entry.get("completed_items", []):
+                    completed_items_at_current_mileage.add(item)
+
     due_items = [item for item in schedule_items if item["due"]]
     other_items = [item for item in schedule_items if not item["due"]]
+
+    # Filter out items that are already completed at the current mileage
+    due_items = [item for item in due_items if item["name"] not in completed_items_at_current_mileage]
+    other_items = [item for item in other_items if item["name"] not in completed_items_at_current_mileage]
 
     # Tabs layout
     tab_checklist, tab_procedures, tab_parts, tab_fluids, tab_history, tab_manual = st.tabs([
@@ -817,15 +852,7 @@ if HAS_STREAMLIT and st.runtime.exists():
             if not completed_list:
                 st.error("Please check off at least one completed item before saving.")
             else:
-                new_entry = {
-                    "date": datetime.date.today().isoformat(),
-                    "mileage": mileage,
-                    "severe_mode": severe,
-                    "completed_items": completed_list
-                }
-                save_history(new_entry)
-                st.success("✅ Service recorded successfully! Refresh page or check the Service History tab to review.")
-                st.rerun()
+                confirm_save_dialog(completed_list, mileage, severe)
 
     with tab_procedures:
         st.subheader("🛠️ Step-by-Step Maintenance Procedures")
