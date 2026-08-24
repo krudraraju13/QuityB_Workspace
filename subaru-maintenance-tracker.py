@@ -745,9 +745,10 @@ if HAS_STREAMLIT and st.runtime.exists():
     ])
 
     with tab_checklist:
+        st.markdown("### 🔧 Odometer & Operating Conditions")
         col_mil, col_sev = st.columns(2)
         with col_mil:
-            mileage = st.number_input("Current Odometer Mileage (mi):", min_value=0, max_value=500000, value=105000, step=1000)
+            mileage = st.number_input("Current Odometer Mileage (mi):", min_value=0, max_value=500000, value=None, step=1000, placeholder="Enter current mileage")
         with col_sev:
             st.markdown("<div style='height: 32px;'></div>", unsafe_allow_html=True)
             severe = st.checkbox(
@@ -759,205 +760,223 @@ if HAS_STREAMLIT and st.runtime.exists():
 
     is_primary = True
 
-    # Initialize scheduler
-    scheduler = MaintenanceScheduler(mileage, severe, primary_mode=is_primary)
-    schedule_items = scheduler.get_schedule()
+    is_primary = True
 
-    # Load history to filter checked/completed items at the current mileage
-    history = load_history()
-    completed_items_at_current_mileage = set()
-    if history:
-        for entry in history:
-            if entry.get("mileage") == mileage:
-                for item in entry.get("completed_items", []):
-                    completed_items_at_current_mileage.add(item)
+    if mileage is not None:
+        # Initialize scheduler
+        scheduler = MaintenanceScheduler(mileage, severe, primary_mode=is_primary)
+        schedule_items = scheduler.get_schedule()
 
-    due_items = [item for item in schedule_items if item["due"]]
-    other_items = [item for item in schedule_items if not item["due"]]
+        # Load history to filter checked/completed items at the current mileage
+        history = load_history()
+        completed_items_at_current_mileage = set()
+        if history:
+            for entry in history:
+                if entry.get("mileage") == mileage:
+                    for item in entry.get("completed_items", []):
+                        completed_items_at_current_mileage.add(item)
 
-    # Filter out items that are already completed at the current mileage
-    due_items = [item for item in due_items if item["name"] not in completed_items_at_current_mileage]
-    other_items = [item for item in other_items if item["name"] not in completed_items_at_current_mileage]
+        due_items = [item for item in schedule_items if item["due"]]
+        other_items = [item for item in schedule_items if not item["due"]]
+
+        # Filter out items that are already completed at the current mileage
+        due_items = [item for item in due_items if item["name"] not in completed_items_at_current_mileage]
+        other_items = [item for item in other_items if item["name"] not in completed_items_at_current_mileage]
+    else:
+        scheduler = None
+        schedule_items = []
+        due_items = []
+        other_items = []
+        history = load_history()
 
     with tab_checklist:
-        st.subheader("📋 Maintenance Tasks Checklist")
+        if mileage is None:
+            st.info("💡 **Enter your current odometer mileage above** to generate your customized maintenance checklists.")
+        else:
+            st.subheader("📋 Maintenance Tasks Checklist")
         
 
         
-        # Severe summary alerts
-        if severe:
-            st.info("**Severe conditions enabled:** Brake fluid, trans/diff gear oils, engine air filter, and inspections are accelerated.")
+            # Severe summary alerts
+            if severe:
+                st.info("**Severe conditions enabled:** Brake fluid, trans/diff gear oils, engine air filter, and inspections are accelerated.")
 
-        completed_checks = {}
+            completed_checks = {}
 
-        # 🚨 Section 1: Due Now (Checklist form)
-        if due_items:
-            st.warning(f"⚠️ There are **{len(due_items)}** scheduled maintenance items due now at **{mileage:,} miles**:")
-            st.markdown("### 🚨 Maintenance Items Due Now (Recommended):")
-            for item in due_items:
-                label = f"{item['priority']} - {item['name']} (⚠️ Overdue since {item['overdue_since']:,} mi)" if item.get('is_carried_forward') else f"{item['priority']} - {item['name']}"
+            # 🚨 Section 1: Due Now (Checklist form)
+            if due_items:
+                st.warning(f"⚠️ There are **{len(due_items)}** scheduled maintenance items due now at **{mileage:,} miles**:")
+                st.markdown("### 🚨 Maintenance Items Due Now (Recommended):")
+                for item in due_items:
+                    label = f"{item['priority']} - {item['name']} (⚠️ Overdue since {item['overdue_since']:,} mi)" if item.get('is_carried_forward') else f"{item['priority']} - {item['name']}"
+                    completed_checks[item["name"]] = st.checkbox(
+                        label,
+                        key=f"check_{item['name']}",
+                        help=f"Interval: every {item['interval']:,} miles." if isinstance(item['interval'], int) else f"Interval: {item['interval']}"
+                    )
+                    st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
+            else:
+                st.success(f"🎉 No specific maintenance services are scheduled exactly at **{mileage:,} miles**! But you can still complete and log any item below.")
+
+            # 🔍 Section 2: Other Maintenance Items (Not currently due Checklist form)
+            # Find the recommended next/upcoming maintenance schedule milestone
+            milestones = []
+            for item in schedule_items:
+                interval = item.get("interval")
+                name = item.get("name")
+                if name == "Replace Engine Coolant (Super Coolant)":
+                    if mileage < 137500:
+                        milestones.append(137500)
+                    else:
+                        next_coolant = 137500 + (((mileage - 137500) // 75000) + 1) * 75000
+                        milestones.append(next_coolant)
+                elif isinstance(interval, int) and interval > 0:
+                    next_mult = ((mileage // interval) + 1) * interval
+                    milestones.append(next_mult)
+        
+            next_milestone = min(milestones) if milestones else None
+            if next_milestone:
+                section_title = f"### 🔍 Recommended Next Upcoming Maintenance Schedule (Due at {next_milestone:,} mi):"
+            else:
+                section_title = "### 🔍 General Subaru WRX/STI Maintenance Items (Not currently due):"
+
+            st.markdown(section_title)
+            st.write("Below are all scheduled items. You can check any item if completed early or as part of custom maintenance, and click 'Save' below to record to your history.")
+        
+            # Group other_items by criticality
+            high_items = [i for i in other_items if "🔴" in i["priority"]]
+            med_items = [i for i in other_items if "🟡" in i["priority"]]
+            low_items = [i for i in other_items if "🟢" in i["priority"]]
+        
+            st.markdown("#### 🔴 High Priority\n*Replacements & Critical Protections*")
+            for item in high_items:
+                interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
+                label = f"{item['name']} ({interval_str})"
                 completed_checks[item["name"]] = st.checkbox(
                     label,
                     key=f"check_{item['name']}",
-                    help=f"Interval: every {item['interval']:,} miles." if isinstance(item['interval'], int) else f"Interval: {item['interval']}"
+                    help=f"Description: {item['description']}"
                 )
                 st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
-        else:
-            st.success(f"🎉 No specific maintenance services are scheduled exactly at **{mileage:,} miles**! But you can still complete and log any item below.")
+            
+            st.markdown("#### 🟡 Medium Priority\n*System Inspections & Safety Sweeps*")
+            for item in med_items:
+                interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
+                label = f"{item['name']} ({interval_str})"
+                completed_checks[item["name"]] = st.checkbox(
+                    label,
+                    key=f"check_{item['name']}",
+                    help=f"Description: {item['description']}"
+                )
+                st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
+            
+            st.markdown("#### 🟢 Low Priority\n*Lubrication & General Upkeep*")
+            for item in low_items:
+                interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
+                label = f"{item['name']} ({interval_str})"
+                completed_checks[item["name"]] = st.checkbox(
+                    label,
+                    key=f"check_{item['name']}",
+                    help=f"Description: {item['description']}"
+                )
+                st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
 
-        # 🔍 Section 2: Other Maintenance Items (Not currently due Checklist form)
-        # Find the recommended next/upcoming maintenance schedule milestone
-        milestones = []
-        for item in schedule_items:
-            interval = item.get("interval")
-            name = item.get("name")
-            if name == "Replace Engine Coolant (Super Coolant)":
-                if mileage < 137500:
-                    milestones.append(137500)
+            # Clean Save button for the checklist
+        
+            if st.button("💾 Save Checked Items to History", type="primary", key="checklist_save_all_btn"):
+                completed_list = [name for name, val in completed_checks.items() if val]
+                if not completed_list:
+                    st.error("Please check off at least one completed item before saving.")
                 else:
-                    next_coolant = 137500 + (((mileage - 137500) // 75000) + 1) * 75000
-                    milestones.append(next_coolant)
-            elif isinstance(interval, int) and interval > 0:
-                next_mult = ((mileage // interval) + 1) * interval
-                milestones.append(next_mult)
-        
-        next_milestone = min(milestones) if milestones else None
-        if next_milestone:
-            section_title = f"### 🔍 Recommended Next Upcoming Maintenance Schedule (Due at {next_milestone:,} mi):"
-        else:
-            section_title = "### 🔍 General Subaru WRX/STI Maintenance Items (Not currently due):"
-
-        st.markdown(section_title)
-        st.write("Below are all scheduled items. You can check any item if completed early or as part of custom maintenance, and click 'Save' below to record to your history.")
-        
-        # Group other_items by criticality
-        high_items = [i for i in other_items if "🔴" in i["priority"]]
-        med_items = [i for i in other_items if "🟡" in i["priority"]]
-        low_items = [i for i in other_items if "🟢" in i["priority"]]
-        
-        st.markdown("#### 🔴 High Priority\n*Replacements & Critical Protections*")
-        for item in high_items:
-            interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            label = f"{item['name']} ({interval_str})"
-            completed_checks[item["name"]] = st.checkbox(
-                label,
-                key=f"check_{item['name']}",
-                help=f"Description: {item['description']}"
-            )
-            st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
-            
-        st.markdown("#### 🟡 Medium Priority\n*System Inspections & Safety Sweeps*")
-        for item in med_items:
-            interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            label = f"{item['name']} ({interval_str})"
-            completed_checks[item["name"]] = st.checkbox(
-                label,
-                key=f"check_{item['name']}",
-                help=f"Description: {item['description']}"
-            )
-            st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
-            
-        st.markdown("#### 🟢 Low Priority\n*Lubrication & General Upkeep*")
-        for item in low_items:
-            interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            label = f"{item['name']} ({interval_str})"
-            completed_checks[item["name"]] = st.checkbox(
-                label,
-                key=f"check_{item['name']}",
-                help=f"Description: {item['description']}"
-            )
-            st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
-
-        # Clean Save button for the checklist
-        
-        if st.button("💾 Save Checked Items to History", type="primary", key="checklist_save_all_btn"):
-            completed_list = [name for name, val in completed_checks.items() if val]
-            if not completed_list:
-                st.error("Please check off at least one completed item before saving.")
-            else:
-                confirm_save_dialog(completed_list, mileage, severe)
+                    confirm_save_dialog(completed_list, mileage, severe)
 
     with tab_procedures:
         st.subheader("🛠️ Step-by-Step Maintenance Procedures")
-        # Search/Select Box
-        selected_proc = st.selectbox(
-            "🔍 Search and select a specific service:",
-            options=[item["name"] for item in schedule_items],
-            index=None,
-            placeholder="Select a maintenance service to view its detailed procedure..."
-        )
+        if mileage is None:
+            st.info("💡 **Enter your current odometer mileage** in the Maintenance Status tab to browse step-by-step procedures.")
+        else:
+            # Search/Select Box
+            selected_proc = st.selectbox(
+                "🔍 Search and select a specific service:",
+                options=[item["name"] for item in schedule_items],
+                index=None,
+                placeholder="Select a maintenance service to view its detailed procedure..."
+            )
         
-        if selected_proc is not None:
-            matched_item = next(item for item in schedule_items if item["name"] == selected_proc)
+            if selected_proc is not None:
+                matched_item = next(item for item in schedule_items if item["name"] == selected_proc)
             
-            # Display the selected guide
-            st.markdown(f"### {matched_item['name']}")
-            st.markdown(f"**Normal Interval:** Every {matched_item['interval']:,} miles" if isinstance(matched_item['interval'], int) else f"**Normal Interval:** {matched_item['interval']}")
-            st.markdown(f"**Description:** *{matched_item['description']}*")
+                # Display the selected guide
+                st.markdown(f"### {matched_item['name']}")
+                st.markdown(f"**Normal Interval:** Every {matched_item['interval']:,} miles" if isinstance(matched_item['interval'], int) else f"**Normal Interval:** {matched_item['interval']}")
+                st.markdown(f"**Description:** *{matched_item['description']}*")
             
-            if matched_item.get('oil_grade') and matched_item['oil_grade'] != 'N/A':
-                st.markdown(f"🛢️ **Recommended Fluid:** {matched_item['oil_grade']}")
-            if matched_item.get('part_number') and matched_item['part_number'] != 'N/A':
-                st.markdown(f"📦 **OEM Part Number:** {matched_item['part_number']}")
-            if matched_item.get('quantity') and matched_item['quantity'] != 'N/A':
-                st.markdown(f"📊 **Required Quantity:** {matched_item['quantity']}")
-            if matched_item.get('specs') and matched_item['specs'] != 'N/A':
-                st.markdown(f"⚙️ **Key Specifications:** {matched_item['specs']}")
+                if matched_item.get('oil_grade') and matched_item['oil_grade'] != 'N/A':
+                    st.markdown(f"🛢️ **Recommended Fluid:** {matched_item['oil_grade']}")
+                if matched_item.get('part_number') and matched_item['part_number'] != 'N/A':
+                    st.markdown(f"📦 **OEM Part Number:** {matched_item['part_number']}")
+                if matched_item.get('quantity') and matched_item['quantity'] != 'N/A':
+                    st.markdown(f"📊 **Required Quantity:** {matched_item['quantity']}")
+                if matched_item.get('specs') and matched_item['specs'] != 'N/A':
+                    st.markdown(f"⚙️ **Key Specifications:** {matched_item['specs']}")
                 
-            st.markdown("#### 📋 Step-by-Step Execution:")
-            if matched_item.get('steps'):
-                for idx, step in enumerate(matched_item['steps']):
-                    st.write(f"**{idx+1}.** {step}")
-            else:
-                st.write("*No procedural steps required. Follow visual inspection guidelines.*")
+                st.markdown("#### 📋 Step-by-Step Execution:")
+                if matched_item.get('steps'):
+                    for idx, step in enumerate(matched_item['steps']):
+                        st.write(f"**{idx+1}.** {step}")
+                else:
+                    st.write("*No procedural steps required. Follow visual inspection guidelines.*")
 
 
     with tab_parts:
         st.subheader("📦 OEM Parts & Part Numbers Reference")
-        st.write("Reference list for replacement parts and specs.")
+        if mileage is None:
+            st.info("💡 **Enter your current odometer mileage** in the Maintenance Status tab to view parts specifications.")
+        else:
+            st.write("Reference list for replacement parts and specs.")
         
-        parts_data = []
-        for item in schedule_items:
-            p_num = item.get('part_number', 'N/A')
-            qty = item.get('quantity', 'N/A')
-            if p_num != 'N/A':
-                parts_data.append({
-                    "Service Item": item["name"],
-                    "OEM Part Number / Specs": p_num,
-                    "Quantity Required": qty,
-                })
+            parts_data = []
+            for item in schedule_items:
+                p_num = item.get('part_number', 'N/A')
+                qty = item.get('quantity', 'N/A')
+                if p_num != 'N/A':
+                    parts_data.append({
+                        "Service Item": item["name"],
+                        "OEM Part Number / Specs": p_num,
+                        "Quantity Required": qty,
+                    })
                 
-        if parts_data:
-            import pandas as pd
-            df_parts = pd.DataFrame(parts_data)
-            st.dataframe(df_parts, use_container_width=True, hide_index=True)
+            if parts_data:
+                import pandas as pd
+                df_parts = pd.DataFrame(parts_data)
+                st.dataframe(df_parts, use_container_width=True, hide_index=True)
             
-        st.markdown("### 🔍 Critical Parts & Hardware Guide")
-        st.markdown(
-            """
-            **Engine Oil Filter & Washer (Primary):**
-            *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100`
-            *   **Crush Washer:** P/N `11126AA000`
-            *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures.
+            st.markdown("### 🔍 Critical Parts & Hardware Guide")
+            st.markdown(
+                """
+                **Engine Oil Filter & Washer (Primary):**
+                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100`
+                *   **Crush Washer:** P/N `11126AA000`
+                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures.
             
-            **Spark Plugs (Laser Iridium - Primary):**
-            *   **SILFR6A (NGK 7913):** P/N `22401AA670`
-            *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads.
-            """
-        )
-        st.markdown(
-            """
-            **Timing Belt & Accessories (DOHC EJ257 - Primary):**
-            *   **Timing Belt:** P/N `13028AA250`
-            *   **Complete Timing Kit:** Aisin `TKF-012`
-            *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023)
-            *   **Hydraulic Tensioner:** P/N `13033AA042`
+                **Spark Plugs (Laser Iridium - Primary):**
+                *   **SILFR6A (NGK 7913):** P/N `22401AA670`
+                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads.
+                """
+            )
+            st.markdown(
+                """
+                **Timing Belt & Accessories (DOHC EJ257 - Primary):**
+                *   **Timing Belt:** P/N `13028AA250`
+                *   **Complete Timing Kit:** Aisin `TKF-012`
+                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023)
+                *   **Hydraulic Tensioner:** P/N `13033AA042`
             
-            **Air Conditioning Stretch Belt Kit (Primary):**
-            *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081)
-            *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage.
-            """
-        )
+                **Air Conditioning Stretch Belt Kit (Primary):**
+                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081)
+                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage.
+                """
+            )
 
     with tab_fluids:
         st.subheader("🛢️ Subaru Recommended Fluids, Grades & Capacities")
@@ -1010,90 +1029,93 @@ if HAS_STREAMLIT and st.runtime.exists():
 
     with tab_history:
         st.subheader("📜 Maintenance & Service Log")
+        if mileage is None:
+            st.info("💡 **Enter your current odometer mileage** in the Maintenance Status tab to view your completion ledger and chronological history.")
+        else:
         
-        history = load_history()
+            history = load_history()
         
-        # --- NEW FEATURES: ITEM-BY-ITEM COMPLETION LEDGER (PRIORITY COLUMN REMOVED) ---
-        st.markdown("### 📊 Individual Item Completion Ledger")
-        st.write("Scan the last logged date and mileage for each individual maintenance and inspection service. This ledger automatically indexes your entire history folder to prevent items from falling through the cracks.")
+            # --- NEW FEATURES: ITEM-BY-ITEM COMPLETION LEDGER (PRIORITY COLUMN REMOVED) ---
+            st.markdown("### 📊 Individual Item Completion Ledger")
+            st.write("Scan the last logged date and mileage for each individual maintenance and inspection service. This ledger automatically indexes your entire history folder to prevent items from falling through the cracks.")
         
-        ledger_data = []
-        for item in schedule_items:
-            item_name = item["name"]
-            interval = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
+            ledger_data = []
+            for item in schedule_items:
+                item_name = item["name"]
+                interval = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
             
-            # Find the latest logged completion in history
-            last_date = "No Record"
-            last_mileage = "Never Logged"
-            raw_last_mi = 0
+                # Find the latest logged completion in history
+                last_date = "No Record"
+                last_mileage = "Never Logged"
+                raw_last_mi = 0
             
-            if history:
-                # Search chronologically forward so the last match is the most recent
-                for entry in history:
-                    if item_name in entry.get("completed_items", []):
-                        last_date = entry["date"]
-                        last_mileage = f"{entry['mileage']:,} mi"
-                        raw_last_mi = entry["mileage"]
+                if history:
+                    # Search chronologically forward so the last match is the most recent
+                    for entry in history:
+                        if item_name in entry.get("completed_items", []):
+                            last_date = entry["date"]
+                            last_mileage = f"{entry['mileage']:,} mi"
+                            raw_last_mi = entry["mileage"]
             
-            # Determine Status Badge
-            if last_date == "No Record":
-                status = "⚪ Not Yet Logged"
-            else:
-                # If currently marked as due by the scheduler engine, mark as due/overdue
-                if item["due"]:
-                    status = "🔴 Overdue / Due Now"
+                # Determine Status Badge
+                if last_date == "No Record":
+                    status = "⚪ Not Yet Logged"
                 else:
-                    status = "🟢 Completed & OK"
+                    # If currently marked as due by the scheduler engine, mark as due/overdue
+                    if item["due"]:
+                        status = "🔴 Overdue / Due Now"
+                    else:
+                        status = "🟢 Completed & OK"
                     
-            ledger_data.append({
-                "Maintenance Item": item_name,
-                "Last Completed Date": last_date,
-                "Last Completed Mileage": last_mileage,
-                "Interval": interval,
-                "Current Status": status
-            })
+                ledger_data.append({
+                    "Maintenance Item": item_name,
+                    "Last Completed Date": last_date,
+                    "Last Completed Mileage": last_mileage,
+                    "Interval": interval,
+                    "Current Status": status
+                })
             
-        import pandas as pd
-        df_ledger = pd.DataFrame(ledger_data)
+            import pandas as pd
+            df_ledger = pd.DataFrame(ledger_data)
         
-        # Style/highlight the status column if possible, or just render a clean interactive dataframe
-        st.dataframe(
-            df_ledger, 
-            use_container_width=True, 
-            hide_index=True,
-            column_config={
-                "Current Status": st.column_config.TextColumn(
-                    "Current Status",
-                    help="🟢 OK: Item was recently completed. 🔴 Due: Needs attention based on mileage or history. ⚪ Not Logged: No entry in history."
-                )
-            }
-        )
+            # Style/highlight the status column if possible, or just render a clean interactive dataframe
+            st.dataframe(
+                df_ledger, 
+                use_container_width=True, 
+                hide_index=True,
+                column_config={
+                    "Current Status": st.column_config.TextColumn(
+                        "Current Status",
+                        help="🟢 OK: Item was recently completed. 🔴 Due: Needs attention based on mileage or history. ⚪ Not Logged: No entry in history."
+                    )
+                }
+            )
 
-        st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
-        st.markdown("### 🕒 Chronological Service History Timeline")
-        st.write("Below is a detailed timeline showing each completed service item in chronological order as logged from your checklist.")
+            st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
+            st.markdown("### 🕒 Chronological Service History Timeline")
+            st.write("Below is a detailed timeline showing each completed service item in chronological order as logged from your checklist.")
         
-        timeline_data = []
-        if history:
-            for entry in history:
-                date_val = entry.get("date", "")
-                mi_val = entry.get("mileage", 0)
-                for item in entry.get("completed_items", []):
-                    timeline_data.append({
-                        "Date": date_val,
-                        "Odometer Mileage (mi)": mi_val,
-                        "Completed Service Item": item
-                    })
+            timeline_data = []
+            if history:
+                for entry in history:
+                    date_val = entry.get("date", "")
+                    mi_val = entry.get("mileage", 0)
+                    for item in entry.get("completed_items", []):
+                        timeline_data.append({
+                            "Date": date_val,
+                            "Odometer Mileage (mi)": mi_val,
+                            "Completed Service Item": item
+                        })
             
-            df_timeline = pd.DataFrame(timeline_data)
-            if not df_timeline.empty:
-                df_timeline = df_timeline.sort_values(by=["Date", "Odometer Mileage (mi)"], ascending=[False, False])
-                df_timeline["Odometer Mileage (mi)"] = df_timeline["Odometer Mileage (mi)"].apply(lambda x: f"{x:,} mi")
-                st.dataframe(df_timeline, use_container_width=True, hide_index=True)
+                df_timeline = pd.DataFrame(timeline_data)
+                if not df_timeline.empty:
+                    df_timeline = df_timeline.sort_values(by=["Date", "Odometer Mileage (mi)"], ascending=[False, False])
+                    df_timeline["Odometer Mileage (mi)"] = df_timeline["Odometer Mileage (mi)"].apply(lambda x: f"{x:,} mi")
+                    st.dataframe(df_timeline, use_container_width=True, hide_index=True)
+                else:
+                    st.info("No timeline items logged yet.")
             else:
                 st.info("No timeline items logged yet.")
-        else:
-            st.info("No timeline items logged yet.")
         
 
 
