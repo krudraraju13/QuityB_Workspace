@@ -746,11 +746,30 @@ if HAS_STREAMLIT and st.runtime.exists():
 
     with tab_checklist:
         st.markdown("### 🔧 Odometer & Operating Conditions")
+        st.markdown(
+            """
+            <style>
+            div[data-testid="stNumberInput"] input {
+                font-size: 22px !important;
+                height: 52px !important;
+                font-weight: bold !important;
+            }
+            /* Clean up any default spacing since label is removed */
+            div[data-testid="stNumberInput"] label {
+                display: none !important;
+            }
+            div[data-testid="stNumberInput"] {
+                margin-top: 0px !important;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
         col_mil, col_sev = st.columns(2)
         with col_mil:
-            mileage = st.number_input("Current Odometer Mileage (mi):", min_value=0, max_value=500000, value=None, step=1000, placeholder="Enter current mileage")
+            mileage = st.number_input("", min_value=0, max_value=500000, value=None, step=1000, placeholder="Enter current mileage")
         with col_sev:
-            st.markdown("<div style='height: 32px;'></div>", unsafe_allow_html=True)
+            st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
             severe = st.checkbox(
                 "Severe Driving Conditions", 
                 value=False,
