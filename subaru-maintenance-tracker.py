@@ -73,12 +73,12 @@ class MaintenanceScheduler:
         # 1. Engine Oil & Oil Filter
         if self.primary_mode:
             oil_interval = 3000 if self.severe else 6000
-            oil_source = "Primary Source: Subaru Customer Self-Service [1] / NHTSA Service Bulletin [141]"
-            oil_desc = "EJ257 engine oil and filter should be replaced every 6,000 miles or 6 months. Shorter intervals (3,000 miles or 3 months) apply under severe operating conditions to protect hydrodynamic crankshaft bearings [1, 141, 367]."
+            oil_source = "Primary Source: Subaru Customer Self-Service / NHTSA Service Bulletin"
+            oil_desc = "EJ257 engine oil and filter should be replaced every 6,000 miles or 6 months. Shorter intervals (3,000 miles or 3 months) apply under severe operating conditions to protect hydrodynamic crankshaft bearings."
         else:
             oil_interval = 3000 if self.severe else 5000
-            oil_source = "Secondary Source: GarageHub [269] / Reddit WRX [368]"
-            oil_desc = "Tuning specialists recommend shorter oil changes (3,000 to 5,000 miles) with SAE 5W-40 full synthetic (like Motul 8100 or Rotella T6) to prevent high-boost shear and bearing starvation [269, 368]."
+            oil_source = "Secondary Source: GarageHub / Reddit WRX"
+            oil_desc = "Tuning specialists recommend shorter oil changes (3,000 to 5,000 miles) with SAE 5W-40 full synthetic (like Motul 8100 or Rotella T6) to prevent high-boost shear and bearing starvation."
 
         is_oil_due, oil_overdue, oil_cf = check_due("Replace Engine Oil & Filter", oil_interval)
         items.append({
@@ -92,10 +92,10 @@ class MaintenanceScheduler:
             "description": oil_desc,
             "source": oil_source,
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
-            "oil_grade": "5W-30 Full Synthetic (Standard Spec) or 5W-40 in hotter climates / heavy use [368]",
-            "part_number": "15208AA100 (JDM Black Tokyo Roki Filter) & 11126AA000 (Oil Pan Drain Crush Washer) [376, 377]",
-            "quantity": "4.5 US Quarts (approx. 4.3 Liters) with filter [371]",
-            "specs": "Drain Plug Torque: 33-34 ft-lb (44-46 N·m) [373]. Always use a new copper crush gasket (11126AA000) [377]. Wait 5 minutes after shutdown on level ground before checking dipstick [141].",
+            "oil_grade": "5W-30 Full Synthetic (Standard Spec) or 5W-40 in hotter climates / heavy use",
+            "part_number": "15208AA100 (JDM Black Tokyo Roki Filter) & 11126AA000 (Oil Pan Drain Crush Washer)",
+            "quantity": "4.5 US Quarts (approx. 4.3 Liters) with filter",
+            "specs": "Drain Plug Torque: 33-34 ft-lb (44-46 N·m). Always use a new copper crush gasket (11126AA000). Wait 5 minutes after shutdown on level ground before checking dipstick.",
             "steps": [
                 "Ensure engine is warm, then safely raise vehicle and remove undertray.",
                 "Position drain pan under oil pan drain plug, unscrew plug, and drain oil completely.",
@@ -110,12 +110,12 @@ class MaintenanceScheduler:
         # 2. Timing Belt
         if self.primary_mode:
             tb_interval = 90000 if self.severe else 105000
-            tb_source = "Primary Source: Subaru Customer Self-Service [3] / Subaru Canada FSM [27]"
-            tb_desc = "Standard replacement interval is 105,000 miles or 105 months. Under severe guidelines, early timing belt swap is recommended at 90,000 miles or 90 months [3, 27, 370]."
+            tb_source = "Primary Source: Subaru Customer Self-Service / Subaru Canada FSM"
+            tb_desc = "Standard replacement interval is 105,000 miles or 105 months. Under severe guidelines, early timing belt swap is recommended at 90,000 miles or 90 months."
         else:
             tb_interval = 60000 if self.severe else 90000
-            tb_source = "Secondary Source: GarageHub [270] / Import Car Parts [106]"
-            tb_desc = "Tuning experts advise replacing the timing belt assembly at 60,000 miles because the EJ257 is an interference engine; a snapped belt causes immediate valve-to-piston collision [106, 270, 392]."
+            tb_source = "Secondary Source: GarageHub / Import Car Parts"
+            tb_desc = "Tuning experts advise replacing the timing belt assembly at 60,000 miles because the EJ257 is an interference engine; a snapped belt causes immediate valve-to-piston collision."
 
         is_tb_due, tb_overdue, tb_cf = check_due("Replace Timing Belt (Complete Assembly)", tb_interval)
         items.append({
@@ -130,9 +130,9 @@ class MaintenanceScheduler:
             "source": tb_source,
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
             "oil_grade": "N/A",
-            "part_number": "13028AA250 (Timing Belt), 21111AA240 (Water Pump), 13033AA042 (Tensioner & Pulley) [377]",
-            "quantity": "1 Complete Kit (Aisin TKF-012 recommended - includes belt, pump, tensioner, idlers) [53, 377]",
-            "specs": "Interference cylinder head clearance. Alignment keyway must sit strictly at 6:00 position before routing to avoid piston-to-valve contact [154, 373, 393].",
+            "part_number": "13028AA250 (Timing Belt), 21111AA240 (Water Pump), 13033AA042 (Tensioner & Pulley)",
+            "quantity": "1 Complete Kit (Aisin TKF-012 recommended - includes belt, pump, tensioner, idlers)",
+            "specs": "Interference cylinder head clearance. Alignment keyway must sit strictly at 6:00 position before routing to avoid piston-to-valve contact.",
             "steps": [
                 "Disconnect battery, drain coolant completely, and remove cooling fans and radiator hoses.",
                 "Remove drive belts, alternator bracket, and main crankshaft pulley (torque spec: 94 ft-lb on reinstall).",
@@ -148,12 +148,12 @@ class MaintenanceScheduler:
         # 3. Replace Spark Plugs
         if self.primary_mode:
             spark_interval = 30000 if self.severe else 90000
-            spark_source = "Primary Source: Subaru Customer Self-Service [3] / 2016 Warranty Booklet [3]"
-            spark_desc = "Under official Subaru specifications, replace Laser Iridium Spark Plugs every 90,000 miles or 90 months. Severe operations accelerate replacement to every 30,000 miles [3, 370]."
+            spark_source = "Primary Source: Subaru Customer Self-Service / 2016 Warranty Booklet"
+            spark_desc = "Under official Subaru specifications, replace Laser Iridium Spark Plugs every 90,000 miles or 90 months. Severe operations accelerate replacement to every 30,000 miles."
         else:
             spark_interval = 30000 if self.severe else 60000
-            spark_source = "Secondary Source: Import Car Parts [106] / Crawford Performance [352]"
-            spark_desc = "Tuner specialists recommend replacing spark plugs every 60,000 miles on stock cars, and every 15,000 to 20,000 miles on tuned/tracked STIs to prevent boost misfires and detonation [106, 272]."
+            spark_source = "Secondary Source: Import Car Parts / Crawford Performance"
+            spark_desc = "Tuner specialists recommend replacing spark plugs every 60,000 miles on stock cars, and every 15,000 to 20,000 miles on tuned/tracked STIs to prevent boost misfires and detonation."
 
         is_spark_due, spark_overdue, spark_cf = check_due("Replace Spark Plugs", spark_interval)
         items.append({
@@ -168,9 +168,9 @@ class MaintenanceScheduler:
             "source": spark_source,
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
             "oil_grade": "N/A",
-            "part_number": "NGK SILFR6A / 7913 (P/N 22401AA670 OEM Iridium) [34, 49, 377]",
+            "part_number": "NGK SILFR6A / 7913 (P/N 22401AA670 OEM Iridium)",
             "quantity": "4 Spark Plugs",
-            "specs": "Spark Plug Torque: 13-17 ft-lb [373] (18-23 N·m). Dry threads without anti-seize. Coil Pack Bolt: 11.8 ft-lb (16 N·m) [168, 373].",
+            "specs": "Spark Plug Torque: 13-17 ft-lb (18-23 N·m). Dry threads without anti-seize. Coil Pack Bolt: 11.8 ft-lb (16 N·m).",
             "steps": [
                 "Disconnect battery and remove air intake duct (passenger side) and windshield washer bottle (driver side) to gain clearance.",
                 "Disconnect ignition coil harness plugs, remove the 10mm retaining bolt on each coil, and pull the direct ignition coils straight out.",
@@ -184,12 +184,12 @@ class MaintenanceScheduler:
         # 4. Replace Brake & Clutch Fluid
         if self.primary_mode:
             brake_interval = 20000 if self.severe else 24000
-            brake_source = "Primary Source: Subaru Customer Self-Service [2] / 2016 Warranty Booklet [2]"
-            brake_desc = "Factory guidelines require replacement of hydraulic brake and clutch fluid every 24,000 miles or 24 months, or every 20,000 miles under severe operation [2, 370]."
+            brake_source = "Primary Source: Subaru Customer Self-Service / 2016 Warranty Booklet"
+            brake_desc = "Factory guidelines require replacement of hydraulic brake and clutch fluid every 24,000 miles or 24 months, or every 20,000 miles under severe operation."
         else:
             brake_interval = 15000 if self.severe else 30000
-            brake_source = "Secondary Source: Import Car Parts [106] / GarageHub [272]"
-            brake_desc = "Enthusiasts recommend bleeding and replacing the fluid every 30,000 miles for street cars, or before every event for track cars using DOT 4 or 5.1 [106, 272]."
+            brake_source = "Secondary Source: Import Car Parts / GarageHub"
+            brake_desc = "Enthusiasts recommend bleeding and replacing the fluid every 30,000 miles for street cars, or before every event for track cars using DOT 4 or 5.1."
 
         is_brake_due, brake_overdue, brake_cf = check_due("Replace Brake & Clutch Fluid", brake_interval)
         items.append({
@@ -203,9 +203,9 @@ class MaintenanceScheduler:
             "description": brake_desc,
             "source": brake_source,
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
-            "oil_grade": "DOT 4 High-Boiling Point Synthetic (or DOT 5.1 for heavy track duty) [371]",
-            "part_number": "Subaru OEM Brake Fluid (or premium DOT 4/5.1 equivalent) [371]",
-            "quantity": "approx. 1 Liter [371]",
+            "oil_grade": "DOT 4 High-Boiling Point Synthetic (or DOT 5.1 for heavy track duty)",
+            "part_number": "Subaru OEM Brake Fluid (or premium DOT 4/5.1 equivalent)",
+            "quantity": "approx. 1 Liter",
             "specs": "Do not use silicone-based DOT 5. Keep fluid off painted surfaces as it acts as a solvent and eats paint immediately.",
             "steps": [
                 "Ensure vehicle is levelly supported. Clean master cylinder cap area, open cap, and extract dark, old fluid using a syringe.",
@@ -222,12 +222,12 @@ class MaintenanceScheduler:
         if self.primary_mode:
             # Under strict FSM, it's Inspect only under standard conditions (every 48,000 mi). Replace is only required under severe conditions (every 20,000 mi / 2 years)
             gear_interval = 20000 if self.severe else 48000
-            gear_source = "Primary Source: Subaru Customer Self-Service [3] / 2016 Warranty Booklet [3]"
-            gear_desc = "Strict FSM specifies inspecting gearbox and differential gear oil level every 48,000 miles or 48 months. Fluid replacement is only mandated under severe conditions every 20,000 miles / 2 years [3, 370]."
+            gear_source = "Primary Source: Subaru Customer Self-Service / 2016 Warranty Booklet"
+            gear_desc = "Strict FSM specifies inspecting gearbox and differential gear oil level every 48,000 miles or 48 months. Fluid replacement is only mandated under severe conditions every 20,000 miles / 2 years."
         else:
             gear_interval = 15000 if self.severe else 30000
-            gear_source = "Secondary Source: GarageHub [271] / Import Car Parts [106]"
-            gear_desc = "Specialists advise a complete oil swap every 30,000 miles (street) or 15,000 miles (severe/track) to remove abrasive steel debris from AWD gears and the DCCD clutch [106, 271, 370]."
+            gear_source = "Secondary Source: GarageHub / Import Car Parts"
+            gear_desc = "Specialists advise a complete oil swap every 30,000 miles (street) or 15,000 miles (severe/track) to remove abrasive steel debris from AWD gears and the DCCD clutch."
 
         is_gear_due, gear_overdue, gear_cf = check_due("Replace Gear Oils (MT & Front/Rear Differentials)", gear_interval)
         items.append({
@@ -241,10 +241,10 @@ class MaintenanceScheduler:
             "description": gear_desc,
             "source": gear_source,
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
-            "oil_grade": "Subaru Gear Oil GL-5 75W-90 (Diffs) / GL-4 or GL-5 compatible 75W-90 (MT) [13, 369]",
-            "part_number": "Subaru Extra MT 75W-90 (Manual Transmission), Subaru Gear Oil STI (DCCD/Rear Differential) [369]",
-            "quantity": "MT / Front Diff Change: ~3.5 Quarts; Rear Diff Change: ~1.0 Quart [13, 369, 371]",
-            "specs": "Shares common bath in transaxle. Standard manual swaps only require ~3.5 quarts on service refill [13, 369, 371]. Drain plugs: 36-43 ft-lb [373].",
+            "oil_grade": "Subaru Gear Oil GL-5 75W-90 (Diffs) / GL-4 or GL-5 compatible 75W-90 (MT)",
+            "part_number": "Subaru Extra MT 75W-90 (Manual Transmission), Subaru Gear Oil STI (DCCD/Rear Differential)",
+            "quantity": "MT / Front Diff Change: ~3.5 Quarts; Rear Diff Change: ~1.0 Quart",
+            "specs": "Shares common bath in transaxle. Standard manual swaps only require ~3.5 quarts on service refill. Drain plugs: 36-43 ft-lb.",
             "steps": [
                 "Drive vehicle briefly to warm up gear fluids, then lift vehicle completely level on jack stands.",
                 "REMOVE THE FILL PLUG FIRST! If fill plug is seized and you drained the oil first, the car will be stranded.",
@@ -258,12 +258,12 @@ class MaintenanceScheduler:
         # 6. Replace Fuel Filter
         if self.primary_mode:
             fuel_filter_interval = 72000
-            ff_source = "Primary Source: Subaru Customer Self-Service [3] / 2016 Warranty Booklet [3]"
-            ff_desc = "FSM specifies a replacement interval of every 72,000 miles or 72 months to prevent fuel line pressure drops [3]."
+            ff_source = "Primary Source: Subaru Customer Self-Service / 2016 Warranty Booklet"
+            ff_desc = "FSM specifies a replacement interval of every 72,000 miles or 72 months to prevent fuel line pressure drops."
         else:
             fuel_filter_interval = 35000 if self.severe else 60000
-            ff_source = "Secondary Source: Import Car Parts [106]"
-            ff_desc = "Specialists recommend swapping the in-tank filter element every 60,000 miles (or 35,000 miles under heavy duty) to protect high-boost delivery [106]."
+            ff_source = "Secondary Source: Import Car Parts"
+            ff_desc = "Specialists recommend swapping the in-tank filter element every 60,000 miles (or 35,000 miles under heavy duty) to protect high-boost delivery."
 
         is_ff_due, ff_overdue, ff_cf = check_due("Replace Fuel Filter", fuel_filter_interval)
         items.append({
@@ -278,9 +278,9 @@ class MaintenanceScheduler:
             "source": ff_source,
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
             "oil_grade": "N/A",
-            "part_number": "42072AA200 (OEM In-Tank Fuel Filter element) [377]",
+            "part_number": "42072AA200 (OEM In-Tank Fuel Filter element)",
             "quantity": "1 Filter Element",
-            "specs": "Ensure fuel tank is less than 1/4 full. Work in a highly ventilated area with battery negative disconnected [6].",
+            "specs": "Ensure fuel tank is less than 1/4 full. Work in a highly ventilated area with battery negative disconnected.",
             "steps": [
                 "Locate fuel pump fuse, pull it, and crank engine until it stalls to depressurize fuel lines. Disconnect battery negative terminal.",
                 "Remove rear seat bottom cushion, unbolt metal access hatch plate on passenger side, and vacuum any dirt/dust.",
@@ -295,12 +295,12 @@ class MaintenanceScheduler:
         # 7. Replace PCV Valve
         if self.primary_mode:
             pcv_interval = 30000  # Inspect only
-            pcv_source = "Primary Source: Subaru Customer Self-Service [2] / 2016 Warranty Booklet [2]"
-            pcv_desc = "FSM mandates checking/inspecting the positive crankcase ventilation (PCV) valve every 30,000 miles or 30 months [2]."
+            pcv_source = "Primary Source: Subaru Customer Self-Service / 2016 Warranty Booklet"
+            pcv_desc = "FSM mandates checking/inspecting the positive crankcase ventilation (PCV) valve every 30,000 miles or 30 months."
         else:
             pcv_interval = 60000
-            pcv_source = "Secondary Source: GarageHub [272] / Quirk Works [12]"
-            pcv_desc = "Due to horizontally opposed oil blow-by, replacing the PCV valve outright every 60,000 miles is highly recommended to protect against engine seal leakage and octane degradation [12, 272, 370]."
+            pcv_source = "Secondary Source: GarageHub / Quirk Works"
+            pcv_desc = "Due to horizontally opposed oil blow-by, replacing the PCV valve outright every 60,000 miles is highly recommended to protect against engine seal leakage and octane degradation."
 
         is_pcv_due, pcv_overdue, pcv_cf = check_due("Replace PCV Valve" if not self.primary_mode else "Inspect PCV Valve", pcv_interval)
         items.append({
@@ -315,9 +315,9 @@ class MaintenanceScheduler:
             "source": pcv_source,
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
             "oil_grade": "N/A",
-            "part_number": "11810AA130 or equivalent [377]",
+            "part_number": "11810AA130 or equivalent",
             "quantity": "1 PCV Valve",
-            "specs": "Thread torque: 14 ft-lb (19 N·m) [373]. A sticking PCV valve causes oil vapors to enter combustion chamber, lowering effective fuel octane [380].",
+            "specs": "Thread torque: 14 ft-lb (19 N·m). A sticking PCV valve causes oil vapors to enter combustion chamber, lowering effective fuel octane.",
             "steps": [
                 "Locate the PCV valve threaded into the block/crankcase seam beneath the throttle body and intake manifold.",
                 "Squeeze hose clamps and disconnect rubber ventilation hoses from the valve assembly.",
@@ -331,12 +331,12 @@ class MaintenanceScheduler:
         # 8. Perform Tire Rotation
         if self.primary_mode:
             tire_interval = 12000
-            tire_source = "Primary Source: Subaru Customer Self-Service [1] / 2016 Warranty Booklet [1]"
-            tire_desc = "FSM mandates a full rotation and safety inspection every 12,000 miles or 12 months [1]."
+            tire_source = "Primary Source: Subaru Customer Self-Service / 2016 Warranty Booklet"
+            tire_desc = "FSM mandates a full rotation and safety inspection every 12,000 miles or 12 months."
         else:
             tire_interval = 6000
-            tire_source = "Secondary Source: Quirk Works [8] / Import Car Parts [106]"
-            tire_desc = "Dealer service menus and AWD specialists recommend performing tire rotations every 6,000 miles or 6 months to maintain uniform tread depths [8, 106, 370]."
+            tire_source = "Secondary Source: Quirk Works / Import Car Parts"
+            tire_desc = "Dealer service menus and AWD specialists recommend performing tire rotations every 6,000 miles or 6 months to maintain uniform tread depths."
 
         is_tire_due, tire_overdue, tire_cf = check_due("Perform Tire Rotation", tire_interval)
         items.append({
@@ -353,7 +353,7 @@ class MaintenanceScheduler:
             "oil_grade": "N/A",
             "part_number": "N/A",
             "quantity": "4 Wheels Rotated",
-            "specs": "Lug Nut Torque: 89-94 ft-lb [15, 24] (120-127 N·m) [373]. Mismatched tire tread depth exceeding 1/16 in can overheat and destroy the DCCD [18, 370].",
+            "specs": "Lug Nut Torque: 89-94 ft-lb (120-127 N·m). Mismatched tire tread depth exceeding 1/16 in can overheat and destroy the DCCD.",
             "steps": [
                 "With car on ground, loosen wheel lug nuts slightly using a breaker bar and 19mm socket.",
                 "Raise vehicle levelly on jack stands. Inspect tires for uneven feathering, cupping, or punctures.",
@@ -366,12 +366,12 @@ class MaintenanceScheduler:
         # 9. Replace Engine Air Filter
         if self.primary_mode:
             air_interval = 48000
-            air_source = "Primary Source: Subaru Customer Self-Service [2] / 2016 Warranty Booklet [2]"
-            air_desc = "Factory manuals specify replacing the pleated dry cleaner element every 48,000 miles or 48 months under standard conditions [2]."
+            air_source = "Primary Source: Subaru Customer Self-Service / 2016 Warranty Booklet"
+            air_desc = "Factory manuals specify replacing the pleated dry cleaner element every 48,000 miles or 48 months under standard conditions."
         else:
             air_interval = 15000 if self.severe else 30000
-            air_source = "Secondary Source: GarageHub [272] / Import Car Parts [106]"
-            air_desc = "Preventive maintenance lists replacement every 30,000 miles (standard) or 15,000 miles (severe/dusty) to ensure unrestrictive intake volumes [106, 272, 370]."
+            air_source = "Secondary Source: GarageHub / Import Car Parts"
+            air_desc = "Preventive maintenance lists replacement every 30,000 miles (standard) or 15,000 miles (severe/dusty) to ensure unrestrictive intake volumes."
 
         is_air_due, air_overdue, air_cf = check_due("Replace Engine Air Filter", air_interval)
         items.append({
@@ -386,7 +386,7 @@ class MaintenanceScheduler:
             "source": air_source,
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
             "oil_grade": "N/A",
-            "part_number": "16546AA090 / 16546AA10A (OEM Air Filter) [377]",
+            "part_number": "16546AA090 / 16546AA10A (OEM Air Filter)",
             "quantity": "1 Filter",
             "specs": "Ensure filter frame is completely flush in airbox slots to avoid unmetered air leaks which throw off MAF readings.",
             "steps": [
@@ -411,11 +411,11 @@ class MaintenanceScheduler:
             "is_carried_forward": cabin_cf,
             "priority": "🟡 Medium Priority",
             "category": "Replacements",
-            "description": "Keeps passenger compartment free of pollen and road contaminants. FSM & tuner specs both mandate replacement every 12,000 miles or 12 months [2, 22].",
-            "source": "Primary Source: Subaru Customer Self-Service [2]",
+            "description": "Keeps passenger compartment free of pollen and road contaminants. FSM & tuner specs both mandate replacement every 12,000 miles or 12 months.",
+            "source": "Primary Source: Subaru Customer Self-Service",
             "source_type": "Primary (Official FSM & Drive)",
             "oil_grade": "N/A",
-            "part_number": "72880FG000 (OEM Cabin Filter) [377]",
+            "part_number": "72880FG000 (OEM Cabin Filter)",
             "quantity": "1 Filter",
             "specs": "Slower cabin airflow or sour smells are typical signs of a clogged filter.",
             "steps": [
@@ -439,13 +439,13 @@ class MaintenanceScheduler:
             "is_carried_forward": db_cf,
             "priority": "🟡 Medium Priority",
             "category": "Inspections",
-            "description": "Check alternator, power steering and stretch A/C compressor belt for wear, dry-rot, or tension issues [2, 370].",
-            "source": "Primary Source: Subaru Customer Self-Service [2]",
+            "description": "Check alternator, power steering and stretch A/C compressor belt for wear, dry-rot, or tension issues.",
+            "source": "Primary Source: Subaru Customer Self-Service",
             "source_type": "Primary (Official FSM & Drive)",
             "oil_grade": "N/A",
-            "part_number": "809218460 (Alternator/PS) & 11718AA082 (AC Stretch Belt Kit with Tool) [377]",
+            "part_number": "809218460 (Alternator/PS) & 11718AA082 (AC Stretch Belt Kit with Tool)",
             "quantity": "N/A",
-            "specs": "AC compressor uses a stretch-fit design without a mechanical tensioner. Sourcing the kit with the installation guide tool is mandatory to prevent rib damage [377].",
+            "specs": "AC compressor uses a stretch-fit design without a mechanical tensioner. Sourcing the kit with the installation guide tool is mandatory to prevent rib damage.",
             "steps": [
                 "Remove metal belt pulley guard shield on front upper section of engine block.",
                 "Visually check alternator and power steering belt, plus lower A/C compressor belt.",
@@ -465,8 +465,8 @@ class MaintenanceScheduler:
             "is_carried_forward": cool_hose_cf,
             "priority": "🟡 Medium Priority",
             "category": "Inspections",
-            "description": "Examine water hoses, coolant crossover tubes, and clamps for leaks or rubber deterioration [2, 370].",
-            "source": "Primary Source: Subaru Customer Self-Service [2]",
+            "description": "Examine water hoses, coolant crossover tubes, and clamps for leaks or rubber deterioration.",
+            "source": "Primary Source: Subaru Customer Self-Service",
             "source_type": "Primary (Official FSM & Drive)",
             "oil_grade": "N/A",
             "part_number": "N/A",
@@ -491,11 +491,11 @@ class MaintenanceScheduler:
             "is_carried_forward": bi_cf,
             "priority": "🟡 Medium Priority",
             "category": "Inspections",
-            "description": "Verify pad thickness and inspect CV boots for tearing, cracking, or leakage which ruins joints [2, 370].",
-            "source": "Primary Source: Subaru Customer Self-Service [2]" if self.primary_mode else "Secondary Source: Quirk Works [8]",
+            "description": "Verify pad thickness and inspect CV boots for tearing, cracking, or leakage which ruins joints.",
+            "source": "Primary Source: Subaru Customer Self-Service" if self.primary_mode else "Secondary Source: Quirk Works",
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
             "oil_grade": "N/A",
-            "part_number": "26300FE070 (Front Rotors), 26696FG000 (Rear Pad Set) [377]",
+            "part_number": "26300FE070 (Front Rotors), 26696FG000 (Rear Pad Set)",
             "quantity": "N/A",
             "specs": "Replace brake pads if friction material is under 3mm. CV boot split allows dirt to destroy CV axle joint quickly.",
             "steps": [
@@ -517,8 +517,8 @@ class MaintenanceScheduler:
             "is_carried_forward": steer_cf,
             "priority": "🟡 Medium Priority",
             "category": "Inspections",
-            "description": "Check tie-rod ends, ball joints, control arms, and suspension bushings for wear or dynamic play [2, 370].",
-            "source": "Primary Source: Subaru Customer Self-Service [2]" if self.primary_mode else "Secondary Source: Quirk Works [8]",
+            "description": "Check tie-rod ends, ball joints, control arms, and suspension bushings for wear or dynamic play.",
+            "source": "Primary Source: Subaru Customer Self-Service" if self.primary_mode else "Secondary Source: Quirk Works",
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
             "oil_grade": "N/A",
             "part_number": "N/A",
@@ -543,8 +543,8 @@ class MaintenanceScheduler:
             "is_carried_forward": fl_cf,
             "priority": "🟡 Medium Priority",
             "category": "Inspections",
-            "description": "Inspect engine compartment fuel rails and rubber fuel supply/return lines for brittleness or fuel leakage [2].",
-            "source": "Primary Source: Subaru Customer Self-Service [2]",
+            "description": "Inspect engine compartment fuel rails and rubber fuel supply/return lines for brittleness or fuel leakage.",
+            "source": "Primary Source: Subaru Customer Self-Service",
             "source_type": "Primary (Official FSM & Drive)",
             "oil_grade": "N/A",
             "part_number": "N/A",
@@ -569,13 +569,13 @@ class MaintenanceScheduler:
             "is_carried_forward": clutch_cf,
             "priority": "🟡 Medium Priority",
             "category": "Inspections",
-            "description": "Ensure manual trans clutch performs smoothly, inspect fluid level, brackets, and pedal freeplay [2, 388].",
-            "source": "Primary Source: Subaru Customer Self-Service [2]",
+            "description": "Ensure manual trans clutch performs smoothly, inspect fluid level, brackets, and pedal freeplay.",
+            "source": "Primary Source: Subaru Customer Self-Service",
             "source_type": "Primary (Official FSM & Drive)",
-            "oil_grade": "DOT 3 or DOT 4 Premium Fluid (clutch system) [371]",
+            "oil_grade": "DOT 3 or DOT 4 Premium Fluid (clutch system)",
             "part_number": "N/A",
-            "quantity": "approx. 100mL (clutch reservoir fill) [371]",
-            "specs": "Creaks are common on 2015-16 models due to bracket pivot friction, requiring lithium lubrication at the release fork socket [388].",
+            "quantity": "approx. 100mL (clutch reservoir fill)",
+            "specs": "Creaks are common on 2015-16 models due to bracket pivot friction, requiring lithium lubrication at the release fork socket.",
             "steps": [
                 "Open hood, check clutch master cylinder fluid level on driver side firewall (ensure near MAX line).",
                 "Sit in cabin, press clutch pedal to floor, ensuring motion is smooth and has no grinding or binding.",
@@ -595,13 +595,13 @@ class MaintenanceScheduler:
             "is_carried_forward": coolant_cf,
             "priority": "🟡 Medium Priority",
             "category": "Replacements",
-            "description": "First replacement at 11 years / 137,500 miles, then every 6 years / 75,000 miles. Always add Cooling System Conditioner [3, 144, 370].",
-            "source": "Primary Source: Subaru Customer Self-Service [3] / NHTSA Service Bulletin [144]",
+            "description": "First replacement at 11 years / 137,500 miles, then every 6 years / 75,000 miles. Always add Cooling System Conditioner.",
+            "source": "Primary Source: Subaru Customer Self-Service / NHTSA Service Bulletin",
             "source_type": "Primary (Official FSM & Drive)",
-            "oil_grade": "Subaru Blue Super Coolant (Pre-Mixed, do not add water) [106, 371]",
-            "part_number": "SOA635041 (Super Coolant) & SOA635065 (Cooling System Conditioner) [144, 371, 377]",
-            "quantity": "approx. 8.1 Quarts (approx. 7.7 Liters) full system capacity [144, 371]",
-            "specs": "Never mix green conventional coolant with blue Super Coolant. Always add one bottle of conditioner (SOA635065) to protect head gaskets [144, 371].",
+            "oil_grade": "Subaru Blue Super Coolant (Pre-Mixed, do not add water)",
+            "part_number": "SOA635041 (Super Coolant) & SOA635065 (Cooling System Conditioner)",
+            "quantity": "approx. 8.1 Quarts (approx. 7.7 Liters) full system capacity",
+            "specs": "Never mix green conventional coolant with blue Super Coolant. Always add one bottle of conditioner (SOA635065) to protect head gaskets.",
             "steps": [
                 "Ensure engine is completely cold. Open radiator cap and overflow bottle cap.",
                 "Safely raise front, remove lower splash shield, and open radiator bottom petcock valve to drain old coolant.",
@@ -624,8 +624,8 @@ class MaintenanceScheduler:
             "is_carried_forward": lub_cf,
             "priority": "🟢 Low Priority",
             "category": "Lubrication & General",
-            "description": "Apply white lithium grease to hinges, locks, hood catch, and checks to prevent binding [8, 370].",
-            "source": "Primary Source: Subaru Customer Self-Service [1]" if self.primary_mode else "Secondary Source: Quirk Works [8]",
+            "description": "Apply white lithium grease to hinges, locks, hood catch, and checks to prevent binding.",
+            "source": "Primary Source: Subaru Customer Self-Service" if self.primary_mode else "Secondary Source: Quirk Works",
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
             "oil_grade": "White Lithium Grease (spray or paste) or silicone lubricant",
             "part_number": "Premium spray lubricant / Lithium grease",
@@ -650,8 +650,8 @@ class MaintenanceScheduler:
             "is_carried_forward": lights_cf,
             "priority": "🟢 Low Priority",
             "category": "Lubrication & General",
-            "description": "Inspect functionality of headlights, high beams, turn signals, hazard flashers, side markers, and tail/brake lights [8].",
-            "source": "Primary Source: Subaru Customer Self-Service [1]" if self.primary_mode else "Secondary Source: Quirk Works [8]",
+            "description": "Inspect functionality of headlights, high beams, turn signals, hazard flashers, side markers, and tail/brake lights.",
+            "source": "Primary Source: Subaru Customer Self-Service" if self.primary_mode else "Secondary Source: Quirk Works",
             "source_type": "Primary (Official FSM & Drive)" if self.primary_mode else "Secondary (Tuner & Specialist)",
             "oil_grade": "N/A",
             "part_number": "Bulb replacement part numbers vary by position",
@@ -725,15 +725,15 @@ if HAS_STREAMLIT and st.runtime.exists():
     
     st.sidebar.markdown("### 📊 Database & Sources")
     scheduler_basis = st.sidebar.selectbox(
-        "Schedule Basis Source:",
-        ["Primary (Official Subaru FSM & Google Drive)", "Secondary (Specialist & Tuner Recommended)"],
-        help="Choose whether to follow the strict factory manual intervals (Primary) or the more frequent preventive intervals recommended by tuning specialists and enthusiasts (Secondary)."
+        "Schedule Settings:",
+        ["Standard Factory Intervals", "Preventive Specialist Intervals"],
+        help="Choose whether to follow the standard factory manual intervals (Standard) or the more frequent preventive intervals recommended by specialists and enthusiasts (Preventive)."
     )
     
-    is_primary = (scheduler_basis == "Primary (Official Subaru FSM & Google Drive)")
+    is_primary = (scheduler_basis == "Standard Factory Intervals")
     
-    st.sidebar.markdown("☁️ **Database Status**")
-    st.sidebar.info("📂 Connected to Primary Google Drive Document ('Google Drive: Sign-in') [104]. History log is dynamically serialized to local storage.")
+    st.sidebar.markdown("☁️ **Cloud Synchronization**")
+    st.sidebar.info("📂 Connected to Primary Google Drive Document ('Google Drive: Sign-in'). History log is dynamically serialized to local storage.")
 
     # Initialize scheduler
     scheduler = MaintenanceScheduler(mileage, severe, primary_mode=is_primary)
@@ -757,9 +757,9 @@ if HAS_STREAMLIT and st.runtime.exists():
         
         # Display active scheduling mode
         if is_primary:
-            st.success("🟢 **Primary FSM Schedule Active:** Displaying factory-grounded schedules from official Subaru Customer Self-Service and Owner manuals [1, 2, 3].")
+            st.success("🟢 **Primary FSM Schedule Active:** Displaying factory-grounded schedules from official Subaru Customer Self-Service and Owner manuals.")
         else:
-            st.warning("🔥 **Secondary Tuner/Specialist Schedule Active:** Displaying tighter, preventative schedules recommended by aftermarket mechanics and engine builders [22, 106, 269].")
+            st.warning("🔥 **Secondary Tuner/Specialist Schedule Active:** Displaying tighter, preventative schedules recommended by aftermarket mechanics and engine builders.")
         
         # Severe summary alerts
         if severe:
@@ -784,7 +784,7 @@ if HAS_STREAMLIT and st.runtime.exists():
                         help=f"Interval: every {item['interval']:,} miles." if isinstance(item['interval'], int) else f"Interval: {item['interval']}"
                     )
                 with col_desc:
-                    st.caption(f"**Description:** {item['description']} *(Source: {item['source']})* [Category: **{item['source_type']}**]")
+                    st.caption(f"**Description:** {item['description']}")
                 st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
 
             # Extra notes and save button
@@ -819,19 +819,19 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown("#### 🔴 High Priority\n*Replacements & Critical Protections*")
             for item in high_items:
                 interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-                st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\nSource Category: *{item['source_type']}*\n***")
+                st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
                 
         with col_med:
             st.markdown("#### 🟡 Medium Priority\n*System Inspections & Safety Sweeps*")
             for item in med_items:
                 interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-                st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\nSource Category: *{item['source_type']}*\n***")
+                st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
                 
         with col_low:
             st.markdown("#### 🟢 Low Priority\n*Lubrication & General Upkeep*")
             for item in low_items:
                 interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-                st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\nSource Category: *{item['source_type']}*\n***")
+                st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
 
     with tab_procedures:
         st.subheader("🛠️ Step-by-Step Maintenance Procedures")
@@ -845,11 +845,11 @@ if HAS_STREAMLIT and st.runtime.exists():
         st.markdown(f"### {matched_item['priority']} - {matched_item['name']}")
         st.markdown(f"**Normal Interval:** Every {matched_item['interval']:,} miles" if isinstance(matched_item['interval'], int) else f"**Normal Interval:** {matched_item['interval']}")
         st.markdown(f"**Description:** *{matched_item['description']}*")
-        st.markdown(f"**Source Document Category:** `{matched_item['source_type']}`")
+        
         
         col_meta, col_steps = st.columns([0.4, 0.6])
         with col_meta:
-            st.info(f"**Source Document:** {matched_item['source']}")
+            
             if matched_item.get('oil_grade') and matched_item['oil_grade'] != 'N/A':
                 st.markdown(f"🛢️ **Recommended Fluid:** {matched_item['oil_grade']}")
             if matched_item.get('part_number') and matched_item['part_number'] != 'N/A':
@@ -875,7 +875,7 @@ if HAS_STREAMLIT and st.runtime.exists():
             cat_items = [item for item in schedule_items if item["category"] == cat]
             for item in cat_items:
                 interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-                with st.expander(f"{item['priority']} - {item['name']} ({interval_str}) [Category: {item['source_type']}]"):
+                with st.expander(f"{item['priority']} - {item['name']} ({interval_str})"): 
                     st.write(f"*{item['description']}*")
                     if item.get('steps'):
                         st.markdown("**Steps:**")
@@ -884,7 +884,7 @@ if HAS_STREAMLIT and st.runtime.exists():
 
     with tab_parts:
         st.subheader("📦 OEM Parts & Part Numbers Reference")
-        st.write("Grounded in Subaru Factory Manuals and Technical Bulletins. Click columns to search or sort.")
+        st.write("Reference list for replacement parts and specs.")
         
         parts_data = []
         for item in schedule_items:
@@ -893,11 +893,11 @@ if HAS_STREAMLIT and st.runtime.exists():
             if p_num != 'N/A':
                 parts_data.append({
                     "Service Item": item["name"],
-                    "Priority": item["priority"].split(" ")[1],
+                    "Priority": item["priority"].split(" "),
                     "OEM Part Number / Specs": p_num,
                     "Quantity Required": qty,
-                    "Category": item["source_type"],
-                    "Source Document": item["source"]
+                    
+                    
                 })
                 
         if parts_data:
@@ -911,27 +911,27 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown(
                 """
                 **Engine Oil Filter & Washer (Primary):**
-                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100` [40, 41]
-                *   **Crush Washer:** P/N `11126AA000` [40]
-                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures [41].
+                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100`
+                *   **Crush Washer:** P/N `11126AA000`
+                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures.
                 
                 **Spark Plugs (Laser Iridium - Primary):**
-                *   **SILFR6A (NGK 7913):** P/N `22401AA670` [34, 49, 50]
-                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads [24, 373].
+                *   **SILFR6A (NGK 7913):** P/N `22401AA670`
+                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads.
                 """
             )
         with col2:
             st.markdown(
                 """
                 **Timing Belt & Accessories (DOHC EJ257 - Primary):**
-                *   **Timing Belt:** P/N `13028AA250` [51, 52]
-                *   **Complete Timing Kit:** Aisin `TKF-012` [53]
-                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023) [53]
-                *   **Hydraulic Tensioner:** P/N `13033AA042` [53]
+                *   **Timing Belt:** P/N `13028AA250`
+                *   **Complete Timing Kit:** Aisin `TKF-012`
+                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023)
+                *   **Hydraulic Tensioner:** P/N `13033AA042`
                 
                 **Air Conditioning Stretch Belt Kit (Primary):**
-                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081) [43, 44]
-                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage [43, 44].
+                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081)
+                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage.
                 """
             )
 
@@ -942,45 +942,45 @@ if HAS_STREAMLIT and st.runtime.exists():
         fluids_data = [
             {
                 "Compartment": "Engine Crankcase (EJ257)",
-                "Fluid Type / Specification": "API SM / SN Full Synthetic (SAE 5W-30 or 5W-40) [14, 23]",
-                "Capacity": "4.5 Quarts (4.3 Liters) with filter [14]",
-                "Source Type": "Primary FSM [14]",
-                "Key Specs / Notes": "Drain plug torque: 33-34 ft-lb. 5W-40 weight (e.g. Rotella T6, Motul 8100) resists thermal shear under high boost [23, 24, 373]."
+                "Fluid Type / Specification": "API SM / SN Full Synthetic (SAE 5W-30 or 5W-40)",
+                "Capacity": "4.5 Quarts (4.3 Liters) with filter",
+                "Source Type": "Primary FSM",
+                "Key Specs / Notes": "Drain plug torque: 33-34 ft-lb. 5W-40 weight (e.g. Rotella T6, Motul 8100) resists thermal shear under high boost."
             },
             {
                 "Compartment": "Manual Transmission & Front Diff",
-                "Fluid Type / Specification": "API GL-5 High Performance Gear Oil (SAE 75W-90) [14]",
-                "Capacity": "Dry Fill: 4.1 Quarts. Service Fill: ~3.5 Quarts [13, 14]",
-                "Source Type": "Primary FSM & Secondary [13, 14]",
-                "Key Specs / Notes": "Gearbox shares oil bath. Standard fluid swaps require ~3.5 quarts because some fluid remains trapped in gear clusters [13, 14]."
+                "Fluid Type / Specification": "API GL-5 High Performance Gear Oil (SAE 75W-90)",
+                "Capacity": "Dry Fill: 4.1 Quarts. Service Fill: ~3.5 Quarts",
+                "Source Type": "Primary FSM & Secondary",
+                "Key Specs / Notes": "Gearbox shares oil bath. Standard fluid swaps require ~3.5 quarts because some fluid remains trapped in gear clusters."
             },
             {
                 "Compartment": "Rear Differential",
-                "Fluid Type / Specification": "API GL-5 Hypoid Gear Oil (SAE 75W-90 / Motul 90PA for track) [13, 14]",
-                "Capacity": "1.0 Quart (0.95 Liters) [14]",
-                "Source Type": "Primary FSM & Secondary [13, 14]",
-                "Key Specs / Notes": "Fill/drain plug torque: 36–43 ft-lb [24]. 90-weight LS fluid prevents gear chatter under shock loads [13]."
+                "Fluid Type / Specification": "API GL-5 Hypoid Gear Oil (SAE 75W-90 / Motul 90PA for track)",
+                "Capacity": "1.0 Quart (0.95 Liters)",
+                "Source Type": "Primary FSM & Secondary",
+                "Key Specs / Notes": "Fill/drain plug torque: 36–43 ft-lb. 90-weight LS fluid prevents gear chatter under shock loads."
             },
             {
                 "Compartment": "Engine Cooling System",
-                "Fluid Type / Specification": "Subaru Super Coolant (Pre-Mixed Blue) + Conditioner [14, 22]",
-                "Capacity": "8.1 Quarts (7.7 Liters) [14]",
-                "Source Type": "Primary FSM [14]",
-                "Key Specs / Notes": "Never mix green conventional coolant. Add one bottle of SOA635065 Cooling System Conditioner to protect head gaskets [14]."
+                "Fluid Type / Specification": "Subaru Super Coolant (Pre-Mixed Blue) + Conditioner",
+                "Capacity": "8.1 Quarts (7.7 Liters)",
+                "Source Type": "Primary FSM",
+                "Key Specs / Notes": "Never mix green conventional coolant. Add one bottle of SOA635065 Cooling System Conditioner to protect head gaskets."
             },
             {
                 "Compartment": "Brake & Clutch Reservoirs",
-                "Fluid Type / Specification": "DOT 3 or DOT 4 Premium Synthetic [22]",
+                "Fluid Type / Specification": "DOT 3 or DOT 4 Premium Synthetic",
                 "Capacity": "Fill to Max Line (~1.0 Liter system)",
-                "Source Type": "Primary FSM [22]",
-                "Key Specs / Notes": "DOT 5.1 accepted for heavy track. Avoid silicone-based DOT 5. Keep fluid off painted body panels [22]."
+                "Source Type": "Primary FSM",
+                "Key Specs / Notes": "DOT 5.1 accepted for heavy track. Avoid silicone-based DOT 5. Keep fluid off painted body panels."
             },
             {
                 "Compartment": "Power Steering System",
-                "Fluid Type / Specification": "Dexron III / Subaru ATF-HP [14, 29]",
+                "Fluid Type / Specification": "Dexron III / Subaru ATF-HP",
                 "Capacity": "~0.8 Liters (System capacity)",
-                "Source Type": "Primary FSM [14]",
-                "Key Specs / Notes": "Use premium ATF fluid rather than traditional power steering fluid [14]."
+                "Source Type": "Primary FSM",
+                "Key Specs / Notes": "Use premium ATF fluid rather than traditional power steering fluid."
             }
         ]
         
@@ -988,12 +988,12 @@ if HAS_STREAMLIT and st.runtime.exists():
         df_fluids = pd.DataFrame(fluids_data)
         st.dataframe(df_fluids, use_container_width=True, hide_index=True)
         
-        st.info("💡 **The 5-Minute Dipstick Rule (NHTSA TSB):** Wait at least 5 minutes after turning off a warm engine on level ground. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate dipstick measurement [141].")
+        st.info("💡 **The 5-Minute Dipstick Rule (NHTSA TSB):** Wait at least 5 minutes after turning off a warm engine on level ground. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate dipstick measurement.")
 
     with tab_history:
         st.subheader("📜 Maintenance & Service Log")
         
-        st.success("☁️ **Google Drive Synchronization Active:** Service logs are being serialized locally to `subaru_maintenance_history.json` and prepared for export to your primary Google Drive storage [104].")
+        st.success("☁️ **Google Drive Synchronization Active:** Service logs are being serialized locally to `subaru_maintenance_history.json` and prepared for export to your primary Google Drive storage.")
         
         history = load_history()
         
@@ -1004,7 +1004,7 @@ if HAS_STREAMLIT and st.runtime.exists():
         ledger_data = []
         for item in schedule_items:
             item_name = item["name"]
-            priority = item["priority"].split(" ")[1] if len(item["priority"].split(" ")) > 1 else item["priority"]
+            priority = item["priority"].split(" ") if len(item["priority"].split(" ")) > 1 else item["priority"]
             interval = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
             
             # Find the latest logged completion in history
@@ -1094,13 +1094,13 @@ if HAS_STREAMLIT and st.runtime.exists():
                 
                 | Component | Torque Specification | Notes / Risks |
                 | :--- | :--- | :--- |
-                | **Spark Plugs** | **18–23 N·m (13–17 ft-lb)** | Essential for aluminum heads to prevent stripping threads or cracking ceramic [24, 373]. |
-                | **Ignition Coil Bolts** | **16 N·m (11.8 ft-lb)** | Prevent loose coils causing misfires or vibrations under high boost [168, 373]. |
-                | **Valve Cover Bolts** | **4.5–6.3 N·m (3.3–4.7 ft-lb)** | Very low torque. Overtightening warps covers and causes severe oil leaks [171, 373]. |
-                | **Wheel Lug Nuts** | **120–127 N·m (89–94 ft-lb)** | Avoids warped brake rotors and stud failure from impact gun overtorquing [15, 373]. |
-                | **Intake Manifold Bolts** | **24 N·m (18 ft-lb)** | Prevents dynamic vacuum and boost leaks which skew engine AFR [173, 373]. |
-                | **Front Brembo Caliper Bolts** | **114 N·m (80 ft-lb) with anti-seize** | Corrected Brembo spec. Manual correctly says 80 ft-lb, but incorrect in some old manuals [31, 32, 373]. |
-                | **Rear Brembo Caliper Bolts** | **71.5 N·m (52.8 ft-lb)** | Proper spec for aluminum rear calipers [37, 373]. |
+                | **Spark Plugs** | **18–23 N·m (13–17 ft-lb)** | Essential for aluminum heads to prevent stripping threads or cracking ceramic. |
+                | **Ignition Coil Bolts** | **16 N·m (11.8 ft-lb)** | Prevent loose coils causing misfires or vibrations under high boost. |
+                | **Valve Cover Bolts** | **4.5–6.3 N·m (3.3–4.7 ft-lb)** | Very low torque. Overtightening warps covers and causes severe oil leaks. |
+                | **Wheel Lug Nuts** | **120–127 N·m (89–94 ft-lb)** | Avoids warped brake rotors and stud failure from impact gun overtorquing. |
+                | **Intake Manifold Bolts** | **24 N·m (18 ft-lb)** | Prevents dynamic vacuum and boost leaks which skew engine AFR. |
+                | **Front Brembo Caliper Bolts** | **114 N·m (80 ft-lb) with anti-seize** | Corrected Brembo spec. Manual correctly says 80 ft-lb, but incorrect in some old manuals. |
+                | **Rear Brembo Caliper Bolts** | **71.5 N·m (52.8 ft-lb)** | Proper spec for aluminum rear calipers. |
                 """
             )
             
@@ -1109,10 +1109,10 @@ if HAS_STREAMLIT and st.runtime.exists():
                 """
                 ### 📋 Crucial TSB Advice & Severe Operating Rules
                 
-                * **The 5-Minute Dipstick Rule (NHTSA TSB):** Always wait at least **5 minutes** after turning off the engine on a level surface before checking the oil. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate reading [141].
-                * **Interference Engine Warning:** The WRX STI EJ-engine is an **interference engine**. A failure of the timing belt or pulleys will cause catastrophic piston-to-valve contact, completely destroying your engine heads [270, 392]. Always replace the water pump, tensioner, idlers, and guides at the same time [53, 393].
-                * **Tire Diameter Matching (AWD System):** Symmetrical AWD requires all four tires to have a tread depth matching within **1/16 in** (or 2/32 in) of each other. Running mismatched tire sizes will overheat and permanently destroy the DCCD center differential [18, 370].
-                * **Blue Super Coolant:** The factory long-life coolant lasts 11 years / 137,500 miles. Always use genuine blue Subaru coolant and add **Genuine Subaru Cooling System Conditioner** whenever replacing [144, 371].
+                * **The 5-Minute Dipstick Rule (NHTSA TSB):** Always wait at least **5 minutes** after turning off the engine on a level surface before checking the oil. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate reading.
+                * **Interference Engine Warning:** The WRX STI EJ-engine is an **interference engine**. A failure of the timing belt or pulleys will cause catastrophic piston-to-valve contact, completely destroying your engine heads. Always replace the water pump, tensioner, idlers, and guides at the same time.
+                * **Tire Diameter Matching (AWD System):** Symmetrical AWD requires all four tires to have a tread depth matching within **1/16 in** (or 2/32 in) of each other. Running mismatched tire sizes will overheat and permanently destroy the DCCD center differential.
+                * **Blue Super Coolant:** The factory long-life coolant lasts 11 years / 137,500 miles. Always use genuine blue Subaru coolant and add **Genuine Subaru Cooling System Conditioner** whenever replacing.
                 """
             )
 
@@ -1132,7 +1132,7 @@ elif HAS_RICH:
                  
                  MAINTENANCE SCHEDULE TRACKER & CLI APP
         """
-        console.print(Panel(Text(banner_text, style="bold cyan", justify="center"), subtitle="Grounded in Factory Service Bulletins & Specifications", border_style="blue"))
+        console.print(Panel(Text(banner_text, style="bold cyan", justify="center"), subtitle="Vehicle Maintenance Schedule & Log Tracker", border_style="blue"))
 
     def show_history_cli():
         print_banner()
@@ -1156,8 +1156,8 @@ elif HAS_RICH:
         while True:
             print_banner()
             console.print("[bold yellow]MAIN MENU:[/bold yellow]")
-            console.print("1. Calculate Schedule & Track Maintenance Checklist (Primary Mode)")
-            console.print("2. View Service History Log (Prepared for Google Drive Sync)")
+            console.print("1. Calculate Schedule & Track Maintenance Checklist (Standard Mode)")
+            console.print("2. View Service History Log")
             console.print("3. View Critical Torque & TSB Specs")
             console.print("4. Exit")
             
@@ -1169,7 +1169,7 @@ elif HAS_RICH:
                 
             elif choice == "3":
                 print_banner()
-                console.print(Panel("[bold green]🔧 CRITICAL TORQUE SPECIFICATIONS (Primary & Corrected Specs)[/bold green]\n"                                    "• [cyan]Spark Plugs:[/cyan] 18-23 N·m (13-17 ft-lb) — prevent cylinder head thread stripping [373]\n"                                    "• [cyan]Ignition Coil Bolt:[/cyan] 16 N·m (11.8 ft-lb) — prevent engine misfires under boost [373]\n"                                    "• [cyan]Valve Cover Bolts:[/cyan] 3.3–4.7 ft-lb — very low! Prevent warping gaskets [373]\n"                                    "• [cyan]Wheel Lug Nuts:[/cyan] 89-94 ft-lb (120-127 N·m) — FSM spec [373]\n"                                    "• [cyan]Front Brembo Calipers:[/cyan] 80 ft-lb (114 N·m) with anti-seize — corrected spec [31]\n"                                    "• [cyan]Intake Manifold Bolts:[/cyan] 18 ft-lb — prevent boost/vacuum leaks [373]\n\n"                                    "[bold yellow]📖 RECALLS & CRITICAL TSB ADVICE[/bold yellow]\n"                                    "• [red]The 5-Minute Dipstick Rule (NHTSA TSB):[/red] Wait 5 min after shutdown on flat ground to let oil settle before measuring [141].\n"                                    "• [red]Interference Engine warning:[/red] Sapped timing belt destroys cylinder heads. Replace water pump/tensioner all-at-once [392, 393].\n"                                    "• [red]Tire Sizing AWD Rule:[/red] Tread depth matching within 1/16 in prevents center diff failure [370].",                                    title="Subaru WRX STI Reference Sheets"))
+                console.print(Panel("[bold green]🔧 CRITICAL TORQUE SPECIFICATIONS[/bold green]\n"                                    "• [cyan]Spark Plugs:[/cyan] 18-23 N·m (13-17 ft-lb) — prevent cylinder head thread stripping\n"                                    "• [cyan]Ignition Coil Bolt:[/cyan] 16 N·m (11.8 ft-lb) — prevent engine misfires under boost\n"                                    "• [cyan]Valve Cover Bolts:[/cyan] 3.3–4.7 ft-lb — very low! Prevent warping gaskets\n"                                    "• [cyan]Wheel Lug Nuts:[/cyan] 89-94 ft-lb (120-127 N·m) — FSM spec\n"                                    "• [cyan]Front Brembo Calipers:[/cyan] 80 ft-lb (114 N·m) with anti-seize — corrected spec\n"                                    "• [cyan]Intake Manifold Bolts:[/cyan] 18 ft-lb — prevent boost/vacuum leaks\n\n"                                    "[bold yellow]📖 RECALLS & CRITICAL TSB ADVICE[/bold yellow]\n"                                    "• [red]The 5-Minute Dipstick Rule (NHTSA TSB):[/red] Wait 5 min after shutdown on flat ground to let oil settle before measuring.\n"                                    "• [red]Interference Engine warning:[/red] Sapped timing belt destroys cylinder heads. Replace water pump/tensioner all-at-once.\n"                                    "• [red]Tire Sizing AWD Rule:[/red] Tread depth matching within 1/16 in prevents center diff failure.",                                    title="Subaru WRX STI Reference Sheets"))
                 input("\nPress Enter to return to main menu...")
                 
             elif choice == "2":
@@ -1188,7 +1188,7 @@ elif HAS_RICH:
                 other_items = [i for i in items if not i["due"]]
                 
                 print_banner()
-                console.print(f"[bold cyan]Maintenance Checklist (Primary FSM Mode) for {mileage:,} miles[/bold cyan]")
+                console.print(f"[bold cyan]Maintenance Checklist (Standard Mode) for {mileage:,} miles[/bold cyan]")
                 if severe:
                     console.print("[bold red]⚠️ SEVERE CONDITIONS ACCELERATED TIMINGS APPLIED[/bold red]")
                 console.print("")
@@ -1245,14 +1245,14 @@ elif HAS_RICH:
                                 "completed_items": completed_items
                             }
                             save_history(new_entry)
-                            console.print("[bold green]✅ Service successfully logged to JSON history file (Google Drive Cloud Ready)![/bold green]")
+                            console.print("[bold green]✅ Service successfully logged to JSON history file![/bold green]")
                         else:
                             console.print("[yellow]No items logged.[/yellow]")
                             
                 if other_items:
                     show_all = Confirm.ask("Would you like to see other scheduled items not currently due?")
                     if show_all:
-                        table_all = Table(title="Other Periodic Subaru FSM Maintenance Items")
+                        table_all = Table(title="Other Scheduled Maintenance Items")
                         table_all.add_column("Priority", width=15)
                         table_all.add_column("Maintenance Service", style="bold cyan")
                         table_all.add_column("Interval (mi)", style="magenta")
