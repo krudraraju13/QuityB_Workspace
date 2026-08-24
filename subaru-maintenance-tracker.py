@@ -810,24 +810,7 @@ if HAS_STREAMLIT and st.runtime.exists():
             )
             st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
 
-        # 💾 Form notes and Save button for the entire list
-        st.markdown("### 💾 Record Checked Items to History:")
-        notes = st.text_area("Service Notes / Dealer Name / Parts Used:", key="checklist_notes_box")
-        if st.button("💾 Save Checked Items to History", type="primary", key="checklist_save_all_btn"):
-            completed_list = [name for name, val in completed_checks.items() if val]
-            if not completed_list:
-                st.error("Please check off at least one completed item before saving.")
-            else:
-                new_entry = {
-                    "date": datetime.date.today().isoformat(),
-                    "mileage": mileage,
-                    "severe_mode": severe,
-                    "notes": notes,
-                    "completed_items": completed_list
-                }
-                save_history(new_entry)
-                st.success("✅ Service recorded successfully! Refresh page or check the Service History tab to review.")
-                st.rerun()
+        pass
 
     with tab_procedures:
         st.subheader("🛠️ Step-by-Step Maintenance Procedures")
@@ -1036,31 +1019,7 @@ if HAS_STREAMLIT and st.runtime.exists():
             }
         )
         
-        st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
-        st.markdown("### 🕒 Chronological Service Journal")
-        
-        if not history:
-            st.info("No service history recorded yet. Use the Criticality Checklist tab to log completed services.")
-        else:
-            for idx, entry in enumerate(reversed(history)):
-                notes_html = f"<p style='margin-top:10px;'><b>Notes:</b> {entry['notes']}</p>" if entry.get('notes') else ""
-                items_html = "".join([f"<li>{item}</li>" for item in entry['completed_items']])
-                st.markdown(
-                    f"""
-                    <div style='background-color:#f8f9fa;padding:15px;border-radius:5px;border-left:5px solid #1e3d59;margin-bottom:15px;'>
-                        <h4 style='margin:0;'>🔧 Service on {entry['date']} at <b>{entry['mileage']:,} miles</b></h4>
-                        <p style='margin:5px 0 10px 0;color:#666;font-size:0.9em;'>
-                            <b>Severe Conditions:</b> {'Yes' if entry.get('severe_mode') else 'No'}
-                        </p>
-                        <p><b>Completed Services:</b></p>
-                        <ul>
-                            {items_html}
-                        </ul>
-                        {notes_html}
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+
 
     with tab_manual:
         st.subheader("📖 Official Subaru WRX STI Reference Manual")
