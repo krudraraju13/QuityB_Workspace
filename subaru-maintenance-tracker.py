@@ -761,16 +761,13 @@ if HAS_STREAMLIT and st.runtime.exists():
             completed_checks = {}
             for item in due_items:
                 # Checkbox inside a container
-                col_check, col_desc = st.columns([0.4, 0.6])
-                with col_check:
-                    label = f"{item['priority']} - {item['name']} (⚠️ Overdue since {item['overdue_since']:,} mi)" if item.get('is_carried_forward') else f"{item['priority']} - {item['name']}"
-                    completed_checks[item["name"]] = st.checkbox(
-                        label,
-                        key=f"check_{item['name']}",
-                        help=f"Interval: every {item['interval']:,} miles." if isinstance(item['interval'], int) else f"Interval: {item['interval']}"
-                    )
-                with col_desc:
-                    st.caption(f"**Description:** {item['description']}")
+                label = f"{item['priority']} - {item['name']} (⚠️ Overdue since {item['overdue_since']:,} mi)" if item.get('is_carried_forward') else f"{item['priority']} - {item['name']}"
+                completed_checks[item["name"]] = st.checkbox(
+                    label,
+                    key=f"check_{item['name']}",
+                    help=f"Interval: every {item['interval']:,} miles." if isinstance(item['interval'], int) else f"Interval: {item['interval']}"
+                )
+                st.caption(f"**Description:** {item['description']}")
                 st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
 
             # Extra notes and save button
@@ -799,25 +796,20 @@ if HAS_STREAMLIT and st.runtime.exists():
         med_items = [i for i in other_items if "🟡" in i["priority"]]
         low_items = [i for i in other_items if "🟢" in i["priority"]]
         
-        col_high, col_med, col_low = st.columns(3)
-        
-        with col_high:
-            st.markdown("#### 🔴 High Priority\n*Replacements & Critical Protections*")
-            for item in high_items:
-                interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-                st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
-                
-        with col_med:
-            st.markdown("#### 🟡 Medium Priority\n*System Inspections & Safety Sweeps*")
-            for item in med_items:
-                interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-                st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
-                
-        with col_low:
-            st.markdown("#### 🟢 Low Priority\n*Lubrication & General Upkeep*")
-            for item in low_items:
-                interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-                st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
+        st.markdown("#### 🔴 High Priority\n*Replacements & Critical Protections*")
+        for item in high_items:
+            interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
+            st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
+            
+        st.markdown("#### 🟡 Medium Priority\n*System Inspections & Safety Sweeps*")
+        for item in med_items:
+            interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
+            st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
+            
+        st.markdown("#### 🟢 Low Priority\n*Lubrication & General Upkeep*")
+        for item in low_items:
+            interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
+            st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
 
     with tab_procedures:
         st.subheader("🛠️ Step-by-Step Maintenance Procedures")
@@ -833,24 +825,21 @@ if HAS_STREAMLIT and st.runtime.exists():
         st.markdown(f"**Description:** *{matched_item['description']}*")
         
         
-        col_meta, col_steps = st.columns([0.4, 0.6])
-        with col_meta:
+        if matched_item.get('oil_grade') and matched_item['oil_grade'] != 'N/A':
+            st.markdown(f"🛢️ **Recommended Fluid:** {matched_item['oil_grade']}")
+        if matched_item.get('part_number') and matched_item['part_number'] != 'N/A':
+            st.markdown(f"📦 **OEM Part Number:** {matched_item['part_number']}")
+        if matched_item.get('quantity') and matched_item['quantity'] != 'N/A':
+            st.markdown(f"📊 **Required Quantity:** {matched_item['quantity']}")
+        if matched_item.get('specs') and matched_item['specs'] != 'N/A':
+            st.markdown(f"⚙️ **Key Specifications:** {matched_item['specs']}")
             
-            if matched_item.get('oil_grade') and matched_item['oil_grade'] != 'N/A':
-                st.markdown(f"🛢️ **Recommended Fluid:** {matched_item['oil_grade']}")
-            if matched_item.get('part_number') and matched_item['part_number'] != 'N/A':
-                st.markdown(f"📦 **OEM Part Number:** {matched_item['part_number']}")
-            if matched_item.get('quantity') and matched_item['quantity'] != 'N/A':
-                st.markdown(f"📊 **Required Quantity:** {matched_item['quantity']}")
-            if matched_item.get('specs') and matched_item['specs'] != 'N/A':
-                st.markdown(f"⚙️ **Key Specifications:** {matched_item['specs']}")
-        with col_steps:
-            st.markdown("#### 📋 Step-by-Step Execution:")
-            if matched_item.get('steps'):
-                for idx, step in enumerate(matched_item['steps']):
-                    st.write(f"**{idx+1}.** {step}")
-            else:
-                st.write("*No procedural steps required. Follow visual inspection guidelines.*")
+        st.markdown("#### 📋 Step-by-Step Execution:")
+        if matched_item.get('steps'):
+            for idx, step in enumerate(matched_item['steps']):
+                st.write(f"**{idx+1}.** {step}")
+        else:
+            st.write("*No procedural steps required. Follow visual inspection guidelines.*")
         
         st.markdown("---")
         st.subheader("⚙️ Browse All Procedures")
@@ -889,34 +878,31 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.dataframe(df_parts, use_container_width=True, hide_index=True)
             
         st.markdown("### 🔍 Critical Parts & Hardware Guide")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown(
-                """
-                **Engine Oil Filter & Washer (Primary):**
-                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100`
-                *   **Crush Washer:** P/N `11126AA000`
-                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures.
-                
-                **Spark Plugs (Laser Iridium - Primary):**
-                *   **SILFR6A (NGK 7913):** P/N `22401AA670`
-                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads.
-                """
-            )
-        with col2:
-            st.markdown(
-                """
-                **Timing Belt & Accessories (DOHC EJ257 - Primary):**
-                *   **Timing Belt:** P/N `13028AA250`
-                *   **Complete Timing Kit:** Aisin `TKF-012`
-                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023)
-                *   **Hydraulic Tensioner:** P/N `13033AA042`
-                
-                **Air Conditioning Stretch Belt Kit (Primary):**
-                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081)
-                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage.
-                """
-            )
+        st.markdown(
+            """
+            **Engine Oil Filter & Washer (Primary):**
+            *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100`
+            *   **Crush Washer:** P/N `11126AA000`
+            *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures.
+            
+            **Spark Plugs (Laser Iridium - Primary):**
+            *   **SILFR6A (NGK 7913):** P/N `22401AA670`
+            *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads.
+            """
+        )
+        st.markdown(
+            """
+            **Timing Belt & Accessories (DOHC EJ257 - Primary):**
+            *   **Timing Belt:** P/N `13028AA250`
+            *   **Complete Timing Kit:** Aisin `TKF-012`
+            *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023)
+            *   **Hydraulic Tensioner:** P/N `13033AA042`
+            
+            **Air Conditioning Stretch Belt Kit (Primary):**
+            *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081)
+            *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage.
+            """
+        )
 
     with tab_fluids:
         st.subheader("🛢️ Subaru Recommended Fluids, Grades & Capacities")
@@ -1061,37 +1047,33 @@ if HAS_STREAMLIT and st.runtime.exists():
     with tab_manual:
         st.subheader("📖 Official Subaru WRX STI Reference Manual")
         
-        col_torque, col_tsb = st.columns(2)
-        
-        with col_torque:
-            st.markdown(
-                """
-                ### 🔧 Critical Torque Specifications
-                *Grounded in factory specifications every DIY owner should follow to avoid stripping aluminum threads:*
-                
-                | Component | Torque Specification | Notes / Risks |
-                | :--- | :--- | :--- |
-                | **Spark Plugs** | **18–23 N·m (13–17 ft-lb)** | Essential for aluminum heads to prevent stripping threads or cracking ceramic. |
-                | **Ignition Coil Bolts** | **16 N·m (11.8 ft-lb)** | Prevent loose coils causing misfires or vibrations under high boost. |
-                | **Valve Cover Bolts** | **4.5–6.3 N·m (3.3–4.7 ft-lb)** | Very low torque. Overtightening warps covers and causes severe oil leaks. |
-                | **Wheel Lug Nuts** | **120–127 N·m (89–94 ft-lb)** | Avoids warped brake rotors and stud failure from impact gun overtorquing. |
-                | **Intake Manifold Bolts** | **24 N·m (18 ft-lb)** | Prevents dynamic vacuum and boost leaks which skew engine AFR. |
-                | **Front Brembo Caliper Bolts** | **114 N·m (80 ft-lb) with anti-seize** | Corrected Brembo spec. Manual correctly says 80 ft-lb, but incorrect in some old manuals. |
-                | **Rear Brembo Caliper Bolts** | **71.5 N·m (52.8 ft-lb)** | Proper spec for aluminum rear calipers. |
-                """
-            )
+        st.markdown(
+            """
+            ### 🔧 Critical Torque Specifications
+            *Grounded in factory specifications every DIY owner should follow to avoid stripping aluminum threads:*
             
-        with col_tsb:
-            st.markdown(
-                """
-                ### 📋 Crucial TSB Advice & Severe Operating Rules
-                
-                * **The 5-Minute Dipstick Rule (NHTSA TSB):** Always wait at least **5 minutes** after turning off the engine on a level surface before checking the oil. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate reading.
-                * **Interference Engine Warning:** The WRX STI EJ-engine is an **interference engine**. A failure of the timing belt or pulleys will cause catastrophic piston-to-valve contact, completely destroying your engine heads. Always replace the water pump, tensioner, idlers, and guides at the same time.
-                * **Tire Diameter Matching (AWD System):** Symmetrical AWD requires all four tires to have a tread depth matching within **1/16 in** (or 2/32 in) of each other. Running mismatched tire sizes will overheat and permanently destroy the DCCD center differential.
-                * **Blue Super Coolant:** The factory long-life coolant lasts 11 years / 137,500 miles. Always use genuine blue Subaru coolant and add **Genuine Subaru Cooling System Conditioner** whenever replacing.
-                """
-            )
+            | Component | Torque Specification | Notes / Risks |
+            | :--- | :--- | :--- |
+            | **Spark Plugs** | **18–23 N·m (13–17 ft-lb)** | Essential for aluminum heads to prevent stripping threads or cracking ceramic. |
+            | **Ignition Coil Bolts** | **16 N·m (11.8 ft-lb)** | Prevent loose coils causing misfires or vibrations under high boost. |
+            | **Valve Cover Bolts** | **4.5–6.3 N·m (3.3–4.7 ft-lb)** | Very low torque. Overtightening warps covers and causes severe oil leaks. |
+            | **Wheel Lug Nuts** | **120–127 N·m (89–94 ft-lb)** | Avoids warped brake rotors and stud failure from impact gun overtorquing. |
+            | **Intake Manifold Bolts** | **24 N·m (18 ft-lb)** | Prevents dynamic vacuum and boost leaks which skew engine AFR. |
+            | **Front Brembo Caliper Bolts** | **114 N·m (80 ft-lb) with anti-seize** | Corrected Brembo spec. Manual correctly says 80 ft-lb, but incorrect in some old manuals. |
+            | **Rear Brembo Caliper Bolts** | **71.5 N·m (52.8 ft-lb)** | Proper spec for aluminum rear calipers. |
+            """
+        )
+        
+        st.markdown(
+            """
+            ### 📋 Crucial TSB Advice & Severe Operating Rules
+            
+            * **The 5-Minute Dipstick Rule (NHTSA TSB):** Always wait at least **5 minutes** after turning off the engine on a level surface before checking the oil. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate reading.
+            * **Interference Engine Warning:** The WRX STI EJ-engine is an **interference engine**. A failure of the timing belt or pulleys will cause catastrophic piston-to-valve contact, completely destroying your engine heads. Always replace the water pump, tensioner, idlers, and guides at the same time.
+            * **Tire Diameter Matching (AWD System):** Symmetrical AWD requires all four tires to have a tread depth matching within **1/16 in** (or 2/32 in) of each other. Running mismatched tire sizes will overheat and permanently destroy the DCCD center differential.
+            * **Blue Super Coolant:** The factory long-life coolant lasts 11 years / 137,500 miles. Always use genuine blue Subaru coolant and add **Genuine Subaru Cooling System Conditioner** whenever replacing.
+            """
+        )
 
 
 # --- INTERACTIVE TERMINAL CLI RUNTIME ---
