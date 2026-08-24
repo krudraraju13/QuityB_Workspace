@@ -883,46 +883,38 @@ if HAS_STREAMLIT and st.runtime.exists():
         st.write("Browse detailed, step-by-step guides for all 19 maintenance and inspection services on your Subaru WRX STI.")
         
         # Search/Select Box
-        selected_proc = st.selectbox("🔍 Search and select a specific service:", [item["name"] for item in schedule_items])
-        matched_item = next(item for item in schedule_items if item["name"] == selected_proc)
+        selected_proc = st.selectbox(
+            "🔍 Search and select a specific service:",
+            options=[item["name"] for item in schedule_items],
+            index=None,
+            placeholder="Select a maintenance service to view its detailed procedure..."
+        )
         
-        # Display the selected guide
-        st.markdown(f"### {matched_item['name']}")
-        st.markdown(f"**Normal Interval:** Every {matched_item['interval']:,} miles" if isinstance(matched_item['interval'], int) else f"**Normal Interval:** {matched_item['interval']}")
-        st.markdown(f"**Description:** *{matched_item['description']}*")
-        
-        
-        if matched_item.get('oil_grade') and matched_item['oil_grade'] != 'N/A':
-            st.markdown(f"🛢️ **Recommended Fluid:** {matched_item['oil_grade']}")
-        if matched_item.get('part_number') and matched_item['part_number'] != 'N/A':
-            st.markdown(f"📦 **OEM Part Number:** {matched_item['part_number']}")
-        if matched_item.get('quantity') and matched_item['quantity'] != 'N/A':
-            st.markdown(f"📊 **Required Quantity:** {matched_item['quantity']}")
-        if matched_item.get('specs') and matched_item['specs'] != 'N/A':
-            st.markdown(f"⚙️ **Key Specifications:** {matched_item['specs']}")
+        if selected_proc is not None:
+            matched_item = next(item for item in schedule_items if item["name"] == selected_proc)
             
-        st.markdown("#### 📋 Step-by-Step Execution:")
-        if matched_item.get('steps'):
-            for idx, step in enumerate(matched_item['steps']):
-                st.write(f"**{idx+1}.** {step}")
+            # Display the selected guide
+            st.markdown(f"### {matched_item['name']}")
+            st.markdown(f"**Normal Interval:** Every {matched_item['interval']:,} miles" if isinstance(matched_item['interval'], int) else f"**Normal Interval:** {matched_item['interval']}")
+            st.markdown(f"**Description:** *{matched_item['description']}*")
+            
+            if matched_item.get('oil_grade') and matched_item['oil_grade'] != 'N/A':
+                st.markdown(f"🛢️ **Recommended Fluid:** {matched_item['oil_grade']}")
+            if matched_item.get('part_number') and matched_item['part_number'] != 'N/A':
+                st.markdown(f"📦 **OEM Part Number:** {matched_item['part_number']}")
+            if matched_item.get('quantity') and matched_item['quantity'] != 'N/A':
+                st.markdown(f"📊 **Required Quantity:** {matched_item['quantity']}")
+            if matched_item.get('specs') and matched_item['specs'] != 'N/A':
+                st.markdown(f"⚙️ **Key Specifications:** {matched_item['specs']}")
+                
+            st.markdown("#### 📋 Step-by-Step Execution:")
+            if matched_item.get('steps'):
+                for idx, step in enumerate(matched_item['steps']):
+                    st.write(f"**{idx+1}.** {step}")
+            else:
+                st.write("*No procedural steps required. Follow visual inspection guidelines.*")
         else:
-            st.write("*No procedural steps required. Follow visual inspection guidelines.*")
-        
-        st.markdown("---")
-        st.subheader("⚙️ Browse All Procedures")
-        # Show all items in simple expanders grouped by Category
-        cats = sorted(list(set(item["category"] for item in schedule_items)))
-        for cat in cats:
-            st.markdown(f"#### {cat}")
-            cat_items = [item for item in schedule_items if item["category"] == cat]
-            for item in cat_items:
-                interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-                with st.expander(f"{item['name']} ({interval_str})"): 
-                    st.write(f"*{item['description']}*")
-                    if item.get('steps'):
-                        st.markdown("**Steps:**")
-                        for idx, step in enumerate(item['steps']):
-                            st.write(f"{idx+1}. {step}")
+            st.info("ℹ️ Select a service from the dropdown list above to display its step-by-step execution guide and technical specifications.")
 
     with tab_parts:
         st.subheader("📦 OEM Parts & Part Numbers Reference")
