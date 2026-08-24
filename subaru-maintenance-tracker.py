@@ -913,8 +913,7 @@ if HAS_STREAMLIT and st.runtime.exists():
                     st.write(f"**{idx+1}.** {step}")
             else:
                 st.write("*No procedural steps required. Follow visual inspection guidelines.*")
-        else:
-            st.info("ℹ️ Select a service from the dropdown list above to display its step-by-step execution guide and technical specifications.")
+
 
     with tab_parts:
         st.subheader("📦 OEM Parts & Part Numbers Reference")
