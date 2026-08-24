@@ -810,7 +810,22 @@ if HAS_STREAMLIT and st.runtime.exists():
             )
             st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
 
-        pass
+        # Clean Save button for the checklist
+        st.markdown("### 💾 Record Checked Items to History")
+        if st.button("💾 Save Checked Items to History", type="primary", key="checklist_save_all_btn"):
+            completed_list = [name for name, val in completed_checks.items() if val]
+            if not completed_list:
+                st.error("Please check off at least one completed item before saving.")
+            else:
+                new_entry = {
+                    "date": datetime.date.today().isoformat(),
+                    "mileage": mileage,
+                    "severe_mode": severe,
+                    "completed_items": completed_list
+                }
+                save_history(new_entry)
+                st.success("✅ Service recorded successfully! Refresh page or check the Service History tab to review.")
+                st.rerun()
 
     with tab_procedures:
         st.subheader("🛠️ Step-by-Step Maintenance Procedures")
@@ -957,18 +972,15 @@ if HAS_STREAMLIT and st.runtime.exists():
     with tab_history:
         st.subheader("📜 Maintenance & Service Log")
         
-        pass
-        
         history = load_history()
         
-        # --- NEW FEATURES: ITEM-BY-ITEM COMPLETION LEDGER ---
+        # --- NEW FEATURES: ITEM-BY-ITEM COMPLETION LEDGER (PRIORITY COLUMN REMOVED) ---
         st.markdown("### 📊 Individual Item Completion Ledger")
         st.write("Scan the last logged date and mileage for each individual maintenance and inspection service. This ledger automatically indexes your entire history folder to prevent items from falling through the cracks.")
         
         ledger_data = []
         for item in schedule_items:
             item_name = item["name"]
-            priority = item["priority"].split(" ") if len(item["priority"].split(" ")) > 1 else item["priority"]
             interval = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
             
             # Find the latest logged completion in history
@@ -996,7 +1008,6 @@ if HAS_STREAMLIT and st.runtime.exists():
                     
             ledger_data.append({
                 "Maintenance Item": item_name,
-                "Priority": priority,
                 "Last Completed Date": last_date,
                 "Last Completed Mileage": last_mileage,
                 "Interval": interval,
@@ -1018,6 +1029,34 @@ if HAS_STREAMLIT and st.runtime.exists():
                 )
             }
         )
+
+        st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
+        st.markdown("### 🕒 Chronological Service History Timeline")
+        st.write("Below is a detailed timeline showing each completed service item in chronological order as logged from your checklist.")
+        
+        timeline_data = []
+        if history:
+            for entry in history:
+                date_val = entry.get("date", "")
+                mi_val = entry.get("mileage", 0)
+                severe_val = "Yes" if entry.get("severe_mode") else "No"
+                for item in entry.get("completed_items", []):
+                    timeline_data.append({
+                        "Date": date_val,
+                        "Odometer Mileage (mi)": mi_val,
+                        "Completed Service Item": item,
+                        "Severe Conditions": severe_val
+                    })
+            
+            df_timeline = pd.DataFrame(timeline_data)
+            if not df_timeline.empty:
+                df_timeline = df_timeline.sort_values(by=["Date", "Odometer Mileage (mi)"], ascending=[False, False])
+                df_timeline["Odometer Mileage (mi)"] = df_timeline["Odometer Mileage (mi)"].apply(lambda x: f"{x:,} mi")
+                st.dataframe(df_timeline, use_container_width=True, hide_index=True)
+            else:
+                st.info("No timeline items logged yet.")
+        else:
+            st.info("No timeline items logged yet.")
         
 
 
