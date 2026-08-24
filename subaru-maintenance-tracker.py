@@ -704,6 +704,63 @@ def save_history(entry):
 if HAS_STREAMLIT and st.runtime.exists():
     st.set_page_config(page_title="Subaru STI Maintenance Tracker", page_icon="🏎️", layout="wide")
 
+    def st_responsive_dataframe(df):
+        if not HAS_STREAMLIT:
+            return
+        # Convert dataframe to HTML with a custom class
+        html_table = df.to_html(classes="responsive-table", index=False, escape=False)
+        
+        # Styled CSS for the table
+        css_style = """
+        <style>
+        .responsive-table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e1e4e6;
+        }
+        table.responsive-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: inherit;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        table.responsive-table th {
+            background-color: #1e3d59;
+            color: #ffffff;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            border-bottom: 2px solid #17304a;
+            white-space: nowrap;
+        }
+        table.responsive-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e1e4e6;
+            vertical-align: middle;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: normal !important;
+            word-wrap: break-word;
+        }
+        table.responsive-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        @media screen and (max-width: 768px) {
+            table.responsive-table th, table.responsive-table td {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+        }
+        </style>
+        """
+        
+        full_html = f'{css_style}<div class="responsive-table-container">{html_table}</div>'
+        st.markdown(full_html, unsafe_allow_html=True)
+
     @st.dialog("Confirm Service Log")
     def confirm_save_dialog(completed_list, mileage, severe):
         st.markdown("##### Are you sure you want to save the following completed items to your service history?")
@@ -976,7 +1033,7 @@ if HAS_STREAMLIT and st.runtime.exists():
             if parts_data:
                 import pandas as pd
                 df_parts = pd.DataFrame(parts_data)
-                st.dataframe(df_parts, use_container_width=True, hide_index=True)
+                st_responsive_dataframe(df_parts)
             
             st.markdown("### 🔍 Critical Parts & Hardware Guide")
             st.markdown(
@@ -1050,7 +1107,7 @@ if HAS_STREAMLIT and st.runtime.exists():
         
         import pandas as pd
         df_fluids = pd.DataFrame(fluids_data)
-        st.dataframe(df_fluids, use_container_width=True, hide_index=True)
+        st_responsive_dataframe(df_fluids)
         
         st.info("💡 **The 5-Minute Dipstick Rule (NHTSA TSB):** Wait at least 5 minutes after turning off a warm engine on level ground. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate dipstick measurement.")
 
@@ -1107,17 +1164,7 @@ if HAS_STREAMLIT and st.runtime.exists():
         
             # Style/highlight the status column if possible, or just render a clean interactive dataframe
             st.write("🟢 **OK**: Recently completed | 🔴 **Due**: Needs attention | ⚪ **Not Logged**: No entry")
-            st.dataframe(
-                df_ledger, 
-                use_container_width=True, 
-                hide_index=True,
-                column_config={
-                    "Current Status": st.column_config.TextColumn(
-                        "Current Status",
-                        help="🟢 OK: Item was recently completed. 🔴 Due: Needs attention based on mileage or history. ⚪ Not Logged: No entry in history."
-                    )
-                }
-            )
+            st_responsive_dataframe(df_ledger)
 
             st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
             st.markdown("### 🕒 Chronological Service History Timeline")
@@ -1139,7 +1186,7 @@ if HAS_STREAMLIT and st.runtime.exists():
                 if not df_timeline.empty:
                     df_timeline = df_timeline.sort_values(by=["Date", "Odometer Mileage (mi)"], ascending=[False, False])
                     df_timeline["Odometer Mileage (mi)"] = df_timeline["Odometer Mileage (mi)"].apply(lambda x: f"{x:,} mi")
-                    st.dataframe(df_timeline, use_container_width=True, hide_index=True)
+                    st_responsive_dataframe(df_timeline)
                 else:
                     st.info("No timeline items logged yet.")
             else:
