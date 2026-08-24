@@ -828,7 +828,7 @@ if HAS_STREAMLIT and st.runtime.exists():
         matched_item = next(item for item in schedule_items if item["name"] == selected_proc)
         
         # Display the selected guide
-        st.markdown(f"### {matched_item['priority']} - {matched_item['name']}")
+        st.markdown(f"### {matched_item['name']}")
         st.markdown(f"**Normal Interval:** Every {matched_item['interval']:,} miles" if isinstance(matched_item['interval'], int) else f"**Normal Interval:** {matched_item['interval']}")
         st.markdown(f"**Description:** *{matched_item['description']}*")
         
@@ -861,7 +861,7 @@ if HAS_STREAMLIT and st.runtime.exists():
             cat_items = [item for item in schedule_items if item["category"] == cat]
             for item in cat_items:
                 interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-                with st.expander(f"{item['priority']} - {item['name']} ({interval_str})"): 
+                with st.expander(f"{item['name']} ({interval_str})"): 
                     st.write(f"*{item['description']}*")
                     if item.get('steps'):
                         st.markdown("**Steps:**")
@@ -879,11 +879,8 @@ if HAS_STREAMLIT and st.runtime.exists():
             if p_num != 'N/A':
                 parts_data.append({
                     "Service Item": item["name"],
-                    "Priority": item["priority"].split(" "),
                     "OEM Part Number / Specs": p_num,
                     "Quantity Required": qty,
-                    
-                    
                 })
                 
         if parts_data:
