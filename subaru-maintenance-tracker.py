@@ -880,8 +880,6 @@ if HAS_STREAMLIT and st.runtime.exists():
 
     with tab_procedures:
         st.subheader("🛠️ Step-by-Step Maintenance Procedures")
-        st.write("Browse detailed, step-by-step guides for all 19 maintenance and inspection services on your Subaru WRX STI.")
-        
         # Search/Select Box
         selected_proc = st.selectbox(
             "🔍 Search and select a specific service:",
