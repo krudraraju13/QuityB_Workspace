@@ -734,17 +734,30 @@ if HAS_STREAMLIT and st.runtime.exists():
         unsafe_allow_html=True
     )
 
-    # Sidebar inputs
-    st.sidebar.markdown("### 🔧 Vehicle Settings")
-    mileage = st.sidebar.number_input("Current Odometer Mileage (mi):", min_value=0, max_value=500000, value=105000, step=1000)
-    
-    st.sidebar.markdown("### 🚦 Operating Conditions")
-    severe = st.sidebar.checkbox(
-        "Severe Driving Conditions", 
-        value=False,
-        help="Trigger shorter intervals (e.g., oil every 3,000 miles). Conditions include repeated short distances (< 5 mi), rough/mudy/salty roads, high humidity/mountains, or extremely cold weather."
-    )
-    
+    # Tabs layout
+    tab_checklist, tab_procedures, tab_parts, tab_fluids, tab_history, tab_manual = st.tabs([
+        "📋 Criticality Checklist",
+        "🛠️ Maintenance Procedures",
+        "📦 OEM Parts & Part Numbers",
+        "🛢️ Oil Grades & Quantities",
+        "📜 Service History Log",
+        "📖 Subaru Reference Guide"
+    ])
+
+    with tab_checklist:
+        st.markdown("### 🔧 Odometer & Operating Conditions")
+        col_mil, col_sev = st.columns(2)
+        with col_mil:
+            mileage = st.number_input("Current Odometer Mileage (mi):", min_value=0, max_value=500000, value=105000, step=1000)
+        with col_sev:
+            st.markdown("<div style='height: 32px;'></div>", unsafe_allow_html=True)
+            severe = st.checkbox(
+                "Severe Driving Conditions", 
+                value=False,
+                help="Trigger shorter intervals (e.g., oil every 3,000 miles). Conditions include repeated short distances (< 5 mi), rough/mudy/salty/snowy roads, high humidity/mountains, or extremely cold weather."
+            )
+        st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
+
     is_primary = True
 
     # Initialize scheduler
@@ -767,18 +780,8 @@ if HAS_STREAMLIT and st.runtime.exists():
     due_items = [item for item in due_items if item["name"] not in completed_items_at_current_mileage]
     other_items = [item for item in other_items if item["name"] not in completed_items_at_current_mileage]
 
-    # Tabs layout
-    tab_checklist, tab_procedures, tab_parts, tab_fluids, tab_history, tab_manual = st.tabs([
-        "📋 Criticality Checklist",
-        "🛠️ Maintenance Procedures",
-        "📦 OEM Parts & Part Numbers",
-        "🛢️ Oil Grades & Quantities",
-        "📜 Service History Log",
-        "📖 Subaru Reference Guide"
-    ])
-
     with tab_checklist:
-        st.subheader(f"Current Mileage: {mileage:,} mi")
+        st.subheader("📋 Maintenance Tasks Checklist")
         
 
         
@@ -1066,13 +1069,11 @@ if HAS_STREAMLIT and st.runtime.exists():
             for entry in history:
                 date_val = entry.get("date", "")
                 mi_val = entry.get("mileage", 0)
-                severe_val = "Yes" if entry.get("severe_mode") else "No"
                 for item in entry.get("completed_items", []):
                     timeline_data.append({
                         "Date": date_val,
                         "Odometer Mileage (mi)": mi_val,
-                        "Completed Service Item": item,
-                        "Severe Conditions": severe_val
+                        "Completed Service Item": item
                     })
             
             df_timeline = pd.DataFrame(timeline_data)
