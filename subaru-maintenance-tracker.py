@@ -723,17 +723,7 @@ if HAS_STREAMLIT and st.runtime.exists():
         help="Trigger shorter intervals (e.g., oil every 3,000 miles). Conditions include repeated short distances (< 5 mi), rough/mudy/salty roads, high humidity/mountains, or extremely cold weather."
     )
     
-    st.sidebar.markdown("### 📊 Database & Sources")
-    scheduler_basis = st.sidebar.selectbox(
-        "Schedule Settings:",
-        ["Standard Factory Intervals", "Preventive Specialist Intervals"],
-        help="Choose whether to follow the standard factory manual intervals (Standard) or the more frequent preventive intervals recommended by specialists and enthusiasts (Preventive)."
-    )
-    
-    is_primary = (scheduler_basis == "Standard Factory Intervals")
-    
-    st.sidebar.markdown("☁️ **Cloud Synchronization**")
-    st.sidebar.info("📂 Connected to Primary Google Drive Document ('Google Drive: Sign-in'). History log is dynamically serialized to local storage.")
+    is_primary = True
 
     # Initialize scheduler
     scheduler = MaintenanceScheduler(mileage, severe, primary_mode=is_primary)
@@ -755,11 +745,7 @@ if HAS_STREAMLIT and st.runtime.exists():
     with tab_checklist:
         st.subheader(f"Current Mileage: {mileage:,} mi")
         
-        # Display active scheduling mode
-        if is_primary:
-            st.success("🟢 **Primary FSM Schedule Active:** Displaying factory-grounded schedules from official Subaru Customer Self-Service and Owner manuals.")
-        else:
-            st.warning("🔥 **Secondary Tuner/Specialist Schedule Active:** Displaying tighter, preventative schedules recommended by aftermarket mechanics and engine builders.")
+
         
         # Severe summary alerts
         if severe:
@@ -944,42 +930,36 @@ if HAS_STREAMLIT and st.runtime.exists():
                 "Compartment": "Engine Crankcase (EJ257)",
                 "Fluid Type / Specification": "API SM / SN Full Synthetic (SAE 5W-30 or 5W-40)",
                 "Capacity": "4.5 Quarts (4.3 Liters) with filter",
-                "Source Type": "Primary FSM",
                 "Key Specs / Notes": "Drain plug torque: 33-34 ft-lb. 5W-40 weight (e.g. Rotella T6, Motul 8100) resists thermal shear under high boost."
             },
             {
                 "Compartment": "Manual Transmission & Front Diff",
                 "Fluid Type / Specification": "API GL-5 High Performance Gear Oil (SAE 75W-90)",
                 "Capacity": "Dry Fill: 4.1 Quarts. Service Fill: ~3.5 Quarts",
-                "Source Type": "Primary FSM & Secondary",
                 "Key Specs / Notes": "Gearbox shares oil bath. Standard fluid swaps require ~3.5 quarts because some fluid remains trapped in gear clusters."
             },
             {
                 "Compartment": "Rear Differential",
                 "Fluid Type / Specification": "API GL-5 Hypoid Gear Oil (SAE 75W-90 / Motul 90PA for track)",
                 "Capacity": "1.0 Quart (0.95 Liters)",
-                "Source Type": "Primary FSM & Secondary",
                 "Key Specs / Notes": "Fill/drain plug torque: 36–43 ft-lb. 90-weight LS fluid prevents gear chatter under shock loads."
             },
             {
                 "Compartment": "Engine Cooling System",
                 "Fluid Type / Specification": "Subaru Super Coolant (Pre-Mixed Blue) + Conditioner",
                 "Capacity": "8.1 Quarts (7.7 Liters)",
-                "Source Type": "Primary FSM",
                 "Key Specs / Notes": "Never mix green conventional coolant. Add one bottle of SOA635065 Cooling System Conditioner to protect head gaskets."
             },
             {
                 "Compartment": "Brake & Clutch Reservoirs",
                 "Fluid Type / Specification": "DOT 3 or DOT 4 Premium Synthetic",
                 "Capacity": "Fill to Max Line (~1.0 Liter system)",
-                "Source Type": "Primary FSM",
                 "Key Specs / Notes": "DOT 5.1 accepted for heavy track. Avoid silicone-based DOT 5. Keep fluid off painted body panels."
             },
             {
                 "Compartment": "Power Steering System",
                 "Fluid Type / Specification": "Dexron III / Subaru ATF-HP",
                 "Capacity": "~0.8 Liters (System capacity)",
-                "Source Type": "Primary FSM",
                 "Key Specs / Notes": "Use premium ATF fluid rather than traditional power steering fluid."
             }
         ]
@@ -993,7 +973,7 @@ if HAS_STREAMLIT and st.runtime.exists():
     with tab_history:
         st.subheader("📜 Maintenance & Service Log")
         
-        st.success("☁️ **Google Drive Synchronization Active:** Service logs are being serialized locally to `subaru_maintenance_history.json` and prepared for export to your primary Google Drive storage.")
+        pass
         
         history = load_history()
         
