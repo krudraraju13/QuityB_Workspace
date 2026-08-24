@@ -751,16 +751,13 @@ if HAS_STREAMLIT and st.runtime.exists():
         if severe:
             st.info("**Severe conditions enabled:** Brake fluid, trans/diff gear oils, engine air filter, and inspections are accelerated.")
 
-        if not due_items:
-            st.success(f"🎉 No specific maintenance services are scheduled exactly at **{mileage:,} miles**! Check the other tabs above to view general service procedures, fluids, and parts.")
-        else:
-            st.warning(f"⚠️ There are **{len(due_items)}** scheduled maintenance items due now at **{mileage:,} miles**:")
+        completed_checks = {}
 
-            # Form to save checklist
-            st.markdown("### 📝 Check Off Completed Items to Record to History:")
-            completed_checks = {}
+        # 🚨 Section 1: Due Now (Checklist form)
+        if due_items:
+            st.warning(f"⚠️ There are **{len(due_items)}** scheduled maintenance items due now at **{mileage:,} miles**:")
+            st.markdown("### 🚨 Maintenance Items Due Now (Recommended):")
             for item in due_items:
-                # Checkbox inside a container
                 label = f"{item['priority']} - {item['name']} (⚠️ Overdue since {item['overdue_since']:,} mi)" if item.get('is_carried_forward') else f"{item['priority']} - {item['name']}"
                 completed_checks[item["name"]] = st.checkbox(
                     label,
@@ -769,27 +766,12 @@ if HAS_STREAMLIT and st.runtime.exists():
                 )
                 st.caption(f"**Description:** {item['description']}")
                 st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
+        else:
+            st.success(f"🎉 No specific maintenance services are scheduled exactly at **{mileage:,} miles**! But you can still complete and log any item below.")
 
-            # Extra notes and save button
-            notes = st.text_area("Service Notes / Dealer Name / Parts Used:")
-            if st.button("💾 Save Checked Items to History", type="primary"):
-                completed_list = [name for name, val in completed_checks.items() if val]
-                if not completed_list:
-                    st.error("Please check off at least one completed item before saving.")
-                else:
-                    new_entry = {
-                        "date": datetime.date.today().isoformat(),
-                        "mileage": mileage,
-                        "severe_mode": severe,
-                        "notes": notes,
-                        "completed_items": completed_list
-                    }
-                    save_history(new_entry)
-                    st.success("✅ Service recorded successfully! Refresh page or check the Service History tab to review.")
-
-        # Show general reference schedule by criticality order
+        # 🔍 Section 2: Other Maintenance Items (Not currently due Checklist form)
         st.markdown("### 🔍 General Subaru WRX/STI Maintenance Items (Not currently due):")
-        st.write("Below are all scheduled items sorted by priority. Access their respective tabs above to view step-by-step instructions, specific fluids, and part numbers.")
+        st.write("Below are all scheduled items. You can check any item if completed early or as part of custom maintenance, and click 'Save' below to record to your history.")
         
         # Group other_items by criticality
         high_items = [i for i in other_items if "🔴" in i["priority"]]
@@ -799,17 +781,57 @@ if HAS_STREAMLIT and st.runtime.exists():
         st.markdown("#### 🔴 High Priority\n*Replacements & Critical Protections*")
         for item in high_items:
             interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
+            label = f"Check to Complete: **{item['name']}** ({interval_str})"
+            completed_checks[item["name"]] = st.checkbox(
+                label,
+                key=f"check_{item['name']}",
+                help=f"Description: {item['description']}"
+            )
+            st.caption(f"**Description:** {item['description']}")
+            st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
             
         st.markdown("#### 🟡 Medium Priority\n*System Inspections & Safety Sweeps*")
         for item in med_items:
             interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
+            label = f"Check to Complete: **{item['name']}** ({interval_str})"
+            completed_checks[item["name"]] = st.checkbox(
+                label,
+                key=f"check_{item['name']}",
+                help=f"Description: {item['description']}"
+            )
+            st.caption(f"**Description:** {item['description']}")
+            st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
             
         st.markdown("#### 🟢 Low Priority\n*Lubrication & General Upkeep*")
         for item in low_items:
             interval_str = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            st.markdown(f"**{item['name']}**\n*{interval_str}* — {item['description']}\n***")
+            label = f"Check to Complete: **{item['name']}** ({interval_str})"
+            completed_checks[item["name"]] = st.checkbox(
+                label,
+                key=f"check_{item['name']}",
+                help=f"Description: {item['description']}"
+            )
+            st.caption(f"**Description:** {item['description']}")
+            st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
+
+        # 💾 Form notes and Save button for the entire list
+        st.markdown("### 💾 Record Checked Items to History:")
+        notes = st.text_area("Service Notes / Dealer Name / Parts Used:", key="checklist_notes_box")
+        if st.button("💾 Save Checked Items to History", type="primary", key="checklist_save_all_btn"):
+            completed_list = [name for name, val in completed_checks.items() if val]
+            if not completed_list:
+                st.error("Please check off at least one completed item before saving.")
+            else:
+                new_entry = {
+                    "date": datetime.date.today().isoformat(),
+                    "mileage": mileage,
+                    "severe_mode": severe,
+                    "notes": notes,
+                    "completed_items": completed_list
+                }
+                save_history(new_entry)
+                st.success("✅ Service recorded successfully! Refresh page or check the Service History tab to review.")
+                st.rerun()
 
     with tab_procedures:
         st.subheader("🛠️ Step-by-Step Maintenance Procedures")
