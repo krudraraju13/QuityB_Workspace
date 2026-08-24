@@ -807,7 +807,46 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.success(f"🎉 No specific maintenance services are scheduled exactly at **{mileage:,} miles**! But you can still complete and log any item below.")
 
         # 🔍 Section 2: Other Maintenance Items (Not currently due Checklist form)
-        st.markdown("### 🔍 General Subaru WRX/STI Maintenance Items (Not currently due):")
+        # Determine if current mileage exactly matches any scheduled maintenance interval milestone
+        is_exact_match = False
+        if mileage > 0:
+            for item in schedule_items:
+                interval = item.get("interval")
+                name = item.get("name")
+                if name == "Replace Engine Coolant (Super Coolant)":
+                    if mileage == 137500 or (mileage > 137500 and (mileage - 137500) % 75000 == 0):
+                        is_exact_match = True
+                        break
+                elif isinstance(interval, int) and interval > 0:
+                    if mileage % interval == 0:
+                        is_exact_match = True
+                        break
+
+        if is_exact_match:
+            section_title = f"### 🔍 General Subaru WRX/STI Maintenance Items (Not currently due at {mileage:,} mi):"
+        else:
+            # Find the recommended next/upcoming maintenance schedule milestone
+            milestones = []
+            for item in schedule_items:
+                interval = item.get("interval")
+                name = item.get("name")
+                if name == "Replace Engine Coolant (Super Coolant)":
+                    if mileage < 137500:
+                        milestones.append(137500)
+                    else:
+                        next_coolant = 137500 + (((mileage - 137500) // 75000) + 1) * 75000
+                        milestones.append(next_coolant)
+                elif isinstance(interval, int) and interval > 0:
+                    next_mult = ((mileage // interval) + 1) * interval
+                    milestones.append(next_mult)
+            
+            next_milestone = min(milestones) if milestones else None
+            if next_milestone:
+                section_title = f"### 🔍 Recommended Next Upcoming Maintenance Schedule (Due at {next_milestone:,} mi):"
+            else:
+                section_title = "### 🔍 General Subaru WRX/STI Maintenance Items (Not currently due):"
+
+        st.markdown(section_title)
         st.write("Below are all scheduled items. You can check any item if completed early or as part of custom maintenance, and click 'Save' below to record to your history.")
         
         # Group other_items by criticality
