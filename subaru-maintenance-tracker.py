@@ -811,7 +811,7 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown("<hr style='margin:2px 0;border-color:#eee;'/>", unsafe_allow_html=True)
 
         # Clean Save button for the checklist
-        st.markdown("### 💾 Record Checked Items to History")
+        
         if st.button("💾 Save Checked Items to History", type="primary", key="checklist_save_all_btn"):
             completed_list = [name for name, val in completed_checks.items() if val]
             if not completed_list:
