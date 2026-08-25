@@ -385,7 +385,7 @@ if HAS_STREAMLIT and st.runtime.exists():
         st.markdown(
             """
             <div style="display: flex; justify-content: flex-end; align-items: center; height: 100px;">
-                <img src="https://cdn.freebiesupply.com/logos/large/2x/subaru-9-logo-png-transparent.png" width="160" height="100" style="object-fit: contain;"/>
+                <img src="https://cdn.freebiesupply.com/logos/large/2x/subaru-9-logo-png-transparent.png" width="200" height="100" style="object-fit: contain;"/>
             </div>
             """,
             unsafe_allow_html=True
