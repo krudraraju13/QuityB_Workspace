@@ -667,16 +667,69 @@ if HAS_STREAMLIT and st.runtime.exists():
         with st.expander("⚙️ Subaru WRX STI Powertrain & Chassis Specifications"):
             st.markdown(
                 """
-                ### 🏎️ 2015-2016 Subaru WRX STI Technical Specifications
-                *   **Engine Core:** 2.5-Liter (2457 cc) Horizontally Opposed "Boxer" 4-Cylinder EJ257 [cite: 360].
-                *   **Cylinder Geometry:** Oversquare bore of 99.5 mm and stroke of 79.0 mm (Bore-to-stroke ratio of 1.26) [cite: 360].
-                *   **Power & Compression:** 305 hp (309 PS) @ 6,000 rpm, peak torque 290 lb-ft (393 Nm) @ 4,000 rpm, running an 8.2:1 compression ratio [cite: 360].
-                *   **Forced Induction:** Single-scroll turbocharger with functional hood scoop and high-flow top-mount cross-flow intercooler (14.7 PSI peak factory boost) [cite: 360].
-                *   **Transmission:** Reinforced TY856 Series 6-speed close-ratio manual [cite: 362, 363]. Fully synchronized reverse [cite: 363].
-                *   **Symmetrical AWD Layout:** Multi-Mode Driver Controlled Center Differential (DCCD), Helical Limited-Slip Front Differential, and Torsen Limited-Slip Rear Differential [cite: 362, 363].
-                *   **Steering:** Quick-ratio hydraulic power-assisted rack-and-pinion (13.3:1 ratio, 2.5 turns lock-to-lock) [cite: 363].
-                *   **Brembo Brakes:** Power-assisted 4-piston fixed front calipers on 12.8-inch (326 mm) ventilated rotors; dual-piston fixed rear calipers on 12.4-inch (316 mm) ventilated rotors [cite: 364].
-                *   **Wheel Hub & Bolt Pattern:** Standardized 5x114.3 mm bolt pattern with 56.1 mm center bore [cite: 364].
+                ### 🏎️ Official 2016 Subaru WRX STI (GUS Model) Specifications
+                *Grounded strictly in official 2016 US market specifications [cite: 39, 40].*
+
+                ##### 📦 Engine & Powertrain
+                | Specification | Value / Detail |
+                | :--- | :--- |
+                | **Engine Manufacturer / Type** | Subaru flat-four horizontally opposed DOHC "Boxer" 4-cylinder, 16 valves (4 valves/cyl) [cite: 39, 40]. |
+                | **Displacement / Size** | 2.5 Liter (2,457 cc / 149.935 cu in) [cite: 39, 40]. |
+                | **Bore × Stroke** | 99.5 mm × 79.0 mm (3.92 in × 3.11 in) with 1.26 oversquare ratio [cite: 40, 360]. |
+                | **Compression Ratio** | 8.2:1 [cite: 40, 360]. |
+                | **Fuel System / Induction** | Multi-point fuel injection (MPFI) [cite: 40]. Single-scroll turbocharger with functional hood scoop & aluminum cross-flow intercooler (14.7 PSI factory peak boost) [cite: 360]. |
+                | **Engine Construction** | Cast aluminum-alloy block and cylinder heads [cite: 40]. |
+                | **Lubrication System** | Wet sumped [cite: 40]. |
+                | **Maximum Power Output** | **305 bhp (309 PS / 227 kW) @ 6,000 RPM** [cite: 39, 40]. |
+                | **Maximum Torque Output** | **290 lb-ft (393 N·m / 40.1 kgm) @ 4,000 RPM** [cite: 39, 40]. |
+                | **Specific Power Output** | 124.1 bhp/litre (125.9 PS/litre / 92.6 kW/litre) [cite: 40]. |
+                | **Specific Torque Output** | 159.95 N·m/litre [cite: 40]. |
+
+                ##### ⚙️ Drivetrain & Transmission
+                | Component | Design Specification & Mechanical Parameters |
+                | :--- | :--- |
+                | **Gearbox Designation** | TY856 Series 6-speed manual, reinforced casing [cite: 363]. Fully synchronized reverse [cite: 363]. |
+                | **Gear Ratios** | Top gear ratio: 0.76:1 [cite: 40]. Final drive ratio: 3.90:1 [cite: 40, 363]. |
+                | **Engine Position / Layout** | Front-positioned, longitudinal [cite: 40]. |
+                | **Symmetrical AWD Layout** | Symmetrical All-Wheel Drive [cite: 39, 40]. Multi-Mode Driver Controlled Center Differential (DCCD) coordinating an electromagnetic multi-plate clutch and mechanical LSD [cite: 362, 363]. |
+                | **Front Differential** | Helical limited-slip differential (LSD) [cite: 362, 363]. |
+                | **Rear Differential** | Torsen limited-slip differential (LSD) [cite: 362, 363]. |
+
+                ##### 📐 Dimensions & Weights
+                | Dimension / Parameter | Metric Value | Imperial / US Value |
+                | :--- | :--- | :--- |
+                | **Wheelbase** | 2649 mm [cite: 40]. | 104.3 inches [cite: 40]. |
+                | **Track / Tread (Front)** | 1529 mm [cite: 40]. | 60.2 inches [cite: 40]. |
+                | **Track / Tread (Rear)** | 1539 mm [cite: 40]. | 60.6 inches [cite: 40]. |
+                | **Overall Length** | 4595 mm [cite: 40]. | 180.9 inches [cite: 40]. |
+                | **Overall Width** | 1796 mm [cite: 40]. | 70.7 inches [cite: 40]. |
+                | **Overall Height** | 1476 mm [cite: 40]. | 58.1 inches [cite: 40]. |
+                | **Ground Clearance** | Performance stance with 1.73 length-to-wheelbase ratio [cite: 40]. | |
+                | **Kerb Weight** | **1536 kg** [cite: 39, 40]. | **3386 lbs** [cite: 40]. |
+                | **Power-to-weight ratio** | 198.57 bhp/tonne (0.2 bhp/kg) [cite: 40]. | |
+                | **Weight-to-power ratio** | 11.28 lb/bhp (6.75 kg/kW) [cite: 40]. | |
+
+                ##### 🧪 Fluids, Capacities & Economy
+                | Parameter | Metric Value | Imperial / US Value |
+                | :--- | :--- | :--- |
+                | **Fuel Tank Capacity** | 60.2 litres [cite: 40]. | 15.9 US Gallons (13.2 UK Gal) [cite: 40]. |
+                | **EPA Fuel Consumption** | 13.8 / 10.2 / 12.4 L/100km [cite: 40]. | **17 / 23 / 19 MPG** (City/Highway/Combined) [cite: 40]. |
+                | **Engine Oil Capacity** | 4.3 Liters [cite: 371]. | 4.5 Quarts with filter [cite: 371]. |
+                | **Engine Coolant Capacity** | 7.7 Liters [cite: 371]. | 8.1 Quarts [cite: 371]. |
+
+                ##### 🏎️ Chassis, Steering, Wheels & Brakes
+                | Component | Design Specification & Mechanical Parameters |
+                | :--- | :--- |
+                | **Steering System** | Hydraulic power-assisted rack & pinion steering with 13.3:1 quick-ratio [cite: 363, 40]. |
+                | **Turns Lock-to-Lock** | **2.500 turns** [cite: 363, 40]. |
+                | **Front Suspension** | Independent inverted MacPherson KYB struts with forged aluminum alloy lower suspension arm, high-durometer pillow ball mounts and bushings, 24 mm stabilizer bar [cite: 363]. |
+                | **Rear Suspension** | Independent double-wishbone design with subframe stiffener bar and 20 mm stabilizer bar [cite: 363]. |
+                | **Wheel Hub Bolt Pattern** | Standardized **5x114.3 mm** bolt pattern with **56.1 mm** center bore [cite: 364]. |
+                | **Wheel Rim Size** | 8.5J × 18 inches front and rear [cite: 40]. |
+                | **Tire Sizing** | **245/40 R18 97W** front and rear high-performance tires [cite: 40]. |
+                | **Brembo Brake Calipers** | Power-assisted Brembo brake system with 4-piston fixed front calipers and dual-piston fixed rear calipers [cite: 364]. |
+                | **Brake Rotors** | Front ventilated discs: **325 mm / 326 mm** diameter, **30 mm** thick [cite: 40, 122, 364]. Rear ventilated discs: **315 mm / 316 mm** diameter, **20 mm** thick [cite: 40, 123, 364]. |
+                | **Braking Safety Systems** | Super Sport ABS (4-channel/4-sensor/4-wheel with g-load sensor), Active Torque Vectoring, Brake Assist, and Electronic Brake-force Distribution (EBD) [cite: 123]. |
                 """
             )
 
