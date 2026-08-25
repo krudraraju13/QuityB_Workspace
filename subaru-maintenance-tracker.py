@@ -356,14 +356,15 @@ if HAS_STREAMLIT and st.runtime.exists():
 
 
     # Responsive Brand Logo Header Block (STI Image Logo from Wallpaper URL)
-    logo_col, title_col = st.columns([1, 2.5])
+    logo_col, title_col = st.columns([1, 3.5])
     with logo_col:
-        st.image("https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original", use_container_width=True)
+        st.write("") # small vertical spacer
+        st.image("https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original", width=140)
     with title_col:
         st.markdown(
             """
             <div style='padding-top:10px;'>
-                <h1 style='color:var(--text-color);margin:0;font-size:2.2em;letter-spacing:-0.5px;'>🏎️ Subaru WRX STI Maintenance Tracker</h1>
+                <h1 style='color:var(--text-color);margin:0;font-size:2.2em;letter-spacing:-0.5px;'>🏎️ Subaru STI Maintenance Tracker</h1>
                 <p style='color:#FF007F;margin:5px 0 0 0;font-size:1.15em;font-family:"Montserrat",sans-serif;font-weight:700;'>
                     Symmetrical All-Wheel Drive Performance Suite &bull; Factory Specifications &bull; Interactive Log
                 </p>
