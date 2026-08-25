@@ -327,9 +327,9 @@ if HAS_STREAMLIT and st.runtime.exists():
                     med_crit_items.append(item)
 
             categories = [
-                ("🔴 High Criticality (Engine Core, Timing & Stopping Safety)", high_crit_items),
-                ("🟡 Medium Criticality (AWD Drivetrain, Cooling & Steering)", med_crit_items),
-                ("🟢 Low Criticality (Cabin Comfort & HVAC)", low_crit_items)
+                ("🔴 High", high_crit_items),
+                ("🟡 Medium", med_crit_items),
+                ("🟢 Low", low_crit_items)
             ]
 
             completed_list = []
@@ -338,24 +338,12 @@ if HAS_STREAMLIT and st.runtime.exists():
                 if cat_items:
                     st.markdown(f"#### {cat_title}")
                     for item in cat_items:
-                        # Construct status and completion details
                         last_str = f" (Last: {item['last_completed']:,} mi)" if item['last_completed'] is not None else ""
-                        due_tag = " ⚠️ (Due)" if item["due"] else ""
+                        label = f"**{item['name']}**{last_str} — every {item['interval']:,} mi"
                         
-                        if item["name"] in completed_items_at_current_mileage:
-                            # Already logged at this exact mileage
-                            st.checkbox(
-                                f"🟢 **{item['name']}**{last_str} — Logged", 
-                                value=True, 
-                                disabled=True, 
-                                key=f"logged_{item['name']}"
-                            )
-                        else:
-                            # Not logged yet
-                            label = f"**{item['name']}**{due_tag}{last_str} — every {item['interval']:,} mi"
-                            checked = st.checkbox(label, key=f"check_{item['name']}")
-                            if checked:
-                                completed_list.append(item["name"])
+                        checked = st.checkbox(label, key=f"check_{item['name']}")
+                        if checked:
+                            completed_list.append(item["name"])
                     
                     st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
 
