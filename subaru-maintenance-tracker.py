@@ -359,12 +359,12 @@ if HAS_STREAMLIT and st.runtime.exists():
 
 
     # Responsive Brand Logo Header Block (STI & Subaru Logos flanking the Title)
-    logo_left_col, title_col, logo_right_col = st.columns([1.3, 3.5, 1.3], vertical_alignment="center")
+    logo_left_col, title_col, logo_right_col = st.columns([1.0, 3.5, 1.4], vertical_alignment="center")
     with logo_left_col:
         st.markdown(
             """
             <div style="display: flex; justify-content: flex-start; align-items: center; height: 140px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" width="220" height="110" style="object-fit: contain;"/>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" width="200" height="100" style="object-fit: contain;"/>
             </div>
             """,
             unsafe_allow_html=True
