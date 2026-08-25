@@ -210,9 +210,7 @@ if HAS_STREAMLIT and st.runtime.exists():
 
     @st.dialog("Confirm Service Log")
     def confirm_save_dialog(completed_list, mileage, severe):
-        st.markdown("##### Are you sure you want to save the following completed items to your service history?")
-        for item in completed_list:
-            st.markdown(f"- ✅ **{item}**")
+        st.markdown("##### Are you sure you want to save the completed services to your history?")
         st.markdown("<br>", unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
@@ -321,6 +319,8 @@ if HAS_STREAMLIT and st.runtime.exists():
             }
 
             for item in schedule_items:
+                if item["name"] in completed_items_at_current_mileage:
+                    continue  # Skip already completed items
                 if item["name"] in high_names:
                     high_crit_items.append(item)
                 elif item["name"] in low_names:
@@ -333,6 +333,9 @@ if HAS_STREAMLIT and st.runtime.exists():
                 ("🟡 Medium", med_crit_items),
                 ("🟢 Low", low_crit_items)
             ]
+            
+            if not high_crit_items and not med_crit_items and not low_crit_items:
+                st.success("🟢 All scheduled services for this mileage have been completed and logged!")
 
             completed_list = []
 
@@ -577,34 +580,8 @@ if HAS_STREAMLIT and st.runtime.exists():
         ]
 
 
-        # Consolidate service requirements into the catalog dynamically
-        required_quantities = []
-        
-        for idx, row in pd.DataFrame(parts_catalog).iterrows():
-            oem_pn = str(row["OEM Part Number"]).strip().upper()
-            
-            matched = False
-            if mileage is not None:
-                for item in schedule_items:
-                    if item.get("due"):
-                        item_pn_text = str(item.get("part_number", "")).upper()
-                        item_qty_text = str(item.get("quantity", "")).upper()
-                        item_desc_text = str(item.get("description", "")).upper()
-                        item_name_text = str(item.get("name", "")).upper()
-                        
-                        # Match OEM part number in scheduled item details
-                        if (oem_pn != "N/A" and (oem_pn in item_pn_text or oem_pn in item_qty_text)) or \
-                           (oem_pn != "N/A" and oem_pn in item_desc_text and "REPLACE" in item_name_text):
-                            required_quantities.append(item["quantity"])
-                            matched = True
-                            break
-            
-            if not matched:
-                required_quantities.append("-")
-                    
         import pandas as pd
         df_catalog = pd.DataFrame(parts_catalog)
-        df_catalog["Required Qty"] = required_quantities
         
         # Interactive search & filter controls
         col_search, col_cat = st.columns([2, 1])
@@ -619,23 +596,18 @@ if HAS_STREAMLIT and st.runtime.exists():
         if selected_category != "All Categories":
             filtered_df = filtered_df[filtered_df["Category"] == selected_category]
         
-        # Expand search functionality to search across all columns! (Service Status search removed)
+        # Expand search functionality to search across all columns! (Service Status and Required Qty removed)
         if search_query:
             filtered_df = filtered_df[
-                filtered_df["Part Name"].str.lower().str.contains(search_query) | 
-                filtered_df["OEM Part Number"].str.lower().str.contains(search_query) |
-                filtered_df["Category"].str.lower().str.contains(search_query) |
-                filtered_df["Quantity"].astype(str).str.lower().str.contains(search_query) |
-                filtered_df["Required Qty"].str.lower().str.contains(search_query) |
-                filtered_df["Notes"].str.lower().str.contains(search_query)
+                filtered_df["Part Name"].str.lower().str.contains(search_query) |                 filtered_df["OEM Part Number"].str.lower().str.contains(search_query) |                filtered_df["Category"].str.lower().str.contains(search_query) |                filtered_df["Quantity"].astype(str).str.lower().str.contains(search_query) |                filtered_df["Notes"].str.lower().str.contains(search_query)
             ]
         
         # Format Prices and reorder columns for display
         display_df = filtered_df.copy()
         display_df["Price"] = display_df["Price"].apply(lambda x: f"${x:.2f}")
         
-        # Reorder columns to showcase consolidation (Service Status removed)
-        cols_order = ["Category", "Part Name", "OEM Part Number", "Quantity", "Price", "Required Qty", "Notes"]
+        # Reorder columns to showcase consolidation (Service Status and Required Qty removed)
+        cols_order = ["Category", "Part Name", "OEM Part Number", "Quantity", "Price", "Notes"]
         display_df = display_df[cols_order]
         
         st.dataframe(display_df, use_container_width=True, hide_index=True)
@@ -648,38 +620,32 @@ if HAS_STREAMLIT and st.runtime.exists():
             {
                 "Compartment": "Engine Crankcase (EJ257)",
                 "Fluid Type / Specification": "API SM / SN Full Synthetic (SAE 5W-30 or 5W-40)",
-                "Capacity": "4.5 Quarts (4.3 Liters) with filter",
-                "Key Specs / Notes": "Drain plug torque: 33-34 ft-lb. 5W-40 weight (e.g. Rotella T6, Motul 8100) resists thermal shear under high boost."
+                "Capacity": "4.5 Quarts (4.3 Liters) with filter"
             },
             {
                 "Compartment": "Manual Transmission & Front Diff",
                 "Fluid Type / Specification": "API GL-5 High Performance Gear Oil (SAE 75W-90)",
-                "Capacity": "Dry Fill: 4.1 Quarts. Service Fill: ~3.5 Quarts",
-                "Key Specs / Notes": "Gearbox shares oil bath. Standard fluid swaps require ~3.5 quarts because some fluid remains trapped in gear clusters."
+                "Capacity": "Dry Fill: 4.1 Quarts. Service Fill: ~3.5 Quarts"
             },
             {
                 "Compartment": "Rear Differential",
                 "Fluid Type / Specification": "API GL-5 Hypoid Gear Oil (SAE 75W-90 / Motul 90PA for track)",
-                "Capacity": "1.0 Quart (0.95 Liters)",
-                "Key Specs / Notes": "Fill/drain plug torque: 36–43 ft-lb. 90-weight LS fluid prevents gear chatter under shock loads."
+                "Capacity": "1.0 Quart (0.95 Liters)"
             },
             {
                 "Compartment": "Engine Cooling System",
                 "Fluid Type / Specification": "Subaru Super Coolant (Pre-Mixed Blue) + Conditioner",
-                "Capacity": "8.1 Quarts (7.7 Liters)",
-                "Key Specs / Notes": "Never mix green conventional coolant. Add one bottle of SOA635065 Cooling System Conditioner to protect head gaskets."
+                "Capacity": "8.1 Quarts (7.7 Liters)"
             },
             {
                 "Compartment": "Brake & Clutch Reservoirs",
                 "Fluid Type / Specification": "DOT 3 or DOT 4 Premium Synthetic",
-                "Capacity": "Fill to Max Line (~1.0 Liter system)",
-                "Key Specs / Notes": "DOT 5.1 accepted for heavy track. Avoid silicone-based DOT 5. Keep fluid off painted body panels."
+                "Capacity": "Fill to Max Line (~1.0 Liter system)"
             },
             {
                 "Compartment": "Power Steering System",
                 "Fluid Type / Specification": "Dexron III / Subaru ATF-HP",
-                "Capacity": "~0.8 Liters (System capacity)",
-                "Key Specs / Notes": "Use premium ATF fluid rather than traditional power steering fluid."
+                "Capacity": "~0.8 Liters (System capacity)"
             }
         ]
         
