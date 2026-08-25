@@ -299,45 +299,78 @@ if HAS_STREAMLIT and st.runtime.exists():
                         completed_items_at_current_mileage.add(item)
 
         with tab_checklist:
-            due_now = [item for item in schedule_items if item["due"] and item["name"] not in completed_items_at_current_mileage]
-            upcoming = [item for item in schedule_items if not item["due"] and item["name"] not in completed_items_at_current_mileage]
-            already_done = [item for item in schedule_items if item["name"] in completed_items_at_current_mileage]
+            st.markdown("### 🔧 Symmetrical AWD Maintenance Checklist")
+            st.write("Check the items you have completed at your current mileage, then click **💾 Save Checked Services** at the bottom to log them.")
 
-            col_due, col_up = st.columns(2)
+            # Categorize items by criticality
+            high_crit_items = []
+            med_crit_items = []
+            low_crit_items = []
 
-            with col_due:
-                st.markdown("#### 🔴 Due Now / Overdue")
-                if due_now:
-                    st.write("The following items require immediate maintenance or check-off:")
-                    completed_list = []
-                    for item in due_now:
+            high_names = {
+                "Replace Engine Oil & Filter",
+                "Replace Timing Belt (EJ257 DOHC)",
+                "Replace Spark Plugs",
+                "Inspect Front & Rear Brake Pads & Rotors",
+                "Replace Brake Fluid"
+            }
+            low_names = {
+                "Replace Cabin Air Filter"
+            }
+
+            for item in schedule_items:
+                if item["name"] in high_names:
+                    high_crit_items.append(item)
+                elif item["name"] in low_names:
+                    low_crit_items.append(item)
+                else:
+                    med_crit_items.append(item)
+
+            categories = [
+                ("🔴 High Criticality (Engine Core, Timing & Stopping Safety)", high_crit_items),
+                ("🟡 Medium Criticality (AWD Drivetrain, Cooling & Steering)", med_crit_items),
+                ("🟢 Low Criticality (Cabin Comfort & HVAC)", low_crit_items)
+            ]
+
+            completed_list = []
+
+            for cat_title, cat_items in categories:
+                if cat_items:
+                    st.markdown(f"#### {cat_title}")
+                    for item in cat_items:
+                        # Construct status and completion details
                         last_str = f" (Last completed: {item['last_completed']:,} mi)" if item['last_completed'] is not None else " (Never completed)"
-                        checked = st.checkbox(f"**{item['name']}**{last_str}\nInterval: every {item['interval']:,} mi", key=f"due_{item['name']}")
-                        if checked:
-                            completed_list.append(item["name"])
+                        
+                        if item["name"] in completed_items_at_current_mileage:
+                            # Already logged at this exact mileage
+                            st.checkbox(
+                                f"🟢 **Logged:** **{item['name']}**{last_str} — Interval: every {item['interval']:,} mi", 
+                                value=True, 
+                                disabled=True, 
+                                key=f"logged_{item['name']}"
+                            )
+                        else:
+                            # Not logged yet
+                            if item["due"]:
+                                label = f"🚨 **DUE NOW:** **{item['name']}**{last_str} — Interval: every {item['interval']:,} mi"
+                            else:
+                                due_in = item['interval'] - (mileage - (item['last_completed'] or 0))
+                                label = f"🕒 **Upcoming in {due_in:,} mi:** **{item['name']}**{last_str} — Due at: {((item['last_completed'] or 0) + item['interval']):,} mi"
+                            
+                            checked = st.checkbox(label, key=f"check_{item['name']}")
+                            if checked:
+                                completed_list.append(item["name"])
                     
-                    if completed_list:
-                        if st.button("Log Selected Items", type="primary", use_container_width=True):
-                            confirm_save_dialog(completed_list, mileage, severe)
-                else:
-                    st.success("🟢 All good! No items are currently overdue or due at this mileage.")
+                    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
 
-            with col_up:
-                st.markdown("#### 🕒 Upcoming Maintenance")
-                if upcoming:
-                    st.write("Plan ahead for the following scheduled services:")
-                    for item in upcoming:
-                        last_str = f" (Last completed: {item['last_completed']:,} mi)" if item['last_completed'] is not None else ""
-                        due_in = item['interval'] - (mileage - (item['last_completed'] or 0))
-                        st.info(f"**{item['name']}**{last_str}\nDue in: **{due_in:,} miles** (at {((item['last_completed'] or 0) + item['interval']):,} mi)")
-                else:
-                    st.write("Enter an odometer reading above to show schedules.")
-
-            if already_done:
-                st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
-                st.markdown("#### ✅ Completed at This Mileage")
-                for item in already_done:
-                    st.write(f"- 🟢 **{item['name']}** (Logged)")
+            st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
+            
+            # Action button
+            if completed_list:
+                if st.button("💾 Save Checked Services", type="primary", use_container_width=True):
+                    confirm_save_dialog(completed_list, mileage, severe)
+            else:
+                st.button("💾 Save Checked Services", type="primary", disabled=True, use_container_width=True, help="Check one or more items above to enable logging.")
 
     else:
         with tab_checklist:
