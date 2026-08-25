@@ -284,21 +284,22 @@ if HAS_STREAMLIT and st.runtime.exists():
 
     is_primary = True
 
-    if mileage is not None:
-        # Initialize scheduler
-        scheduler = MaintenanceScheduler(mileage, severe, primary_mode=is_primary)
-        schedule_items = scheduler.get_schedule()
+    # Always initialize scheduler so that other tabs work independently of Odometer input
+    current_mileage = mileage if mileage is not None else 0
+    scheduler = MaintenanceScheduler(current_mileage, severe, primary_mode=is_primary)
+    schedule_items = scheduler.get_schedule()
 
-        # Load history to filter checked/completed items at the current mileage
-        history = load_history()
-        completed_items_at_current_mileage = set()
-        if history:
-            for entry in history:
-                if entry.get("mileage") == mileage:
-                    for item in entry.get("completed_items", []):
-                        completed_items_at_current_mileage.add(item)
+    # Load history to filter checked/completed items at the current mileage
+    history = load_history()
+    completed_items_at_current_mileage = set()
+    if history and mileage is not None:
+        for entry in history:
+            if entry.get("mileage") == mileage:
+                for item in entry.get("completed_items", []):
+                    completed_items_at_current_mileage.add(item)
 
-        with tab_checklist:
+    with tab_checklist:
+        if mileage is not None:
             st.markdown("### 🔧 Symmetrical AWD Maintenance Checklist")
             st.write("Check the items you have completed at your current mileage, then click **💾 Save Checked Services** at the bottom to log them.")
 
@@ -355,9 +356,7 @@ if HAS_STREAMLIT and st.runtime.exists():
                     confirm_save_dialog(completed_list, mileage, severe)
             else:
                 st.button("💾 Save Checked Services", type="primary", disabled=True, use_container_width=True, help="Check one or more items above to enable logging.")
-
-    else:
-        with tab_checklist:
+        else:
             st.info("💡 **Enter your current odometer mileage** above to generate your customized vehicle maintenance status, log services, and track due dates.")
 
     # Procedures Tab
@@ -454,11 +453,8 @@ if HAS_STREAMLIT and st.runtime.exists():
     # OEM Parts Tab
     with tab_parts:
         st.subheader("📦 OEM Parts & Part Numbers Reference")
-        if mileage is None:
-            st.info("💡 **Enter your current odometer mileage** in the Maintenance Status tab to view parts specifications.")
-        else:
-            st.write("Reference list for replacement parts and specs.")
-        
+        if mileage is not None:
+            st.write("Parts required for your scheduled service items at this mileage:")
             parts_data = []
             for item in schedule_items:
                 p_num = item.get('part_number', 'N/A')
@@ -474,122 +470,124 @@ if HAS_STREAMLIT and st.runtime.exists():
                 import pandas as pd
                 df_parts = pd.DataFrame(parts_data)
                 st.dataframe(df_parts, use_container_width=True, hide_index=True)
+        else:
+            st.info("💡 **Tip:** Enter your current odometer mileage in the Odometer tab to see service-specific parts requirements here.")
             
-            st.markdown("### 🔍 Critical Parts & Hardware Guide")
-            st.write("Use the search bar and category selector below to search through the consolidated list of critical parts, OEM part numbers, quantities, and pricing.")
-            
-            # Insert parts catalog
+        st.markdown("### 🔍 Critical Parts & Hardware Guide")
+        st.write("Use the search bar and category selector below to search through the consolidated list of critical parts, OEM part numbers, quantities, and pricing.")
+        
+        # Insert parts catalog
 
-            # Expanded Genuine OEM Parts Database with Category, Name, P/N, Qty, and Price (USD)
-            parts_catalog = [
-                # Engine and Cooling
-                {"Category": "Engine and Cooling", "Part Name": "Tokyo Roki JDM Black Engine Oil Filter", "OEM Part Number": "15208AA100", "Quantity": 1, "Price": 12.00, "Notes": "Calibrated 23 PSI metal bypass valve matches high Subaru oil pump relief pressure."},
-                {"Category": "Engine and Cooling", "Part Name": "Oil Pan Drain Crush Washer", "OEM Part Number": "11126AA000", "Quantity": 1, "Price": 1.50, "Notes": "Direct fit copper crush ring. Prevents oil pan thread stripout."},
-                {"Category": "Engine and Cooling", "Part Name": "Mitsuboshi Timing Belt (Individual)", "OEM Part Number": "13028AA250", "Quantity": 1, "Price": 85.00, "Notes": "High-tensile reinforced timing belt for DOHC EJ257 engines."},
-                {"Category": "Engine and Cooling", "Part Name": "Complete Timing Belt Kit (Aisin)", "OEM Part Number": "TKF-012", "Quantity": 1, "Price": 280.00, "Notes": "Aisin timing kit with water pump, tensioners, and NSK/Koyo pulleys."},
-                {"Category": "Engine and Cooling", "Part Name": "Water Pump Assembly (Aisin)", "OEM Part Number": "21111AA240", "Quantity": 1, "Price": 120.00, "Notes": "Aisin WPF-023 water pump with premium gasket."},
-                {"Category": "Engine and Cooling", "Part Name": "Hydraulic Belt Tensioner", "OEM Part Number": "13033AA042", "Quantity": 1, "Price": 95.00, "Notes": "GMB / OEM-supplier hydraulic timing belt tensioner."},
-                {"Category": "Engine and Cooling", "Part Name": "Thermostat Gasket", "OEM Part Number": "21236AA050", "Quantity": 1, "Price": 5.50, "Notes": "Molded rubber thermostat housing seal ring."},
-                {"Category": "Engine and Cooling", "Part Name": "Engine Air Filter Element", "OEM Part Number": "16546AA12A", "Quantity": 1, "Price": 22.00, "Notes": "Pleated dry fiber element for optimal engine intake filtration."},
-                {"Category": "Engine and Cooling", "Part Name": "Exhaust Gasket (Manifold to Head)", "OEM Part Number": "44011AC030", "Quantity": 2, "Price": 14.50, "Notes": "Multi-layer steel gasket between block and exhaust manifold."},
-                {"Category": "Engine and Cooling", "Part Name": "Center Pipe Gasket (Donut)", "OEM Part Number": "44616AA200", "Quantity": 1, "Price": 18.00, "Notes": "Exhaust center pipe sealing gasket."},
-                {"Category": "Engine and Cooling", "Part Name": "Intake Manifold Gasket", "OEM Part Number": "14035AA580", "Quantity": 2, "Price": 12.50, "Notes": "High-temperature gasket between intake runners and head."},
-                {"Category": "Engine and Cooling", "Part Name": "EGR Pipe Gasket", "OEM Part Number": "14852AA040", "Quantity": 1, "Price": 6.00, "Notes": "Metal gasket for exhaust gas recirculation pipe."},
-                {"Category": "Engine and Cooling", "Part Name": "Water Pipe O-Ring", "OEM Part Number": "14738AA150", "Quantity": 1, "Price": 3.50, "Notes": "Engine cooling bypass pipe sealing ring."},
-                {"Category": "Engine and Cooling", "Part Name": "Chain Cover O-Ring", "OEM Part Number": "806912190", "Quantity": 3, "Price": 2.50, "Notes": "Sealing O-ring for front timing chain/belt cover."},
-                {"Category": "Engine and Cooling", "Part Name": "Chain Cover O-Ring (Small)", "OEM Part Number": "806924120", "Quantity": 1, "Price": 1.80, "Notes": "Smaller timing cover fluid passage seal."},
-                {"Category": "Engine and Cooling", "Part Name": "Tensioner O-Ring", "OEM Part Number": "806916080", "Quantity": 1, "Price": 2.20, "Notes": "Fluid block off O-ring for hydraulic timing tensioner."},
-                {"Category": "Engine and Cooling", "Part Name": "Spark Plug Tube Seal", "OEM Part Number": "10966AA040", "Quantity": 4, "Price": 7.50, "Notes": "Rubber gasket sealing spark plug wells inside valve cover."},
-                {"Category": "Engine and Cooling", "Part Name": "Rocker Cover Gasket (RH)", "OEM Part Number": "13270AA27A", "Quantity": 1, "Price": 24.00, "Notes": "Premium rubber valve cover gasket (passenger side)."},
-                {"Category": "Engine and Cooling", "Part Name": "Rocker Cover Gasket (LH)", "OEM Part Number": "13272AA21A", "Quantity": 1, "Price": 24.00, "Notes": "Premium rubber valve cover gasket (driver side)."},
-                {"Category": "Engine and Cooling", "Part Name": "Cam Carrier O-Ring", "OEM Part Number": "806915170", "Quantity": 4, "Price": 3.20, "Notes": "Sealing ring for EJ257 camshaft carrier housing."},
-                {"Category": "Engine and Cooling", "Part Name": "Cylinder Head Gasket (RH)", "OEM Part Number": "11044AA790", "Quantity": 1, "Price": 55.00, "Notes": "Multi-layer steel (MLS) head gasket for extreme combustion pressures."},
-                {"Category": "Engine and Cooling", "Part Name": "Cylinder Head Gasket (LH)", "OEM Part Number": "10944AA080", "Quantity": 1, "Price": 55.00, "Notes": "Multi-layer steel (MLS) head gasket (driver side)."},
-                {"Category": "Engine and Cooling", "Part Name": "Connecting Rod Bolt", "OEM Part Number": "12109AA120", "Quantity": 8, "Price": 8.50, "Notes": "High-tensile Torque-to-Yield (TTY) connecting rod bolt (must replace once used)."},
-                {"Category": "Engine and Cooling", "Part Name": "Upper Oil Pan O-Ring", "OEM Part Number": "806932030", "Quantity": 3, "Price": 4.50, "Notes": "Crankcase-to-oil-pan fluid passage sealing ring."},
-                {"Category": "Engine and Cooling", "Part Name": "Crankshaft Extension O-Ring", "OEM Part Number": "806939060", "Quantity": 1, "Price": 3.00, "Notes": "Timing gear snout spacer seal."},
-                {"Category": "Engine and Cooling", "Part Name": "Front Crankshaft Oil Seal", "OEM Part Number": "806750080", "Quantity": 1, "Price": 9.50, "Notes": "Vital oil seal located behind the crankshaft timing sprocket."},
-                {"Category": "Engine and Cooling", "Part Name": "Fuel Injector O-Ring (Upper)", "OEM Part Number": "16608KA000", "Quantity": 4, "Price": 4.50, "Notes": "Seal between top fuel rail and fuel injector."},
-                {"Category": "Engine and Cooling", "Part Name": "Fuel Injector O-Ring (Lower)", "OEM Part Number": "16698AA110", "Quantity": 4, "Price": 5.00, "Notes": "Seal between injector nozzle and intake manifold."},
-                {"Category": "Engine and Cooling", "Part Name": "Oil Filter Assembly (Domestic Blue)", "OEM Part Number": "15208AA15A", "Quantity": 1, "Price": 8.50, "Notes": "Alternative standard blue paper-endcap filter element."},
-                {"Category": "Engine and Cooling", "Part Name": "Oil Drain Plug Gasket (Copper Flat)", "OEM Part Number": "803916010", "Quantity": 1, "Price": 1.50, "Notes": "Alternative flat metal drain plug washer."},
-                {"Category": "Engine and Cooling", "Part Name": "Turbo Oil Return Line Hose", "OEM Part Number": "K04535-TurboHose", "Quantity": 1, "Price": 21.00, "Notes": "Heat-resistant hose routing oil from turbo back to cylinder head block."},
-                {"Category": "Engine and Cooling", "Part Name": "Intercooler Stay Grommet", "OEM Part Number": "K04535-Grommet", "Quantity": 1, "Price": 10.00, "Notes": "Rubber isolation stay grommet for top-mount intercooler."},
-                {"Category": "Engine and Cooling", "Part Name": "Upper Evap/Vacuum Line", "OEM Part Number": "GD-EvapLine", "Quantity": 1, "Price": 9.22, "Notes": "Evaporative purge vacuum line assembly."},
+        # Expanded Genuine OEM Parts Database with Category, Name, P/N, Qty, and Price (USD)
+        parts_catalog = [
+            # Engine and Cooling
+            {"Category": "Engine and Cooling", "Part Name": "Tokyo Roki JDM Black Engine Oil Filter", "OEM Part Number": "15208AA100", "Quantity": 1, "Price": 12.00, "Notes": "Calibrated 23 PSI metal bypass valve matches high Subaru oil pump relief pressure."},
+            {"Category": "Engine and Cooling", "Part Name": "Oil Pan Drain Crush Washer", "OEM Part Number": "11126AA000", "Quantity": 1, "Price": 1.50, "Notes": "Direct fit copper crush ring. Prevents oil pan thread stripout."},
+            {"Category": "Engine and Cooling", "Part Name": "Mitsuboshi Timing Belt (Individual)", "OEM Part Number": "13028AA250", "Quantity": 1, "Price": 85.00, "Notes": "High-tensile reinforced timing belt for DOHC EJ257 engines."},
+            {"Category": "Engine and Cooling", "Part Name": "Complete Timing Belt Kit (Aisin)", "OEM Part Number": "TKF-012", "Quantity": 1, "Price": 280.00, "Notes": "Aisin timing kit with water pump, tensioners, and NSK/Koyo pulleys."},
+            {"Category": "Engine and Cooling", "Part Name": "Water Pump Assembly (Aisin)", "OEM Part Number": "21111AA240", "Quantity": 1, "Price": 120.00, "Notes": "Aisin WPF-023 water pump with premium gasket."},
+            {"Category": "Engine and Cooling", "Part Name": "Hydraulic Belt Tensioner", "OEM Part Number": "13033AA042", "Quantity": 1, "Price": 95.00, "Notes": "GMB / OEM-supplier hydraulic timing belt tensioner."},
+            {"Category": "Engine and Cooling", "Part Name": "Thermostat Gasket", "OEM Part Number": "21236AA050", "Quantity": 1, "Price": 5.50, "Notes": "Molded rubber thermostat housing seal ring."},
+            {"Category": "Engine and Cooling", "Part Name": "Engine Air Filter Element", "OEM Part Number": "16546AA12A", "Quantity": 1, "Price": 22.00, "Notes": "Pleated dry fiber element for optimal engine intake filtration."},
+            {"Category": "Engine and Cooling", "Part Name": "Exhaust Gasket (Manifold to Head)", "OEM Part Number": "44011AC030", "Quantity": 2, "Price": 14.50, "Notes": "Multi-layer steel gasket between block and exhaust manifold."},
+            {"Category": "Engine and Cooling", "Part Name": "Center Pipe Gasket (Donut)", "OEM Part Number": "44616AA200", "Quantity": 1, "Price": 18.00, "Notes": "Exhaust center pipe sealing gasket."},
+            {"Category": "Engine and Cooling", "Part Name": "Intake Manifold Gasket", "OEM Part Number": "14035AA580", "Quantity": 2, "Price": 12.50, "Notes": "High-temperature gasket between intake runners and head."},
+            {"Category": "Engine and Cooling", "Part Name": "EGR Pipe Gasket", "OEM Part Number": "14852AA040", "Quantity": 1, "Price": 6.00, "Notes": "Metal gasket for exhaust gas recirculation pipe."},
+            {"Category": "Engine and Cooling", "Part Name": "Water Pipe O-Ring", "OEM Part Number": "14738AA150", "Quantity": 1, "Price": 3.50, "Notes": "Engine cooling bypass pipe sealing ring."},
+            {"Category": "Engine and Cooling", "Part Name": "Chain Cover O-Ring", "OEM Part Number": "806912190", "Quantity": 3, "Price": 2.50, "Notes": "Sealing O-ring for front timing chain/belt cover."},
+            {"Category": "Engine and Cooling", "Part Name": "Chain Cover O-Ring (Small)", "OEM Part Number": "806924120", "Quantity": 1, "Price": 1.80, "Notes": "Smaller timing cover fluid passage seal."},
+            {"Category": "Engine and Cooling", "Part Name": "Tensioner O-Ring", "OEM Part Number": "806916080", "Quantity": 1, "Price": 2.20, "Notes": "Fluid block off O-ring for hydraulic timing tensioner."},
+            {"Category": "Engine and Cooling", "Part Name": "Spark Plug Tube Seal", "OEM Part Number": "10966AA040", "Quantity": 4, "Price": 7.50, "Notes": "Rubber gasket sealing spark plug wells inside valve cover."},
+            {"Category": "Engine and Cooling", "Part Name": "Rocker Cover Gasket (RH)", "OEM Part Number": "13270AA27A", "Quantity": 1, "Price": 24.00, "Notes": "Premium rubber valve cover gasket (passenger side)."},
+            {"Category": "Engine and Cooling", "Part Name": "Rocker Cover Gasket (LH)", "OEM Part Number": "13272AA21A", "Quantity": 1, "Price": 24.00, "Notes": "Premium rubber valve cover gasket (driver side)."},
+            {"Category": "Engine and Cooling", "Part Name": "Cam Carrier O-Ring", "OEM Part Number": "806915170", "Quantity": 4, "Price": 3.20, "Notes": "Sealing ring for EJ257 camshaft carrier housing."},
+            {"Category": "Engine and Cooling", "Part Name": "Cylinder Head Gasket (RH)", "OEM Part Number": "11044AA790", "Quantity": 1, "Price": 55.00, "Notes": "Multi-layer steel (MLS) head gasket for extreme combustion pressures."},
+            {"Category": "Engine and Cooling", "Part Name": "Cylinder Head Gasket (LH)", "OEM Part Number": "10944AA080", "Quantity": 1, "Price": 55.00, "Notes": "Multi-layer steel (MLS) head gasket (driver side)."},
+            {"Category": "Engine and Cooling", "Part Name": "Connecting Rod Bolt", "OEM Part Number": "12109AA120", "Quantity": 8, "Price": 8.50, "Notes": "High-tensile Torque-to-Yield (TTY) connecting rod bolt (must replace once used)."},
+            {"Category": "Engine and Cooling", "Part Name": "Upper Oil Pan O-Ring", "OEM Part Number": "806932030", "Quantity": 3, "Price": 4.50, "Notes": "Crankcase-to-oil-pan fluid passage sealing ring."},
+            {"Category": "Engine and Cooling", "Part Name": "Crankshaft Extension O-Ring", "OEM Part Number": "806939060", "Quantity": 1, "Price": 3.00, "Notes": "Timing gear snout spacer seal."},
+            {"Category": "Engine and Cooling", "Part Name": "Front Crankshaft Oil Seal", "OEM Part Number": "806750080", "Quantity": 1, "Price": 9.50, "Notes": "Vital oil seal located behind the crankshaft timing sprocket."},
+            {"Category": "Engine and Cooling", "Part Name": "Fuel Injector O-Ring (Upper)", "OEM Part Number": "16608KA000", "Quantity": 4, "Price": 4.50, "Notes": "Seal between top fuel rail and fuel injector."},
+            {"Category": "Engine and Cooling", "Part Name": "Fuel Injector O-Ring (Lower)", "OEM Part Number": "16698AA110", "Quantity": 4, "Price": 5.00, "Notes": "Seal between injector nozzle and intake manifold."},
+            {"Category": "Engine and Cooling", "Part Name": "Oil Filter Assembly (Domestic Blue)", "OEM Part Number": "15208AA15A", "Quantity": 1, "Price": 8.50, "Notes": "Alternative standard blue paper-endcap filter element."},
+            {"Category": "Engine and Cooling", "Part Name": "Oil Drain Plug Gasket (Copper Flat)", "OEM Part Number": "803916010", "Quantity": 1, "Price": 1.50, "Notes": "Alternative flat metal drain plug washer."},
+            {"Category": "Engine and Cooling", "Part Name": "Turbo Oil Return Line Hose", "OEM Part Number": "K04535-TurboHose", "Quantity": 1, "Price": 21.00, "Notes": "Heat-resistant hose routing oil from turbo back to cylinder head block."},
+            {"Category": "Engine and Cooling", "Part Name": "Intercooler Stay Grommet", "OEM Part Number": "K04535-Grommet", "Quantity": 1, "Price": 10.00, "Notes": "Rubber isolation stay grommet for top-mount intercooler."},
+            {"Category": "Engine and Cooling", "Part Name": "Upper Evap/Vacuum Line", "OEM Part Number": "GD-EvapLine", "Quantity": 1, "Price": 9.22, "Notes": "Evaporative purge vacuum line assembly."},
 
-                # Maintenance
-                {"Category": "Maintenance", "Part Name": "Spark Plug Set (NGK Laser Iridium)", "OEM Part Number": "22401AA670", "Quantity": 4, "Price": 60.00, "Notes": "NGK SILFR6A (7913) gapped to 0.030\". Replace every 30,000 to 60,000 miles."},
-                {"Category": "Maintenance", "Part Name": "Engine Cabin Air Filter", "OEM Part Number": "72880FG000", "Quantity": 1, "Price": 25.00, "Notes": "Multi-layer HEPA Active Carbon filter. Replace every 12 to 24 months."},
-                {"Category": "Maintenance", "Part Name": "Subaru OEM Touch-Up Paint", "OEM Part Number": "SOA326-Paint", "Quantity": 1, "Price": 31.00, "Notes": "Color-matched touch-up brush for chip repair."},
+            # Maintenance
+            {"Category": "Maintenance", "Part Name": "Spark Plug Set (NGK Laser Iridium)", "OEM Part Number": "22401AA670", "Quantity": 4, "Price": 60.00, "Notes": "NGK SILFR6A (7913) gapped to 0.030\". Replace every 30,000 to 60,000 miles."},
+            {"Category": "Maintenance", "Part Name": "Engine Cabin Air Filter", "OEM Part Number": "72880FG000", "Quantity": 1, "Price": 25.00, "Notes": "Multi-layer HEPA Active Carbon filter. Replace every 12 to 24 months."},
+            {"Category": "Maintenance", "Part Name": "Subaru OEM Touch-Up Paint", "OEM Part Number": "SOA326-Paint", "Quantity": 1, "Price": 31.00, "Notes": "Color-matched touch-up brush for chip repair."},
 
-                # Suspension and Brakes
-                {"Category": "Suspension and Brakes", "Part Name": "Front Brembo Brake Rotor (Each)", "OEM Part Number": "26300FE070", "Quantity": 2, "Price": 150.00, "Notes": "High-carbon vented cast iron 326mm brake rotor."},
-                {"Category": "Suspension and Brakes", "Part Name": "Rear Brembo Brake Pad Set", "OEM Part Number": "26696FG000", "Quantity": 1, "Price": 95.00, "Notes": "High-performance pads. Includes multi-layer backing shims."},
-                {"Category": "Suspension and Brakes", "Part Name": "Front Brembo Caliper Bolt (Each)", "OEM Part Number": "901120103", "Quantity": 4, "Price": 6.00, "Notes": "High-strength Grade 10.9 steel caliper-to-knuckle bolt."},
-                {"Category": "Suspension and Brakes", "Part Name": "Rear Brembo Caliper Mounting Bolt", "OEM Part Number": "901120102", "Quantity": 4, "Price": 5.00, "Notes": "High-strength steel caliper mounting bolt."},
-                {"Category": "Suspension and Brakes", "Part Name": "Caliper Bleeder Screws", "OEM Part Number": "M8/M10-Bleeder", "Quantity": 1, "Price": 12.00, "Notes": "Caliper hydraulic air bleed valves (Set of 4)."},
-                {"Category": "Suspension and Brakes", "Part Name": "Brake Hose Banjo Bolt", "OEM Part Number": "M10-Banjo", "Quantity": 1, "Price": 8.00, "Notes": "Fluid delivery banjo bolt with fresh copper washers."},
-                {"Category": "Suspension and Brakes", "Part Name": "Brembo Caliper Bolt Set", "OEM Part Number": "SOA-BremboBolt", "Quantity": 1, "Price": 6.00, "Notes": "Replacement bolt for brake bracket."},
+            # Suspension and Brakes
+            {"Category": "Suspension and Brakes", "Part Name": "Front Brembo Brake Rotor (Each)", "OEM Part Number": "26300FE070", "Quantity": 2, "Price": 150.00, "Notes": "High-carbon vented cast iron 326mm brake rotor."},
+            {"Category": "Suspension and Brakes", "Part Name": "Rear Brembo Brake Pad Set", "OEM Part Number": "26696FG000", "Quantity": 1, "Price": 95.00, "Notes": "High-performance pads. Includes multi-layer backing shims."},
+            {"Category": "Suspension and Brakes", "Part Name": "Front Brembo Caliper Bolt (Each)", "OEM Part Number": "901120103", "Quantity": 4, "Price": 6.00, "Notes": "High-strength Grade 10.9 steel caliper-to-knuckle bolt."},
+            {"Category": "Suspension and Brakes", "Part Name": "Rear Brembo Caliper Mounting Bolt", "OEM Part Number": "901120102", "Quantity": 4, "Price": 5.00, "Notes": "High-strength steel caliper mounting bolt."},
+            {"Category": "Suspension and Brakes", "Part Name": "Caliper Bleeder Screws", "OEM Part Number": "M8/M10-Bleeder", "Quantity": 1, "Price": 12.00, "Notes": "Caliper hydraulic air bleed valves (Set of 4)."},
+            {"Category": "Suspension and Brakes", "Part Name": "Brake Hose Banjo Bolt", "OEM Part Number": "M10-Banjo", "Quantity": 1, "Price": 8.00, "Notes": "Fluid delivery banjo bolt with fresh copper washers."},
+            {"Category": "Suspension and Brakes", "Part Name": "Brembo Caliper Bolt Set", "OEM Part Number": "SOA-BremboBolt", "Quantity": 1, "Price": 6.00, "Notes": "Replacement bolt for brake bracket."},
 
-                # Manual Transmission
-                {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug (T70 Torx)", "OEM Part Number": "32103AA080", "Quantity": 1, "Price": 10.00, "Notes": "Magnetic drain plug for TY856 transmission case."},
-                {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug Crush Washer", "OEM Part Number": "32103AA012", "Quantity": 1, "Price": 4.50, "Notes": "Sealing gasket for manual transmission drain plug."},
-                {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug (Early Spec)", "OEM Part Number": "32103AA070", "Quantity": 1, "Price": 15.00, "Notes": "Early model year 6-speed magnetic plug."},
-                {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug Gasket (Copper)", "OEM Part Number": "32103AA011", "Quantity": 1, "Price": 9.00, "Notes": "Copper sealing washer for manual transmission drain plug."},
-                {"Category": "Manual Transmission", "Part Name": "Mach V Braided Clutch Line", "OEM Part Number": "MachV-ClutchLine", "Quantity": 1, "Price": 29.00, "Notes": "Stainless steel braided high-pressure clutch hydraulic line."},
-                {"Category": "Manual Transmission", "Part Name": "OEM Quality Clutch Slave Cylinder", "OEM Part Number": "Slave-Cylinder", "Quantity": 1, "Price": 49.00, "Notes": "Hydraulic clutch actuator cylinder assembly."},
-                {"Category": "Manual Transmission", "Part Name": "Subaru Bell Housing Bolts/Studs", "OEM Part Number": "Bellhousing-Bolt", "Quantity": 1, "Price": 4.43, "Notes": "High-tensile bellhousing to manual transmission mounting stud."},
+            # Manual Transmission
+            {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug (T70 Torx)", "OEM Part Number": "32103AA080", "Quantity": 1, "Price": 10.00, "Notes": "Magnetic drain plug for TY856 transmission case."},
+            {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug Crush Washer", "OEM Part Number": "32103AA012", "Quantity": 1, "Price": 4.50, "Notes": "Sealing gasket for manual transmission drain plug."},
+            {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug (Early Spec)", "OEM Part Number": "32103AA070", "Quantity": 1, "Price": 15.00, "Notes": "Early model year 6-speed magnetic plug."},
+            {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug Gasket (Copper)", "OEM Part Number": "32103AA011", "Quantity": 1, "Price": 9.00, "Notes": "Copper sealing washer for manual transmission drain plug."},
+            {"Category": "Manual Transmission", "Part Name": "Mach V Braided Clutch Line", "OEM Part Number": "MachV-ClutchLine", "Quantity": 1, "Price": 29.00, "Notes": "Stainless steel braided high-pressure clutch hydraulic line."},
+            {"Category": "Manual Transmission", "Part Name": "OEM Quality Clutch Slave Cylinder", "OEM Part Number": "Slave-Cylinder", "Quantity": 1, "Price": 49.00, "Notes": "Hydraulic clutch actuator cylinder assembly."},
+            {"Category": "Manual Transmission", "Part Name": "Subaru Bell Housing Bolts/Studs", "OEM Part Number": "Bellhousing-Bolt", "Quantity": 1, "Price": 4.43, "Notes": "High-tensile bellhousing to manual transmission mounting stud."},
 
-                # Driveline and Differential
-                {"Category": "Driveline and Differential", "Part Name": "Motul STI 6-Speed Transmission Fluid Kit", "OEM Part Number": "Motul-6MT-Kit", "Quantity": 1, "Price": 165.00, "Notes": "Full fluid kit with gearbox and rear differential lubricants."},
-                {"Category": "Driveline and Differential", "Part Name": "Hubcentric Rings (Set of 4)", "OEM Part Number": "Hub-Rings", "Quantity": 1, "Price": 11.00, "Notes": "Custom polymer alignment rings for aftermarket wheels."},
+            # Driveline and Differential
+            {"Category": "Driveline and Differential", "Part Name": "Motul STI 6-Speed Transmission Fluid Kit", "OEM Part Number": "Motul-6MT-Kit", "Quantity": 1, "Price": 165.00, "Notes": "Full fluid kit with gearbox and rear differential lubricants."},
+            {"Category": "Driveline and Differential", "Part Name": "Hubcentric Rings (Set of 4)", "OEM Part Number": "Hub-Rings", "Quantity": 1, "Price": 11.00, "Notes": "Custom polymer alignment rings for aftermarket wheels."},
 
-                # Heating and Air Conditioning
-                {"Category": "Heating and Air Conditioning", "Part Name": "AC Drive Stretch Belt Kit", "OEM Part Number": "11718AA082", "Quantity": 1, "Price": 45.00, "Notes": "Replaces 11718AA081. Specialty EPDM belt (includes plastic guide installer tool)."},
+            # Heating and Air Conditioning
+            {"Category": "Heating and Air Conditioning", "Part Name": "AC Drive Stretch Belt Kit", "OEM Part Number": "11718AA082", "Quantity": 1, "Price": 45.00, "Notes": "Replaces 11718AA081. Specialty EPDM belt (includes plastic guide installer tool)."},
 
-                # Steering
-                {"Category": "Steering", "Part Name": "Alternator / Power Steering Belt", "OEM Part Number": "809218460", "Quantity": 1, "Price": 28.00, "Notes": "V-Ribbed EPDM accessory drive belt."},
+            # Steering
+            {"Category": "Steering", "Part Name": "Alternator / Power Steering Belt", "OEM Part Number": "809218460", "Quantity": 1, "Price": 28.00, "Notes": "V-Ribbed EPDM accessory drive belt."},
 
-                # Electrical
-                {"Category": "Electrical", "Part Name": "Hanshin OEM Ignition Coil Pack", "OEM Part Number": "22433AA641", "Quantity": 4, "Price": 110.00, "Notes": "Hanshin OEM Service Component. Prevents misfires under boost."},
+            # Electrical
+            {"Category": "Electrical", "Part Name": "Hanshin OEM Ignition Coil Pack", "OEM Part Number": "22433AA641", "Quantity": 4, "Price": 110.00, "Notes": "Hanshin OEM Service Component. Prevents misfires under boost."},
 
-                # Body
-                {"Category": "Body", "Part Name": "Transmission Crossmember Bolt Kit", "OEM Part Number": "Crossmember-Bolts", "Quantity": 1, "Price": 18.00, "Notes": "High-tensile fasteners for subframe crossmember mounting."},
-                {"Category": "Body", "Part Name": "Bumper Vents Set", "OEM Part Number": "Bumper-Vents", "Quantity": 1, "Price": 43.63, "Notes": "Bumper outer vents trim kit."},
-                {"Category": "Body", "Part Name": "Front Bumper Side Support", "OEM Part Number": "Bumper-Support", "Quantity": 1, "Price": 12.82, "Notes": "Bumper fascia side attachment guide bracket."},
+            # Body
+            {"Category": "Body", "Part Name": "Transmission Crossmember Bolt Kit", "OEM Part Number": "Crossmember-Bolts", "Quantity": 1, "Price": 18.00, "Notes": "High-tensile fasteners for subframe crossmember mounting."},
+            {"Category": "Body", "Part Name": "Bumper Vents Set", "OEM Part Number": "Bumper-Vents", "Quantity": 1, "Price": 43.63, "Notes": "Bumper outer vents trim kit."},
+            {"Category": "Body", "Part Name": "Front Bumper Side Support", "OEM Part Number": "Bumper-Support", "Quantity": 1, "Price": 12.82, "Notes": "Bumper fascia side attachment guide bracket."},
 
-                # Door
-                {"Category": "Door", "Part Name": "Door Hinge Lubricant", "OEM Part Number": "White Lithium Grease", "Quantity": 1, "Price": 8.00, "Notes": "Applied to door hinge assemblies and latching pins."}
+            # Door
+            {"Category": "Door", "Part Name": "Door Hinge Lubricant", "OEM Part Number": "White Lithium Grease", "Quantity": 1, "Price": 8.00, "Notes": "Applied to door hinge assemblies and latching pins."}
+        ]
+
+        import pandas as pd
+        df_catalog = pd.DataFrame(parts_catalog)
+        
+        # Interactive search & filter controls
+        col_search, col_cat = st.columns([2, 1])
+        with col_search:
+            search_query = st.text_input("🔍 Search parts by name or part number:", "").strip().lower()
+        with col_cat:
+            category_list = ["All Categories"] + sorted(list(set(df_catalog["Category"].tolist())))
+            selected_category = st.selectbox("📂 Filter by category:", category_list)
+        
+        # Filter the dataframe
+        filtered_df = df_catalog.copy()
+        if selected_category != "All Categories":
+            filtered_df = filtered_df[filtered_df["Category"] == selected_category]
+        
+        if search_query:
+            filtered_df = filtered_df[
+                filtered_df["Part Name"].str.lower().str.contains(search_query) | 
+                filtered_df["OEM Part Number"].str.lower().str.contains(search_query)
             ]
+        
 
-            import pandas as pd
-            df_catalog = pd.DataFrame(parts_catalog)
-            
-            # Interactive search & filter controls
-            col_search, col_cat = st.columns([2, 1])
-            with col_search:
-                search_query = st.text_input("🔍 Search parts by name or part number:", "").strip().lower()
-            with col_cat:
-                category_list = ["All Categories"] + sorted(list(set(df_catalog["Category"].tolist())))
-                selected_category = st.selectbox("📂 Filter by category:", category_list)
-            
-            # Filter the dataframe
-            filtered_df = df_catalog.copy()
-            if selected_category != "All Categories":
-                filtered_df = filtered_df[filtered_df["Category"] == selected_category]
-            
-            if search_query:
-                filtered_df = filtered_df[
-                    filtered_df["Part Name"].str.lower().str.contains(search_query) | 
-                    filtered_df["OEM Part Number"].str.lower().str.contains(search_query)
-                ]
-            
-
-            
-            # Format Prices for display in table
-            display_df = filtered_df.copy()
-            display_df["Price"] = display_df["Price"].apply(lambda x: f"${x:.2f}")
-            st.dataframe(display_df, use_container_width=True, hide_index=True)
+        
+        # Format Prices for display in table
+        display_df = filtered_df.copy()
+        display_df["Price"] = display_df["Price"].apply(lambda x: f"${x:.2f}")
+        st.dataframe(display_df, use_container_width=True, hide_index=True)
     # Fluids Tab
     with tab_fluids:
         st.subheader("🛢️ Subaru Recommended Fluids, Grades & Capacities")
@@ -643,93 +641,92 @@ if HAS_STREAMLIT and st.runtime.exists():
     # History Tab
     with tab_history:
         st.subheader("📜 Maintenance & Service Log")
-        if mileage is None:
-            st.info("💡 **Enter your current odometer mileage** in the Maintenance Status tab to view your completion ledger and chronological history.")
-        else:
         
-            history = load_history()
+        history = load_history()
         
-            # --- NEW FEATURES: ITEM-BY-ITEM COMPLETION LEDGER (PRIORITY COLUMN REMOVED) ---
-            st.markdown("### 📊 Individual Item Completion Ledger")
-            st.write("Scan the last logged date and mileage for each individual maintenance and inspection service. This ledger automatically indexes your entire history folder to prevent items from falling through the cracks.")
+        # --- INDIVIDUAL ITEM COMPLETION LEDGER ---
+        st.markdown("### 📊 Individual Item Completion Ledger")
+        st.write("Scan the last logged date and mileage for each individual maintenance and inspection service. This ledger automatically indexes your entire history folder to prevent items from falling through the cracks.")
+    
+        ledger_data = []
+        for item in schedule_items:
+            item_name = item["name"]
+            interval = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
         
-            ledger_data = []
-            for item in schedule_items:
-                item_name = item["name"]
-                interval = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
-            
-                # Find the latest logged completion in history
-                last_date = "No Record"
-                last_mileage = "Never Logged"
-                raw_last_mi = 0
-            
-                if history:
-                    # Search chronologically forward so the last match is the most recent
-                    for entry in history:
-                        if item_name in entry.get("completed_items", []):
-                            last_date = entry["date"]
-                            last_mileage = f"{entry['mileage']:,} mi"
-                            raw_last_mi = entry["mileage"]
-            
-                # Determine Status Badge
-                if last_date == "No Record":
-                    status = "⚪ Not Yet Logged"
-                else:
-                    # If currently marked as due by the scheduler engine, mark as due/overdue
-                    if item["due"]:
-                        status = "🔴 Overdue / Due Now"
-                    else:
-                        status = "🟢 Completed & OK"
-                    
-                ledger_data.append({
-                    "Maintenance Item": item_name,
-                    "Last Completed Date": last_date,
-                    "Last Completed Mileage": last_mileage,
-                    "Interval": interval,
-                    "Current Status": status
-                })
-            
-            import pandas as pd
-            df_ledger = pd.DataFrame(ledger_data)
+            # Find the latest logged completion in history
+            last_date = "No Record"
+            last_mileage = "Never Logged"
+            raw_last_mi = 0
         
-            # Render clean interactive dataframe
-            st.dataframe(
-                df_ledger, 
-                use_container_width=True, 
-                hide_index=True,
-                column_config={
-                    "Current Status": st.column_config.TextColumn(
-                        "Current Status",
-                        help="🟢 OK: Item was recently completed. 🔴 Due: Needs attention based on mileage or history. ⚪ Not Logged: No entry in history."
-                    )
-                }
-            )
-
-            st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
-            st.markdown("### 🕒 Chronological Service History Timeline")
-            st.write("Below is a detailed timeline showing each completed service item in chronological order as logged from your checklist.")
-        
-            timeline_data = []
             if history:
+                # Search chronologically forward so the last match is the most recent
                 for entry in history:
-                    date_val = entry.get("date", "")
-                    mi_val = entry.get("mileage", 0)
-                    for item in entry.get("completed_items", []):
-                        timeline_data.append({
-                            "Date": date_val,
-                            "Odometer Mileage (mi)": mi_val,
-                            "Completed Service Item": item
-                        })
-            
-                df_timeline = pd.DataFrame(timeline_data)
-                if not df_timeline.empty:
-                    df_timeline = df_timeline.sort_values(by=["Date", "Odometer Mileage (mi)"], ascending=[False, False])
-                    df_timeline["Odometer Mileage (mi)"] = df_timeline["Odometer Mileage (mi)"].apply(lambda x: f"{x:,} mi")
-                    st.dataframe(df_timeline, use_container_width=True, hide_index=True)
+                    if item_name in entry.get("completed_items", []):
+                        last_date = entry["date"]
+                        last_mileage = f"{entry['mileage']:,} mi"
+                        raw_last_mi = entry["mileage"]
+        
+            # Determine Status Badge
+            if last_date == "No Record":
+                status = "⚪ Not Yet Logged"
+            elif mileage is None:
+                status = "🟢 Logged"
+            else:
+                # If currently marked as due by the scheduler engine, mark as due/overdue
+                if item["due"]:
+                    status = "🔴 Overdue / Due Now"
                 else:
-                    st.info("No timeline items logged yet.")
+                    status = "🟢 Completed & OK"
+                
+            ledger_data.append({
+                "Maintenance Item": item_name,
+                "Last Completed Date": last_date,
+                "Last Completed Mileage": last_mileage,
+                "Interval": interval,
+                "Current Status": status
+            })
+        
+        import pandas as pd
+        df_ledger = pd.DataFrame(ledger_data)
+    
+        # Render clean interactive dataframe
+        st.dataframe(
+            df_ledger, 
+            use_container_width=True, 
+            hide_index=True,
+            column_config={
+                "Current Status": st.column_config.TextColumn(
+                    "Current Status",
+                    help="🟢 OK: Item was recently completed. 🔴 Due: Needs attention based on mileage or history. ⚪ Not Logged: No entry in history."
+                )
+            }
+        )
+
+        st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
+        st.markdown("### 🕒 Chronological Service History Timeline")
+        st.write("Below is a detailed timeline showing each completed service item in chronological order as logged from your checklist.")
+    
+        timeline_data = []
+        if history:
+            for entry in history:
+                date_val = entry.get("date", "")
+                mi_val = entry.get("mileage", 0)
+                for item in entry.get("completed_items", []):
+                    timeline_data.append({
+                        "Date": date_val,
+                        "Odometer Mileage (mi)": mi_val,
+                        "Completed Service Item": item
+                    })
+        
+            df_timeline = pd.DataFrame(timeline_data)
+            if not df_timeline.empty:
+                df_timeline = df_timeline.sort_values(by=["Date", "Odometer Mileage (mi)"], ascending=[False, False])
+                df_timeline["Odometer Mileage (mi)"] = df_timeline["Odometer Mileage (mi)"].apply(lambda x: f"{x:,} mi")
+                st.dataframe(df_timeline, use_container_width=True, hide_index=True)
             else:
                 st.info("No timeline items logged yet.")
+        else:
+            st.info("No timeline items logged yet.")
 
     # Manual Tab
     with tab_manual:
