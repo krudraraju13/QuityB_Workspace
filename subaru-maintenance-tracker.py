@@ -478,27 +478,23 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown("### 🔍 Critical Parts & Hardware Guide")
             st.markdown(
                 """
-                **Engine Oil Filter & Washer (Primary):**
-                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100`
-                *   **Crush Washer:** P/N `11126AA000`
-                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures.
-            
-                **Spark Plugs (Laser Iridium - Primary):**
-                *   **SILFR6A (NGK 7913):** P/N `22401AA670`
-                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads.
-                """
-            )
-            st.markdown(
-                """
-                **Timing Belt & Accessories (DOHC EJ257 - Primary):**
-                *   **Timing Belt:** P/N `13028AA250`
-                *   **Complete Timing Kit:** Aisin `TKF-012`
-                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023)
-                *   **Hydraulic Tensioner:** P/N `13033AA042`
-            
-                **Air Conditioning Stretch Belt Kit (Primary):**
-                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081)
-                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage.
+                | Category | Part Name | OEM Part Number | Quantity | Description / Notes |
+                | :--- | :--- | :--- | :--- | :--- |
+                | **Filters** | Tokyo Roki JDM Black Engine Oil Filter | `15208AA100` | 1 | Features all-metal bypass valve calibrated to 23 PSI to match high Subaru oil pump pressures. |
+                | **Filters** | Oil Pan Drain Crush Washer | `11126AA000` | 1 | Direct fit copper crush ring. Prevent oil pan thread strip-out. |
+                | **Filters** | Engine Cabin Air Filter | `72880FG000` | 1 | Multi-layer HEPA Active Carbon filter protects HVAC quality. |
+                | **Filters** | Engine Air Filter Element | `16546AA090 / AA10A` | 1 | Pleated dry fiber element for clean induction air flow. |
+                | **Ignition** | Spark Plug Set (Laser Iridium) | `22401AA670` | 4 (Full Set) | NGK SILFR6A / P/N 7913. Torque strictly to 13–17 ft-lb dry (no anti-seize!). |
+                | **Ignition** | Ignition Coil Pack (Single) | `22433AA641` | 4 | Hanshin OEM Service Component. Prevents misfires under boost. |
+                | **Timing & Engine** | Timing Belt (Individual) | `13028AA250` | 1 | Mitsuboshi timing belt for DOHC EJ257. |
+                | **Timing & Engine** | Complete Timing Belt Kit | `TKF-012` | 1 | Aisin kit (contains NTN, NSK, Koyo idlers/tensioner) for optimal bearing life. |
+                | **Timing & Engine** | Water Pump Assembly | `21111AA240` | 1 | Aisin WPF-023 water pump. |
+                | **Timing & Engine** | Hydraulic Belt Tensioner | `13033AA042` | 1 | GMB / OEM supplier hydraulic timing tensioner. |
+                | **Belts** | AC Drive Stretch Belt Kit | `11718AA082` | 1 | Replaces 11718AA081. Must use specialized plastic installation guide tool to prevent rib damage. |
+                | **Belts** | Alternator / Power Steering Belt | `809218460` | 1 | Standard V-Ribbed EPDM accessory drive belt. |
+                | **Brakes** | Rear Brembo Brake Pad Set | `26696FG000` | 1 (Set of 4) | High-performance pads. Includes multi-layer backing shims. |
+                | **Brakes** | Front Brembo Brake Rotor (Each) | `26300FE070` | 2 | High-carbon vented cast iron brake rotor. |
+                | **Brakes** | Front Brembo Caliper Bolt (Each) | `901120103` | 4 | High-strength Grade 10.9 steel caliper-to-knuckle bolts. |
                 """
             )
 
