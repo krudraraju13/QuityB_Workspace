@@ -359,12 +359,12 @@ if HAS_STREAMLIT and st.runtime.exists():
 
 
     # Responsive Brand Logo Header Block (STI & Subaru Logos flanking the Title)
-    logo_left_col, title_col, logo_right_col = st.columns([1, 3.5, 1], vertical_alignment="center")
+    logo_left_col, title_col, logo_right_col = st.columns([1.3, 3.5, 1.3], vertical_alignment="center")
     with logo_left_col:
         st.markdown(
             """
-            <div style="display: flex; justify-content: flex-start; align-items: center; height: 100px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" width="200" height="100" style="object-fit: contain;"/>
+            <div style="display: flex; justify-content: flex-start; align-items: center; height: 120px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" width="220" height="110" style="object-fit: contain;"/>
             </div>
             """,
             unsafe_allow_html=True
@@ -384,8 +384,8 @@ if HAS_STREAMLIT and st.runtime.exists():
     with logo_right_col:
         st.markdown(
             """
-            <div style="display: flex; justify-content: flex-end; align-items: center; height: 100px;">
-                <img src="https://cdn.freebiesupply.com/logos/large/2x/subaru-9-logo-png-transparent.png" width="200" height="100" style="object-fit: contain;"/>
+            <div style="display: flex; justify-content: flex-end; align-items: center; height: 120px;">
+                <img src="https://cdn.freebiesupply.com/logos/large/2x/subaru-9-logo-png-transparent.png" width="250" height="110" style="object-fit: contain;"/>
             </div>
             """,
             unsafe_allow_html=True
