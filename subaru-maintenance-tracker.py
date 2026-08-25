@@ -393,15 +393,15 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown(
                 """
                 ### 🛢️ Engine Oil & Filter Swap Procedure
-                **Target Thread Torque:** Drain plug: `33-34 ft-lb` (Ensure a new OEM metal crush washer P/N `11126AA000` is used) [cite: 22].
+                **Target Thread Torque:** Drain plug: `33-34 ft-lb` (Ensure a new OEM metal crush washer P/N `11126AA000` is used).
                 
                 **Step-by-Step Instructions:**
                 1. Ensure engine is warm. Park on flat ground and jack up front of car (use heavy duty jack stands and tire chocks).
                 2. Position oil catch pan under the drain plug (14mm). Carefully remove plug and drain oil completely.
                 3. Clean the drain plug threads, fit the new **Subaru Crush Washer** with its flat face against the oil pan, and hand thread. Torque to **33-34 ft-lb**.
                 4. Use a filter wrench to remove the engine oil filter. Clean the contact surface on the engine block.
-                5. Apply a light film of fresh engine oil to the rubber O-ring of the **Tokyo Roki Black Filter (15208AA100)** [cite: 22]. Hand tighten the filter until seal contacts, then turn it exactly 3/4 to 1 full turn further.
-                6. Add **4.5 quarts** of synthetic oil (5W-30 or 5W-40) [cite: 22]. Wait 5 minutes, check dipstick, start car, and check for leaks.
+                5. Apply a light film of fresh engine oil to the rubber O-ring of the **Tokyo Roki Black Filter (15208AA100)**. Hand tighten the filter until seal contacts, then turn it exactly 3/4 to 1 full turn further.
+                6. Add **4.5 quarts** of synthetic oil (5W-30 or 5W-40). Wait 5 minutes, check dipstick, start car, and check for leaks.
                 """
             )
         elif proc_selection == "Manual Transmission Gear Oil Replacement":
@@ -415,7 +415,7 @@ if HAS_STREAMLIT and st.runtime.exists():
                 2. Locate the transmission case. Remove the intercooler if filling from top, or use a fluid transfer pump from underneath.
                 3. Remove the fill plug (10mm) first to ensure you can fill, then remove the lower T70 Torx drain plug.
                 4. Clean the magnetic drain plug thoroughly of wear debris. Install with a new seal and torque to **32.5 ft-lb**.
-                5. Fill with **~3.5 quarts** of SAE 75W-90 GL-5 gear oil (e.g. Motul Gear 300) [cite: 7, 22].
+                5. Fill with **~3.5 quarts** of SAE 75W-90 GL-5 gear oil (e.g. Motul Gear 300).
                 6. Reinstall fill plug and torque to specifications.
                 """
             )
@@ -438,13 +438,13 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown(
                 """
                 ### ⚡ Spark Plug Replacement
-                **Target Thread Torque:** NGK Spark Plugs: `13–17 ft-lb` (Dry threads!) [cite: 22].
+                **Target Thread Torque:** NGK Spark Plugs: `13–17 ft-lb` (Dry threads!).
                 
                 **Step-by-Step Instructions:**
                 1. Disconnect battery. Remove air intake box (right side) and battery/washer fluid reservoir bracket components (left side) to access coil packs.
                 2. Remove the 10mm bolts holding the ignition coils, and pull out the coil packs.
                 3. Use a 5/8\" spark plug socket, a 3\" extension, and a swivel ratchet to carefully break loose and retrieve the old plugs.
-                4. Ensure the new spark plugs (**NGK Laser Iridium SILFR6A**) are gapped correctly [cite: 22]. Hand thread them into the cylinder head to prevent cross-threading.
+                4. Ensure the new spark plugs (**NGK Laser Iridium SILFR6A**) are gapped correctly. Hand thread them into the cylinder head to prevent cross-threading.
                 5. Torque strictly dry to **13-17 ft-lb**. *Do not use anti-seize*, as it acts as a lubricant and will lead to over-torquing and cylinder head strip out.
                 """
             )
@@ -455,9 +455,9 @@ if HAS_STREAMLIT and st.runtime.exists():
                 The EJ257 utilizes a DOHC layout with four camshafts. A snapped or jumped timing belt will cause instant, catastrophic valve-to-piston contact.
                 
                 **Key Advice:**
-                *   Interval is **105,000 miles** [cite: 22].
-                *   Always replace the complete assembly (Timing belt `13028AA250`, water pump, hydraulic tensioner, and all idler pulleys) [cite: 22].
-                *   Use high quality kits such as **Aisin TKF-012** to prevent premature idler bearing lockups [cite: 22].
+                *   Interval is **105,000 miles**.
+                *   Always replace the complete assembly (Timing belt `13028AA250`, water pump, hydraulic tensioner, and all idler pulleys).
+                *   Use high quality kits such as **Aisin TKF-012** to prevent premature idler bearing lockups.
                 """
             )
         else:
@@ -491,26 +491,26 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown(
                 """
                 **Engine Oil Filter & Washer (Primary):**
-                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100` [cite: 22]
-                *   **Crush Washer:** P/N `11126AA000` [cite: 22]
-                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures [cite: 22].
+                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100`
+                *   **Crush Washer:** P/N `11126AA000`
+                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures.
             
                 **Spark Plugs (Laser Iridium - Primary):**
-                *   **SILFR6A (NGK 7913):** P/N `22401AA670` [cite: 22]
-                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads [cite: 22].
+                *   **SILFR6A (NGK 7913):** P/N `22401AA670`
+                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads.
                 """
             )
             st.markdown(
                 """
                 **Timing Belt & Accessories (DOHC EJ257 - Primary):**
-                *   **Timing Belt:** P/N `13028AA250` [cite: 22]
-                *   **Complete Timing Kit:** Aisin `TKF-012` [cite: 22]
-                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023) [cite: 22]
-                *   **Hydraulic Tensioner:** P/N `13033AA042` [cite: 22]
+                *   **Timing Belt:** P/N `13028AA250`
+                *   **Complete Timing Kit:** Aisin `TKF-012`
+                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023)
+                *   **Hydraulic Tensioner:** P/N `13033AA042`
             
                 **Air Conditioning Stretch Belt Kit (Primary):**
-                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081) [cite: 22]
-                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage [cite: 22].
+                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081)
+                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage.
                 """
             )
 
@@ -664,112 +664,112 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown(
                 """
                 ### 🏎️ Official 2016 Subaru WRX STI (GUS Model) Specifications
-                *Grounded strictly in official 2016 US market specifications [cite: 39, 40].*
+                *Based strictly on official 2016 US market specifications.*
 
                 ##### 📦 Engine & Powertrain
                 | Specification | Value / Detail |
                 | :--- | :--- |
-                | **Engine Manufacturer / Type** | Subaru flat-four horizontally opposed DOHC "Boxer" 4-cylinder, 16 valves (4 valves/cyl) [cite: 39, 40]. |
-                | **Displacement / Size** | 2.5 Liter (2,457 cc / 149.935 cu in) [cite: 39, 40]. |
-                | **Bore × Stroke** | 99.5 mm × 79.0 mm (3.92 in × 3.11 in) with 1.26 oversquare ratio [cite: 40, 360]. |
-                | **Compression Ratio** | 8.2:1 [cite: 40, 360]. |
-                | **Fuel System / Induction** | Multi-point fuel injection (MPFI) [cite: 40]. Single-scroll turbocharger with functional hood scoop & aluminum cross-flow intercooler (14.7 PSI factory peak boost) [cite: 360]. |
-                | **Engine Construction** | Cast aluminum-alloy block and cylinder heads [cite: 40]. |
-                | **Lubrication System** | Wet sumped [cite: 40]. |
-                | **Maximum Power Output** | **305 bhp (309 PS / 227 kW) @ 6,000 RPM** [cite: 39, 40]. |
-                | **Maximum Torque Output** | **290 lb-ft (393 N·m / 40.1 kgm) @ 4,000 RPM** [cite: 39, 40]. |
-                | **Specific Power Output** | 124.1 bhp/litre (125.9 PS/litre / 92.6 kW/litre) [cite: 40]. |
-                | **Specific Torque Output** | 159.95 N·m/litre [cite: 40]. |
+                | **Engine Manufacturer / Type** | Subaru flat-four horizontally opposed DOHC "Boxer" 4-cylinder, 16 valves (4 valves/cyl). |
+                | **Displacement / Size** | 2.5 Liter (2,457 cc / 149.935 cu in). |
+                | **Bore × Stroke** | 99.5 mm × 79.0 mm (3.92 in × 3.11 in) with 1.26 oversquare ratio. |
+                | **Compression Ratio** | 8.2:1. |
+                | **Fuel System / Induction** | Multi-point fuel injection (MPFI). Single-scroll turbocharger with functional hood scoop & aluminum cross-flow intercooler (14.7 PSI factory peak boost). |
+                | **Engine Construction** | Cast aluminum-alloy block and cylinder heads. |
+                | **Lubrication System** | Wet sumped. |
+                | **Maximum Power Output** | **305 bhp (309 PS / 227 kW) @ 6,000 RPM**. |
+                | **Maximum Torque Output** | **290 lb-ft (393 N·m / 40.1 kgm) @ 4,000 RPM**. |
+                | **Specific Power Output** | 124.1 bhp/litre (125.9 PS/litre / 92.6 kW/litre). |
+                | **Specific Torque Output** | 159.95 N·m/litre. |
 
                 ##### ⚙️ Drivetrain & Transmission
                 | Component | Design Specification & Mechanical Parameters |
                 | :--- | :--- |
-                | **Gearbox Designation** | TY856 Series 6-speed manual, reinforced casing [cite: 363]. Fully synchronized reverse [cite: 363]. |
-                | **Gear Ratios** | Top gear ratio: 0.76:1 [cite: 40]. Final drive ratio: 3.90:1 [cite: 40, 363]. |
-                | **Engine Position / Layout** | Front-positioned, longitudinal [cite: 40]. |
-                | **Symmetrical AWD Layout** | Symmetrical All-Wheel Drive [cite: 39, 40]. Multi-Mode Driver Controlled Center Differential (DCCD) coordinating an electromagnetic multi-plate clutch and mechanical LSD [cite: 362, 363]. |
-                | **Front Differential** | Helical limited-slip differential (LSD) [cite: 362, 363]. |
-                | **Rear Differential** | Torsen limited-slip differential (LSD) [cite: 362, 363]. |
+                | **Gearbox Designation** | TY856 Series 6-speed manual, reinforced casing. Fully synchronized reverse. |
+                | **Gear Ratios** | Top gear ratio: 0.76:1. Final drive ratio: 3.90:1. |
+                | **Engine Position / Layout** | Front-positioned, longitudinal. |
+                | **Symmetrical AWD Layout** | Symmetrical All-Wheel Drive. Multi-Mode Driver Controlled Center Differential (DCCD) coordinating an electromagnetic multi-plate clutch and mechanical LSD. |
+                | **Front Differential** | Helical limited-slip differential (LSD). |
+                | **Rear Differential** | Torsen limited-slip differential (LSD). |
 
                 ##### 📐 Dimensions & Weights
                 | Dimension / Parameter | Metric Value | Imperial / US Value |
                 | :--- | :--- | :--- |
-                | **Wheelbase** | 2649 mm [cite: 40]. | 104.3 inches [cite: 40]. |
-                | **Track / Tread (Front)** | 1529 mm [cite: 40]. | 60.2 inches [cite: 40]. |
-                | **Track / Tread (Rear)** | 1539 mm [cite: 40]. | 60.6 inches [cite: 40]. |
-                | **Overall Length** | 4595 mm [cite: 40]. | 180.9 inches [cite: 40]. |
-                | **Overall Width** | 1796 mm [cite: 40]. | 70.7 inches [cite: 40]. |
-                | **Overall Height** | 1476 mm [cite: 40]. | 58.1 inches [cite: 40]. |
-                | **Ground Clearance** | Performance stance with 1.73 length-to-wheelbase ratio [cite: 40]. | |
-                | **Kerb Weight** | **1536 kg** [cite: 39, 40]. | **3386 lbs** [cite: 40]. |
-                | **Power-to-weight ratio** | 198.57 bhp/tonne (0.2 bhp/kg) [cite: 40]. | |
-                | **Weight-to-power ratio** | 11.28 lb/bhp (6.75 kg/kW) [cite: 40]. | |
+                | **Wheelbase** | 2649 mm. | 104.3 inches. |
+                | **Track / Tread (Front)** | 1529 mm. | 60.2 inches. |
+                | **Track / Tread (Rear)** | 1539 mm. | 60.6 inches. |
+                | **Overall Length** | 4595 mm. | 180.9 inches. |
+                | **Overall Width** | 1796 mm. | 70.7 inches. |
+                | **Overall Height** | 1476 mm. | 58.1 inches. |
+                | **Ground Clearance** | Performance stance with 1.73 length-to-wheelbase ratio. | |
+                | **Kerb Weight** | **1536 kg**. | **3386 lbs**. |
+                | **Power-to-weight ratio** | 198.57 bhp/tonne (0.2 bhp/kg). | |
+                | **Weight-to-power ratio** | 11.28 lb/bhp (6.75 kg/kW). | |
 
                 ##### 🧪 Fluids, Capacities & Economy
                 | Parameter | Metric Value | Imperial / US Value |
                 | :--- | :--- | :--- |
-                | **Fuel Tank Capacity** | 60.2 litres [cite: 40]. | 15.9 US Gallons (13.2 UK Gal) [cite: 40]. |
-                | **EPA Fuel Consumption** | 13.8 / 10.2 / 12.4 L/100km [cite: 40]. | **17 / 23 / 19 MPG** (City/Highway/Combined) [cite: 40]. |
-                | **Engine Oil Capacity** | 4.3 Liters [cite: 371]. | 4.5 Quarts with filter [cite: 371]. |
-                | **Engine Coolant Capacity** | 7.7 Liters [cite: 371]. | 8.1 Quarts [cite: 371]. |
+                | **Fuel Tank Capacity** | 60.2 litres. | 15.9 US Gallons (13.2 UK Gal). |
+                | **EPA Fuel Consumption** | 13.8 / 10.2 / 12.4 L/100km. | **17 / 23 / 19 MPG** (City/Highway/Combined). |
+                | **Engine Oil Capacity** | 4.3 Liters. | 4.5 Quarts with filter. |
+                | **Engine Coolant Capacity** | 7.7 Liters. | 8.1 Quarts. |
 
                 ##### 🏎️ Chassis, Steering, Wheels & Brakes
                 | Component | Design Specification & Mechanical Parameters |
                 | :--- | :--- |
-                | **Steering System** | Hydraulic power-assisted rack & pinion steering with 13.3:1 quick-ratio [cite: 363, 40]. |
-                | **Turns Lock-to-Lock** | **2.500 turns** [cite: 363, 40]. |
-                | **Front Suspension** | Independent inverted MacPherson KYB struts with forged aluminum alloy lower suspension arm, high-durometer pillow ball mounts and bushings, 24 mm stabilizer bar [cite: 363]. |
-                | **Rear Suspension** | Independent double-wishbone design with subframe stiffener bar and 20 mm stabilizer bar [cite: 363]. |
-                | **Wheel Hub Bolt Pattern** | Standardized **5x114.3 mm** bolt pattern with **56.1 mm** center bore [cite: 364]. |
-                | **Wheel Rim Size** | 8.5J × 18 inches front and rear [cite: 40]. |
-                | **Tire Sizing** | **245/40 R18 97W** front and rear high-performance tires [cite: 40]. |
-                | **Brembo Brake Calipers** | Power-assisted Brembo brake system with 4-piston fixed front calipers and dual-piston fixed rear calipers [cite: 364]. |
-                | **Brake Rotors** | Front ventilated discs: **325 mm / 326 mm** diameter, **30 mm** thick [cite: 40, 122, 364]. Rear ventilated discs: **315 mm / 316 mm** diameter, **20 mm** thick [cite: 40, 123, 364]. |
-                | **Braking Safety Systems** | Super Sport ABS (4-channel/4-sensor/4-wheel with g-load sensor), Active Torque Vectoring, Brake Assist, and Electronic Brake-force Distribution (EBD) [cite: 123]. |
+                | **Steering System** | Hydraulic power-assisted rack & pinion steering with 13.3:1 quick-ratio. |
+                | **Turns Lock-to-Lock** | **2.500 turns**. |
+                | **Front Suspension** | Independent inverted MacPherson KYB struts with forged aluminum alloy lower suspension arm, high-durometer pillow ball mounts and bushings, 24 mm stabilizer bar. |
+                | **Rear Suspension** | Independent double-wishbone design with subframe stiffener bar and 20 mm stabilizer bar. |
+                | **Wheel Hub Bolt Pattern** | Standardized **5x114.3 mm** bolt pattern with **56.1 mm** center bore. |
+                | **Wheel Rim Size** | 8.5J × 18 inches front and rear. |
+                | **Tire Sizing** | **245/40 R18 97W** front and rear high-performance tires. |
+                | **Brembo Brake Calipers** | Power-assisted Brembo brake system with 4-piston fixed front calipers and dual-piston fixed rear calipers. |
+                | **Brake Rotors** | Front ventilated discs: **325 mm / 326 mm** diameter, **30 mm** thick. Rear ventilated discs: **315 mm / 316 mm** diameter, **20 mm** thick. |
+                | **Braking Safety Systems** | Super Sport ABS (4-channel/4-sensor/4-wheel with g-load sensor), Active Torque Vectoring, Brake Assist, and Electronic Brake-force Distribution (EBD). |
                 """
             )
 
         # Section 2: Torque specs
-        with st.expander("🔧 Critical DIY Torque Specifications (Grounded & Corrected Specs)"):
+        with st.expander("🔧 Critical DIY Torque Specifications (Factory & Corrected Specs)"):
             st.markdown(
                 """
                 ### 🛠️ Critical Fastener Torque Specifications
                 
                 ##### 🔴 Front Brembo Caliper Bolt Warning (Corrected Spec)
-                *   **Correct Brembo Specification:** **80 ft-lb (114 Nm)** [cite: 372, 373].
-                *   **FSM Incorrect Value:** The original Factory Service Manual (FSM) incorrectly lists this torque as **114.3 ft-lb (155 Nm)** [cite: 372]. Attempting to torque the steel M12 bolts to 114.3 ft-lb frequently strips out the aluminum caliper threads or snaps mounting bolts [cite: 372, 384].
-                *   **Dissimilar Metal Corrosion Solution:** Steel bolts in aluminum calipers create galvanic corrosion [cite: 384]. It is highly recommended to apply copper anti-seize to the threads and reduce torque to **60 ft-lb** to prevent galling [cite: 162, 385].
+                *   **Correct Brembo Specification:** **80 ft-lb (114 Nm)**.
+                *   **FSM Incorrect Value:** The original Factory Service Manual (FSM) incorrectly lists this torque as **114.3 ft-lb (155 Nm)**. Attempting to torque the steel M12 bolts to 114.3 ft-lb frequently strips out the aluminum caliper threads or snaps mounting bolts.
+                *   **Dissimilar Metal Corrosion Solution:** Steel bolts in aluminum calipers create galvanic corrosion. It is highly recommended to apply copper anti-seize to the threads and reduce torque to **60 ft-lb** to prevent galling.
                 
-                | Component Class | Fastener Description | Thread Spec | Torque Value (Imperial) | Torque Value (Metric) | Source Context |
+                | Component Class | Fastener Description | Thread Spec | Torque Value (Imperial) | Torque Value (Metric) | Notes / Application |
                 | :--- | :--- | :--- | :--- | :--- | :--- |
-                | **Engine Core** | Spark Plugs (Dry Threads) | M14 | **13 to 17 ft-lbs** | 18 to 23 N-m | Factory Standard / Subimods [cite: 373] |
-                | | Spark Plugs (Pro Street Spec) | M14 | **15.5 ft-lbs** | 21 N-m | My Pro Street Ignition [cite: 168, 169] |
-                | | Ignition Coil Pack Bolt | M6 | **11.8 ft-lbs** | 16 N-m | My Pro Street Ignition [cite: 168, 170] |
-                | | Air Pump Duct Bolt | M6 | **6.6 ft-lbs** | 9 N-m | My Pro Street Ignition [cite: 168] |
-                | | Oil Pan Drain Plug | M20 | **33 to 34 ft-lbs** | 44 to 46 N-m | Factory Standard / Subimods [cite: 373] |
-                | | Valve Cover Fasteners | M6 | **4.7 to 5.8 ft-lbs** | 6.4 to 7.8 N-m | Factory Standard (~56-70 in-lbs) [cite: 373] |
-                | | Valve Cover Bolts (Pro Street) | M6 | **3.3 to 4.7 ft-lbs** | 4.5 to 6.4 N-m | My Pro Street Range [cite: 171] |
-                | | Intake Manifold-to-Head | M8 | **17 to 20 ft-lbs** | 23 to 27 N-m | Factory Standard / Subimods [cite: 373] |
-                | | Intake Manifold Bolts (Pro Street) | M8 | **18 ft-lbs** | 24.4 N-m | My Pro Street Spec [cite: 173] |
-                | | Exhaust Manifold-to-Head | M10 | **22 to 29 ft-lbs** | 30 to 39 N-m | Factory Standard / Subimods [cite: 373] |
-                | | Crankshaft Pulley Center Bolt | M18 | **35 ft-lbs + 60° turn** | 47 N-m + 60° turn | Factory Standard [cite: 373] |
-                | | Water Pump Mounting Bolts | M6 | **9 ft-lbs** | 12 N-m | Factory Standard [cite: 373] |
-                | **Drivetrain** | Gearbox Fill / Drain Plugs | M18 | **37 ft-lbs** | 50 N-m | Alum Washer [cite: 373] |
-                | | Gearbox Drain Plug | M18 | **52 ft-lbs** | 70 N-m | Copper Washer [cite: 373] |
-                | | Rear Diff Fill / Drain Plugs | M20 | **36 to 43 ft-lbs** | 49 to 58 N-m | Hypoid Housing [cite: 373] |
-                | | Clutch Pressure Plate | M8 | **12 ft-lbs** | 16 N-m | Clutch Cover [cite: 373] |
-                | | Flywheel Assembly Bolts | M10 | **55 ft-lbs** | 75 N-m | Crank Connection [cite: 373] |
-                | **Chassis** | Wheel Lug Nuts (Alloy Hub) | M12 x 1.25 | **89 to 94 ft-lbs** | 120 to 127 N-m | Factory Standard / Subimods [cite: 373] |
-                | | Wheel Lug Nuts (Pro Street) | M12 x 1.25 | **88.5 ft-lbs** | 120 N-m | My Pro Street [cite: 171] |
-                | | Front Upper Strut Hat Nuts | M10 | **22 ft-lbs** | 30 N-m | Strut Tower [cite: 373] |
-                | | Knuckle Lower Strut Bolts | M14 | **129 ft-lbs** | 175 N-m | Alignment Clevis [cite: 373] |
-                | | Rear Upper Strut Hat Nuts | M10 | **22 ft-lbs** | 30 N-m | Rear Hat [cite: 373] |
-                | | Rear Lower Strut Mount Bolt | M14 | **162 ft-lbs** | 220 N-m | Trailing Arm [cite: 373] |
-                | | Rear Main Subframe Bolts | M14 | **106.9 ft-lbs** | 145 N-m | Cradle Mounting [cite: 373] |
-                | **Brakes** | Front Brembo Caliper (Corrected) | M12 x 1.5 | **80 ft-lbs** | 114 N-m | Caliper-to-Knuckle [cite: 373] |
-                | | Rear Brembo Caliper Bolts | M10 x 1.5 | **52.8 ft-lbs** | 71.5 N-m | Caliper-to-Bracket [cite: 373] |
-                | | Brake Hose Banjo Bolt | M10 | **19.2 to 22 ft-lbs** | 26 to 30 N-m | Copper Crush Washers [cite: 373] |
-                | | Caliper Bleeder Screws | M8 / M10 | **14.8 ft-lbs** | 20 N-m | Bleed Screws [cite: 373] |
+                | **Engine Core** | Spark Plugs (Dry Threads) | M14 | **13 to 17 ft-lbs** | 18 to 23 N-m | Factory Standard / Subimods |
+                | | Spark Plugs (Pro Street Spec) | M14 | **15.5 ft-lbs** | 21 N-m | My Pro Street Ignition |
+                | | Ignition Coil Pack Bolt | M6 | **11.8 ft-lbs** | 16 N-m | My Pro Street Ignition |
+                | | Air Pump Duct Bolt | M6 | **6.6 ft-lbs** | 9 N-m | My Pro Street Ignition |
+                | | Oil Pan Drain Plug | M20 | **33 to 34 ft-lbs** | 44 to 46 N-m | Factory Standard / Subimods |
+                | | Valve Cover Fasteners | M6 | **4.7 to 5.8 ft-lbs** | 6.4 to 7.8 N-m | Factory Standard (~56-70 in-lbs) |
+                | | Valve Cover Bolts (Pro Street) | M6 | **3.3 to 4.7 ft-lbs** | 4.5 to 6.4 N-m | My Pro Street Range |
+                | | Intake Manifold-to-Head | M8 | **17 to 20 ft-lbs** | 23 to 27 N-m | Factory Standard / Subimods |
+                | | Intake Manifold Bolts (Pro Street) | M8 | **18 ft-lbs** | 24.4 N-m | My Pro Street Spec |
+                | | Exhaust Manifold-to-Head | M10 | **22 to 29 ft-lbs** | 30 to 39 N-m | Factory Standard / Subimods |
+                | | Crankshaft Pulley Center Bolt | M18 | **35 ft-lbs + 60° turn** | 47 N-m + 60° turn | Factory Standard |
+                | | Water Pump Mounting Bolts | M6 | **9 ft-lbs** | 12 N-m | Factory Standard |
+                | **Drivetrain** | Gearbox Fill / Drain Plugs | M18 | **37 ft-lbs** | 50 N-m | Alum Washer |
+                | | Gearbox Drain Plug | M18 | **52 ft-lbs** | 70 N-m | Copper Washer |
+                | | Rear Diff Fill / Drain Plugs | M20 | **36 to 43 ft-lbs** | 49 to 58 N-m | Hypoid Housing |
+                | | Clutch Pressure Plate | M8 | **12 ft-lbs** | 16 N-m | Clutch Cover |
+                | | Flywheel Assembly Bolts | M10 | **55 ft-lbs** | 75 N-m | Crank Connection |
+                | **Chassis** | Wheel Lug Nuts (Alloy Hub) | M12 x 1.25 | **89 to 94 ft-lbs** | 120 to 127 N-m | Factory Standard / Subimods |
+                | | Wheel Lug Nuts (Pro Street) | M12 x 1.25 | **88.5 ft-lbs** | 120 N-m | My Pro Street |
+                | | Front Upper Strut Hat Nuts | M10 | **22 ft-lbs** | 30 N-m | Strut Tower |
+                | | Knuckle Lower Strut Bolts | M14 | **129 ft-lbs** | 175 N-m | Alignment Clevis |
+                | | Rear Upper Strut Hat Nuts | M10 | **22 ft-lbs** | 30 N-m | Rear Hat |
+                | | Rear Lower Strut Mount Bolt | M14 | **162 ft-lbs** | 220 N-m | Trailing Arm |
+                | | Rear Main Subframe Bolts | M14 | **106.9 ft-lbs** | 145 N-m | Cradle Mounting |
+                | **Brakes** | Front Brembo Caliper (Corrected) | M12 x 1.5 | **80 ft-lbs** | 114 N-m | Caliper-to-Knuckle |
+                | | Rear Brembo Caliper Bolts | M10 x 1.5 | **52.8 ft-lbs** | 71.5 N-m | Caliper-to-Bracket |
+                | | Brake Hose Banjo Bolt | M10 | **19.2 to 22 ft-lbs** | 26 to 30 N-m | Copper Crush Washers |
+                | | Caliper Bleeder Screws | M8 / M10 | **14.8 ft-lbs** | 20 N-m | Bleed Screws |
                 """
             )
 
@@ -778,37 +778,37 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown(
                 """
                 ### 🛑 Why Torque Specs Matter on the Subaru STI (My Pro Street Guide)
-                Improper torque on your horizontally opposed boxer engine is a major cause of mechanical failures due to its aluminum components, high vibration, and intense heat cycles [cite: 166]. "Good-n-tight" is not an official Subaru engineering measurement—use calibrated torque wrenches to avoid expensive repairs [cite: 167, 168]!
+                Improper torque on your horizontally opposed boxer engine is a major cause of mechanical failures due to its aluminum components, high vibration, and intense heat cycles. "Good-n-tight" is not an official Subaru engineering measurement—use calibrated torque wrenches to avoid expensive repairs!
                 
                 #### 1. Spark Plug Torque: Why It Matters
-                *   **Pro Street Target Spec:** **15.5 ft-lb (21 N·m)** [cite: 168, 169].
-                *   **Over-tightening Hazards:** Can strip soft aluminum cylinder head threads, damage plug gaskets, crack the delicate ceramic insulators, or cause improper heat transfer [cite: 169]. Thread repair on an EJ head is extremely difficult [cite: 169].
-                *   **Under-tightening Hazards:** Loose spark plugs can cause severe combustion leakage, engine overheating, poor ignition performance, compression loss, or burned threads [cite: 169]. The Subaru ignition manual explicitly notes loose plugs as a cause of overheating-related plug damage [cite: 169].
+                *   **Pro Street Target Spec:** **15.5 ft-lb (21 N·m)**.
+                *   **Over-tightening Hazards:** Can strip soft aluminum cylinder head threads, damage plug gaskets, crack the delicate ceramic insulators, or cause improper heat transfer. Thread repair on an EJ head is extremely difficult.
+                *   **Under-tightening Hazards:** Loose spark plugs can cause severe combustion leakage, engine overheating, poor ignition performance, compression loss, or burned threads. The Subaru ignition manual explicitly notes loose plugs as a cause of overheating-related plug damage.
                 
                 #### 2. Ignition Coil Torque
-                *   **Pro Street Target Spec:** **11.8 ft-lb (16 N·m)** [cite: 168, 170].
-                *   **Operational Risks:** The STI uses a direct ignition coil-on-plug system [cite: 170]. Improper installation torque can create poor coil seating, weak spark delivery, electrical vibration issues, and misfires under boost [cite: 170]. 
-                *   *Pro Tip:* Many Subaru owners chase fueling issues for weeks only to discover the ignition coil wasn't fully seated because someone tightened it using "vibes" instead of a torque wrench [cite: 170]!
+                *   **Pro Street Target Spec:** **11.8 ft-lb (16 N·m)**.
+                *   **Operational Risks:** The STI uses a direct ignition coil-on-plug system. Improper installation torque can create poor coil seating, weak spark delivery, electrical vibration issues, and misfires under boost. 
+                *   *Pro Tip:* Many Subaru owners chase fueling issues for weeks only to discover the ignition coil wasn't fully seated because someone tightened it using "vibes" instead of a torque wrench!
                 
                 #### 3. Valve Cover Bolts
-                *   **Pro Street Target Spec:** **3.3 to 4.7 ft-lb** [cite: 171].
-                *   **The Pickle Jar Pitfall:** Valve cover leaks are extremely common on EJ engines [cite: 170]. Because these bolts thread into soft aluminum, over-tightening can easily warp the valve covers, damage the gaskets, or strip the threads completely [cite: 171]. 
-                *   *Pro Tip:* When people see an oil leak, they instinctively tighten the bolts harder like they're trying to close a pickle jar—this is a guaranteed way to strip your engine head [cite: 171]! Always use an **inch-pound torque wrench** for these low values [cite: 252].
+                *   **Pro Street Target Spec:** **3.3 to 4.7 ft-lb**.
+                *   **The Pickle Jar Pitfall:** Valve cover leaks are extremely common on EJ engines. Because these bolts thread into soft aluminum, over-tightening can easily warp the valve covers, damage the gaskets, or strip the threads completely. 
+                *   *Pro Tip:* When people see an oil leak, they instinctively tighten the bolts harder like they're trying to close a pickle jar—this is a guaranteed way to strip your engine head! Always use an **inch-pound torque wrench** for these low values.
                 
                 #### 4. Wheel Lug Nuts
-                *   **Pro Street Target Spec:** **88.5 ft-lb** [cite: 171].
-                *   **Operational Risks:** Improper wheel torque can warp brake rotors, cause uneven wheel clamping, damage studs, or lead to dangerous wheel vibrations [cite: 171, 172].
-                *   *Warning:* Impact guns set to "earthquake mode" are not scientific measuring or precision tools [cite: 172, 175]! Always do your final pass with a calibrated torque wrench [cite: 248].
+                *   **Pro Street Target Spec:** **88.5 ft-lb**.
+                *   **Operational Risks:** Improper wheel torque can warp brake rotors, cause uneven wheel clamping, damage studs, or lead to dangerous wheel vibrations.
+                *   *Warning:* Impact guns set to "earthquake mode" are not scientific measuring or precision tools! Always do your final pass with a calibrated torque wrench.
                 
                 #### 5. Intake Manifold Bolts
-                *   **Pro Street Target Spec:** **18 ft-lb** [cite: 173].
-                *   **Operational Risks:** Improper or uneven torque on the intake manifold can cause vacuum leaks, boost leaks, uneven airflow, rough idling, or lean AFR (air-fuel ratio) conditions [cite: 173].
-                *   *Note:* On turbocharged Subarus, even a tiny vacuum leak can create massive drivability problems that make it feel like your ECU suddenly developed major trust issues [cite: 173]!
+                *   **Pro Street Target Spec:** **18 ft-lb**.
+                *   **Operational Risks:** Improper or uneven torque on the intake manifold can cause vacuum leaks, boost leaks, uneven airflow, rough idling, or lean AFR (air-fuel ratio) conditions.
+                *   *Note:* On turbocharged Subarus, even a tiny vacuum leak can create massive drivability problems that make it feel like your ECU suddenly developed major trust issues!
                 
                 #### 6. Turbocharger Torque Considerations
-                *   **Extreme Heat Cycles:** Turbo hardware experiences intense thermal changes [cite: 173]. This affects up-pipe fasteners, downpipe hardware, exhaust manifold bolts, and turbo oil feed banjo bolts [cite: 174].
-                *   **Failure Modes:** Under-torquing leads to exhaust leaks and boost leaks [cite: 174]. Over-torquing leads to broken studs and oil starvation [cite: 174].
-                *   *Note:* Always use proper high-temperature anti-seize and perform heat-cycle inspections [cite: 174]. This is critical because turbo studs on an older STI can easily develop the structural integrity of stale breadsticks [cite: 174]!
+                *   **Extreme Heat Cycles:** Turbo hardware experiences intense thermal changes. This affects up-pipe fasteners, downpipe hardware, exhaust manifold bolts, and turbo oil feed banjo bolts.
+                *   **Failure Modes:** Under-torquing leads to exhaust leaks and boost leaks. Over-torquing leads to broken studs and oil starvation.
+                *   *Note:* Always use proper high-temperature anti-seize and perform heat-cycle inspections. This is critical because turbo studs on an older STI can easily develop the structural integrity of stale breadsticks!
                 """
             )
 
@@ -817,20 +817,20 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown(
                 """
                 ### ⚙️ 10-Step Cylinder Head Elastic-Plastic Tightening Procedure
-                Always use brand new, clean, and dry OEM **Torque-To-Yield (TTY)** head bolts lightly lubricated with engine oil on the threads and flange faces prior to insertion [cite: 374]. Tighten strictly in the designated cross-pattern sequence (center outward) [cite: 374]:
+                Always use brand new, clean, and dry OEM **Torque-To-Yield (TTY)** head bolts lightly lubricated with engine oil on the threads and flange faces prior to insertion. Tighten strictly in the designated cross-pattern sequence (center outward):
                 
-                1.  **Stage 1:** Torque all bolts in sequence to **40 N-m (29.5 ft-lbs)** [cite: 375].
-                2.  **Stage 2:** Torque all bolts in sequence to **95 N-m (70 ft-lbs)** [cite: 375].
-                3.  **Stage 3:** Loosen all bolts by **180°** in reverse sequence [cite: 375].
-                4.  **Stage 4:** Loosen all bolts an additional **180°** to release pre-tension completely [cite: 375].
-                5.  **Stage 5:** Torque all bolts in sequence to **10 N-m (7.4 ft-lbs)** [cite: 375].
-                6.  **Stage 6:** Torque all bolts in sequence to **30 N-m (22 ft-lbs)** [cite: 375].
-                7.  **Stage 7:** Torque all bolts in sequence to **70 N-m (51.6 ft-lbs)** [cite: 375].
-                8.  **Stage 8:** Rotate all bolts **80° to 90°** in sequence [cite: 375].
-                9.  **Stage 9:** Rotate all bolts an additional **40° to 45°** in sequence [cite: 375].
-                10. **Stage 10:** Rotate center bolts (1 and 2 only) a final **40° to 45°** [cite: 375].
+                1.  **Stage 1:** Torque all bolts in sequence to **40 N-m (29.5 ft-lbs)**.
+                2.  **Stage 2:** Torque all bolts in sequence to **95 N-m (70 ft-lbs)**.
+                3.  **Stage 3:** Loosen all bolts by **180°** in reverse sequence.
+                4.  **Stage 4:** Loosen all bolts an additional **180°** to release pre-tension completely.
+                5.  **Stage 5:** Torque all bolts in sequence to **10 N-m (7.4 ft-lbs)**.
+                6.  **Stage 6:** Torque all bolts in sequence to **30 N-m (22 ft-lbs)**.
+                7.  **Stage 7:** Torque all bolts in sequence to **70 N-m (51.6 ft-lbs)**.
+                8.  **Stage 8:** Rotate all bolts **80° to 90°** in sequence.
+                9.  **Stage 9:** Rotate all bolts an additional **40° to 45°** in sequence.
+                10. **Stage 10:** Rotate center bolts (1 and 2 only) a final **40° to 45°**.
                 
-                ⚠️ **Warning:** Never reuse stretched TTY head bolts, doing so almost guarantees an uneven seal and immediate head gasket failure [cite: 238]!
+                ⚠️ **Warning:** Never reuse stretched TTY head bolts, doing so almost guarantees an uneven seal and immediate head gasket failure!
                 """
             )
 
@@ -841,24 +841,24 @@ if HAS_STREAMLIT and st.runtime.exists():
                 ### ⚙️ EJ257 Engineering Vulnerabilities & Proven Fixes
                 
                 #### 1. Cylinder 4 Overheating, Detonation, and Ringland Failure
-                *   **The Cause:** The coolant jacket flow routes sequentially but reaches a stagnation zone around Cylinder 4 (rear left) [cite: 378]. Localized coolant flow drops, causing a thermal spike that lowers Cylinder 4's knock threshold [cite: 378]. Under high load, recurring detonation cracks the brittle cast-aluminum factory piston ringlands, causing compression loss, severe blow-by, and cylinder scoring [cite: 378].
-                *   **The Fix:** Retrofit a **Cylinder 4 Chamber Cooling System** [cite: 379]. This integrates a coolant return hose at the rear coolant port of the Cylinder 4 head, routing hot coolant directly into the heater core return line to balance temperature gradients across all heads [cite: 379].
+                *   **The Cause:** The coolant jacket flow routes sequentially but reaches a stagnation zone around Cylinder 4 (rear left). Localized coolant flow drops, causing a thermal spike that lowers Cylinder 4's knock threshold. Under high load, recurring detonation cracks the brittle cast-aluminum factory piston ringlands, causing compression loss, severe blow-by, and cylinder scoring.
+                *   **The Fix:** Retrofit a **Cylinder 4 Chamber Cooling System**. This integrates a coolant return hose at the rear coolant port of the Cylinder 4 head, routing hot coolant directly into the heater core return line to balance temperature gradients across all heads.
                 
                 #### 2. Crankcase Blow-by and Intake Octane Degradation
-                *   **The Cause:** Horizontally opposed flat layout under boost creates excessive crankcase blow-by [cite: 380]. Suspended oil mist enters the intake through the PCV system, coating the compressor, intercooler, and runners [cite: 380]. This lower-flashpoint oil vapor degrades the fuel's effective octane rating, triggering knocking [cite: 380].
-                *   **The Fix:** Install a high-performance, heated dual-chamber **Air-Oil Separator (AOS)** [cite: 381]. An AOS intercepts PCV gases, separates oil, and drains it back to the pan [cite: 381]. Routing engine coolant through the AOS base prevents moisture condensation and sludge buildup [cite: 381].
+                *   **The Cause:** Horizontally opposed flat layout under boost creates excessive crankcase blow-by. Suspended oil mist enters the intake through the PCV system, coating the compressor, intercooler, and runners. This lower-flashpoint oil vapor degrades the fuel's effective octane rating, triggering knocking.
+                *   **The Fix:** Install a high-performance, heated dual-chamber **Air-Oil Separator (AOS)**. An AOS intercepts PCV gases, separates oil, and drains it back to the pan. Routing engine coolant through the AOS base prevents moisture condensation and sludge buildup.
                 
                 #### 3. Firewall Pitch Stop Bracket Structural Weld Failure
-                *   **The Cause:** Rotational torque reaction forces are stabilized by a pitch stop mount connecting the transmission to the firewall [cite: 382]. In 2015-2016 models, the bracket was stamped from thin sheet-metal and secured with weak spot welds [cite: 382]. Installing a stiff aftermarket mount fatigues and tears the bracket completely off the firewall [cite: 382].
-                *   **The Fix:** Install a heavy-duty **pitch stop bracket brace** which anchors to the strut towers and master cylinder mounting points [cite: 383]. If spot welds are already torn, the firewall must be prepped, realigned, and reinforced with TIG welds before brace installation [cite: 383].
+                *   **The Cause:** Rotational torque reaction forces are stabilized by a pitch stop mount connecting the transmission to the firewall. In 2015-2016 models, the bracket was stamped from thin sheet-metal and secured with weak spot welds. Installing a stiff aftermarket mount fatigues and tears the bracket completely off the firewall.
+                *   **The Fix:** Install a heavy-duty **pitch stop bracket brace** which anchors to the strut towers and master cylinder mounting points. If spot welds are already torn, the firewall must be prepped, realigned, and reinforced with TIG welds before brace installation.
                 
                 #### 4. Starlink Data Communications Module (DCM) Parasitic Battery Drain
-                *   **The Cause:** Decommissioned 3G networks cause the 2016 WRX STI's telematics system to enter an infinite boot-loop searching for signal [cite: 386]. Operating on a constant 12V non-switched power source, this causes a **120-140 mA parasitic draw** (exceeding the standard 70 mA limit), draining batteries within 24-48 hours [cite: 386].
-                *   **The Fix:** Install a **wireless bypass harness** to route audio around the DCM, or program the DCM into "Factory Mode" using a dealer scan tool per **TSB 15-312-23R** to permanently disable the cellular transceiver [cite: 387].
+                *   **The Cause:** Decommissioned 3G networks cause the 2016 WRX STI's telematics system to enter an infinite boot-loop searching for signal. Operating on a constant 12V non-switched power source, this causes a **120-140 mA parasitic draw** (exceeding the standard 70 mA limit), draining batteries within 24-48 hours.
+                *   **The Fix:** Install a **wireless bypass harness** to route audio around the DCM, or program the DCM into "Factory Mode" using a dealer scan tool per **TSB 15-312-23R** to permanently disable the cellular transceiver.
                 
                 #### 5. Clutch Pedal Creaking Mechanical Noise
-                *   **The Cause:** Creaking sounds during pedal depression are typically pivot wear within the clutch bracket, or a dry clutch fork pivot ball rubbing under friction [cite: 388].
-                *   **The Fix:** Remove the intercooler, peel back the slave cylinder rubber boot, and apply high-temperature white lithium grease directly to the release fork and pivot ball socket [cite: 389]. If noise persists, replace with an updated pedal bracket assembly per **TSB 12-190-15 and TSB 03-79-18R** [cite: 389].
+                *   **The Cause:** Creaking sounds during pedal depression are typically pivot wear within the clutch bracket, or a dry clutch fork pivot ball rubbing under friction.
+                *   **The Fix:** Remove the intercooler, peel back the slave cylinder rubber boot, and apply high-temperature white lithium grease directly to the release fork and pivot ball socket. If noise persists, replace with an updated pedal bracket assembly per **TSB 12-190-15 and TSB 03-79-18R**.
                 """
             )
 
@@ -869,18 +869,18 @@ if HAS_STREAMLIT and st.runtime.exists():
                 ### 🏛️ EJ257 Settlement & Official Safety Recalls
                 
                 #### 1. The EJ257 Engine Failure Class Action Settlement (2018)
-                *   **Target Scope:** 2012–2017 Subaru WRX and WRX STI equipped with the 2.5-liter turbocharged EJ257 engine built between Oct. 11, 2011, and Nov. 16, 2016 [cite: 186, 396].
-                *   **Target VIN Ranges:** 5-door hatch models ending in **CG203168 and up**; 4-door sedan models ending in **CG006225 through H9826807** [cite: 186].
-                *   **The Issue:** The lawsuit alleged internal defects allowed metallic debris from deteriorating bearings and oil pump failures to contaminate engine oil, restricting flow through crankshaft passages and causing bearing seizure, piston ringland fractures, and catastrophic engine failure [cite: 396].
+                *   **Target Scope:** 2012–2017 Subaru WRX and WRX STI equipped with the 2.5-liter turbocharged EJ257 engine built between Oct. 11, 2011, and Nov. 16, 2016.
+                *   **Target VIN Ranges:** 5-door hatch models ending in **CG203168 and up**; 4-door sedan models ending in **CG006225 through H9826807**.
+                *   **The Issue:** The lawsuit alleged internal defects allowed metallic debris from deteriorating bearings and oil pump failures to contaminate engine oil, restricting flow through crankshaft passages and causing bearing seizure, piston ringland fractures, and catastrophic engine failure.
                 *   **Provisions:**
-                    *   **Warranty Extension:** Powertrain warranty extended to **8 years or 100,000 miles** [cite: 186, 397].
-                    *   **Reimbursement:** 100% reimbursement for out-of-pocket parts/labor expenses for engine failures [cite: 188, 397].
-                    *   **CPO Warranty Program:** For secondary buyers, Certified Pre-Owned vehicles must pass a 152-point inspection to receive a 6-year/100,000-mile powertrain warranty with a **$35 USD deductible** [cite: 401].
+                    *   **Warranty Extension:** Powertrain warranty extended to **8 years or 100,000 miles**.
+                    *   **Reimbursement:** 100% reimbursement for out-of-pocket parts/labor expenses for engine failures.
+                    *   **CPO Warranty Program:** For secondary buyers, Certified Pre-Owned vehicles must pass a 152-point inspection to receive a 6-year/100,000-mile powertrain warranty with a **$35 USD deductible**.
                 
                 #### 2. Key Safety Recalls & Technical Service Bulletins
-                *   **NHTSA Campaign 19V149000 (Recall WUE-90 - Brake Light Switch):** Silicone contaminants from cleaning products penetrate the brake light switch housing, preventing brake lights from illuminating and disabling push-button start [cite: 399]. Dealers replace with a sealed unit [cite: 399].
-                *   **NHTSA Campaign 16V162000 (Recall WTA-62 - Turbo Air Intake Duct):** 2015–2016 WRX and Forester 2.0XT plastic turbo air ducts can crack under thermal cycles and high engine movement, causing unmetered air leaks and lean stalling conditions [cite: 399]. Dealers replace with a reinforced compound duct [cite: 399].
-                *   **Recall WUT-05 (zinc-coated coils):** Zinc-coated springs replacement for vehicles in road-salt states to prevent coil spring corrosion and fracture [cite: 400].
+                *   **NHTSA Campaign 19V149000 (Recall WUE-90 - Brake Light Switch):** Silicone contaminants from cleaning products penetrate the brake light switch housing, preventing brake lights from illuminating and disabling push-button start. Dealers replace with a sealed unit.
+                *   **NHTSA Campaign 16V162000 (Recall WTA-62 - Turbo Air Intake Duct):** 2015–2016 WRX and Forester 2.0XT plastic turbo air ducts can crack under thermal cycles and high engine movement, causing unmetered air leaks and lean stalling conditions. Dealers replace with a reinforced compound duct.
+                *   **Recall WUT-05 (zinc-coated coils):** Zinc-coated springs replacement for vehicles in road-salt states to prevent coil spring corrosion and fracture.
                 """
             )
 
