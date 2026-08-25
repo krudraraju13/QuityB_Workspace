@@ -721,13 +721,6 @@ if HAS_STREAMLIT and st.runtime.exists():
         with st.expander("🔧 Critical DIY Torque Specifications (Factory & Corrected Specs)"):
             st.markdown(
                 """
-                ### 🛠️ Critical Fastener Torque Specifications
-                
-                ##### 🔴 Front Brembo Caliper Bolt Warning (Corrected Spec)
-                *   **Correct Brembo Specification:** **80 ft-lb (114 Nm)**.
-                *   **FSM Incorrect Value:** The original Factory Service Manual (FSM) incorrectly lists this torque as **114.3 ft-lb (155 Nm)**. Attempting to torque the steel M12 bolts to 114.3 ft-lb frequently strips out the aluminum caliper threads or snaps mounting bolts.
-                *   **Dissimilar Metal Corrosion Solution:** Steel bolts in aluminum calipers create galvanic corrosion. It is highly recommended to apply copper anti-seize to the threads and reduce torque to **60 ft-lb** to prevent galling.
-                
                 | Component Class | Fastener Description | Thread Spec | Torque Value (Imperial) | Torque Value (Metric) | Notes / Application |
                 | :--- | :--- | :--- | :--- | :--- | :--- |
                 | **Engine Core** | Spark Plugs (Dry Threads) | M14 | **13 to 17 ft-lbs** | 18 to 23 N-m | Factory Standard / Subimods |
