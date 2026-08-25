@@ -304,9 +304,9 @@ if HAS_STREAMLIT and st.runtime.exists():
 
         /* Make dataframes highly readable and fit containers */
         div[data-testid="stDataFrame"] {
-            background-color: #1a202c !important;
+            background-color: var(--secondary-background-color) !important;
             border-radius: 8px !important;
-            border: 1px solid #2d3748 !important;
+            border: 1px solid rgba(128, 128, 128, 0.2) !important;
             overflow: hidden !important;
         }
         
@@ -315,19 +315,41 @@ if HAS_STREAMLIT and st.runtime.exists():
             font-family: 'Montserrat', sans-serif !important;
             font-weight: 600 !important;
             font-size: 15px !important;
-            background-color: #1e293b !important;
-            border: 1px solid #334155 !important;
+            background-color: var(--secondary-background-color) !important;
+            border: 1px solid rgba(128, 128, 128, 0.2) !important;
             border-radius: 4px !important;
             margin-bottom: 5px !important;
-            color: #f1f5f9 !important;
+            color: var(--text-color) !important;
         }
         .streamlit-expanderContent {
-            background-color: #0f172a !important;
-            border: 1px solid #334155 !important;
+            background-color: var(--background-color) !important;
+            border: 1px solid rgba(128, 128, 128, 0.2) !important;
             border-top: none !important;
             border-bottom-left-radius: 4px !important;
             border-bottom-right-radius: 4px !important;
             padding: 15px !important;
+            color: var(--text-color) !important;
+        }
+
+        /* Dark Mode - Overrides to achieve a premium dark grey palette (#1c1c1e) and not full black */
+        @media (prefers-color-scheme: dark) {
+            html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+                background-color: #1c1c1e !important;
+                background: #1c1c1e !important;
+            }
+            .custom-card, div[data-testid="stDataFrame"], .streamlit-expanderHeader {
+                background-color: #2c2c2e !important;
+                border: 1px solid #3a3a3c !important;
+            }
+            .streamlit-expanderContent {
+                background-color: #1c1c1e !important;
+                border: 1px solid #3a3a3c !important;
+                border-top: none !important;
+            }
+            /* Style other standard elements to fit the premium dark grey palette */
+            div[data-testid="stSidebar"] {
+                background-color: #2c2c2e !important;
+            }
         }
         </style>
         """,
@@ -412,11 +434,10 @@ if HAS_STREAMLIT and st.runtime.exists():
             """,
             unsafe_allow_html=True
         )
-        col_mil, col_sev = st.columns(2)
+        col_mil, col_sev = st.columns(2, vertical_alignment="center")
         with col_mil:
             mileage = st.number_input("", min_value=0, max_value=500000, value=None, step=1000, placeholder="Enter current mileage")
         with col_sev:
-            st.markdown("<div style='height: 32px;'></div>", unsafe_allow_html=True)
             severe = st.checkbox(
                 "Severe Driving Conditions", 
                 value=False,
