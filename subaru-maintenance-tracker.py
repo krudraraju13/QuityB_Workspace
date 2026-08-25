@@ -476,46 +476,202 @@ if HAS_STREAMLIT and st.runtime.exists():
                 st.dataframe(df_parts, use_container_width=True, hide_index=True)
             
             st.markdown("### 🔍 Critical Parts & Hardware Guide")
-            st.markdown(
-                """
-                | Category | Part Name | OEM Part Number | Quantity | Description / Notes |
-                | :--- | :--- | :--- | :--- | :--- |
-                | **Engine and Cooling** | Tokyo Roki JDM Black Engine Oil Filter | `15208AA100` | 1 | Calibrated 23 PSI metal bypass valve matches high Subaru oil pump pressure. |
-                | **Engine and Cooling** | Oil Pan Drain Crush Washer | `11126AA000` | 1 | Direct fit copper crush ring. Prevents oil pan thread stripout during service. |
-                | **Engine and Cooling** | Mitsuboshi Timing Belt (Individual) | `13028AA250` | 1 | High-tensile reinforced timing belt for DOHC EJ257 engines. |
-                | **Engine and Cooling** | Complete Timing Belt Kit | `TKF-012` | 1 | Aisin timing kit with water pump, tensioners, and NSK/Koyo pulleys. |
-                | **Engine and Cooling** | Water Pump Assembly | `21111AA240` | 1 | Aisin WPF-023 water pump with premium gasket. |
-                | **Engine and Cooling** | Hydraulic Belt Tensioner | `13033AA042` | 1 | GMB / OEM-supplier hydraulic timing belt tensioner. |
-                | **Engine and Cooling** | Thermostat Gasket | `21236AA050` | 1 | Molded rubber thermostat housing seal ring. |
-                | **Engine and Cooling** | Engine Air Filter Element | `16546AA12A` | 1 | Pleated dry fiber element for optimal engine intake filtration. |
-                | **Maintenance** | Tokyo Roki JDM Black Engine Oil Filter | `15208AA100` | 1 | Core filtration component for regular 3,000 to 6,000 mile oil changes. |
-                | **Maintenance** | Oil Pan Drain Crush Washer | `11126AA000` | 1 | Critical sealing washer replaced on every oil change. |
-                | **Maintenance** | Spark Plug Set (Laser Iridium) | `22401AA670` | 4 (Full Set) | NGK SILFR6A (7913) gapped to 0.030". Replace every 30,000 to 60,000 miles. |
-                | **Maintenance** | Engine Cabin Air Filter | `72880FG000` | 1 | Multi-layer HEPA Active Carbon filter. Replace every 12 to 24 months. |
-                | **Maintenance** | Engine Air Filter Element | `16546AA12A` | 1 | Intake air filter element. Inspect every 15,000 miles; replace at 30,000 miles. |
-                | **Suspension and Brakes** | Front Brembo Brake Rotor (Each) | `26300FE070` | 2 | High-carbon vented cast iron 326mm brake rotor. |
-                | **Suspension and Brakes** | Rear Brembo Brake Pad Set | `26696FG000` | 1 (Set of 4) | High-performance pads. Includes multi-layer backing shims. |
-                | **Suspension and Brakes** | Front Brembo Caliper Bolt (Each) | `901120103` | 4 | High-strength Grade 10.9 steel caliper-to-knuckle bolt. |
-                | **Suspension and Brakes** | Rear Brembo Caliper Mounting Bolt | `901120102` | 4 | High-strength steel caliper mounting bolt. |
-                | **Suspension and Brakes** | Caliper Bleeder Screws | `M8 / M10 Screws` | As required | Caliper hydraulic air bleed valves. |
-                | **Suspension and Brakes** | Brake Hose Banjo Bolt | `M10 Banjo Bolt` | As required | Fluid delivery banjo bolt with fresh copper washers. |
-                | **Manual Transmission** | Motul Gear 300 75W-90 Gear Oil | `API GL-5` | ~3.5 Quarts | High shear-stable gear oil for transaxle & front differential. |
-                | **Manual Transmission** | 6-Speed MT Drain Plug (T70 Torx) | `32103AA080` | 1 | Magnetic drain plug for TY856 transmission case. |
-                | **Manual Transmission** | 6-Speed MT Drain Plug Crush Washer | `32103AA012` | 1 | Sealing gasket for manual transmission drain plug. |
-                | **Driveline and Differential** | Motul 90PA Rear Differential Fluid | `SAE 90 / 75W-90` | 1.0 Quart | High-performance GL-5 hypoid gear oil for Torsen rear LSD. |
-                | **Driveline and Differential** | Rear Diff Fill / Drain Plugs | `M20 Plugs` | 2 | Dual plugs for rear housing. Apply liquid Teflon thread sealant. |
-                | **Heating and Air Conditioning** | AC Drive Stretch Belt Kit | `11718AA082` | 1 | Replaces 11718AA081. Specialty EPDM belt (includes plastic guide installer tool). |
-                | **Heating and Air Conditioning** | Engine Cabin Air Filter | `72880FG000` | 1 | HEPA Active Carbon filter protects HVAC quality and evaporator core. |
-                | **Steering** | Alternator / Power Steering Belt | `809218460` | 1 | V-Ribbed EPDM accessory drive belt. |
-                | **Electrical** | Hanshin OEM Ignition Coil Pack | `22433AA641` | 4 | Hanshin OEM Service Component. Prevents misfires under boost. |
-                | **Electrical** | Spark Plug Set (Laser Iridium) | `22401AA670` | 4 (Full Set) | NGK SILFR6A (7913) direct ignition plugs. |
-                | **Interior** | Engine Cabin Air Filter | `72880FG000` | 1 | HEPA Active Carbon cabin air filter located behind the glovebox. |
-                | **Body** | Subframe Cross Member Bolt Kit | `Grade 10.9 Bolts` | 1 Kit | High-tensile fasteners for subframe crossmember mounting. |
-                | **Door** | Door Hinge Lubricant | `White Lithium Grease` | As required | Applied to door hinge assemblies and latching pins. |
-                | **Automatic Transmission** | N/A (STI is exclusively 6MT manual) | `N/A` | N/A | STI models use the TY856 Series 6-Speed Manual Transmission. |
-                """
-            )
+            
+            # Insert parts catalog
 
+            # Expanded Genuine OEM Parts Database with Category, Name, P/N, Qty, and Price (USD)
+            parts_catalog = [
+                # Engine and Cooling
+                {"Category": "Engine and Cooling", "Part Name": "Tokyo Roki JDM Black Engine Oil Filter", "OEM Part Number": "15208AA100", "Quantity": 1, "Price": 12.00, "Notes": "Calibrated 23 PSI metal bypass valve matches high Subaru oil pump relief pressure."},
+                {"Category": "Engine and Cooling", "Part Name": "Oil Pan Drain Crush Washer", "OEM Part Number": "11126AA000", "Quantity": 1, "Price": 1.50, "Notes": "Direct fit copper crush ring. Prevents oil pan thread stripout."},
+                {"Category": "Engine and Cooling", "Part Name": "Mitsuboshi Timing Belt (Individual)", "OEM Part Number": "13028AA250", "Quantity": 1, "Price": 85.00, "Notes": "High-tensile reinforced timing belt for DOHC EJ257 engines."},
+                {"Category": "Engine and Cooling", "Part Name": "Complete Timing Belt Kit (Aisin)", "OEM Part Number": "TKF-012", "Quantity": 1, "Price": 280.00, "Notes": "Aisin timing kit with water pump, tensioners, and NSK/Koyo pulleys."},
+                {"Category": "Engine and Cooling", "Part Name": "Water Pump Assembly (Aisin)", "OEM Part Number": "21111AA240", "Quantity": 1, "Price": 120.00, "Notes": "Aisin WPF-023 water pump with premium gasket."},
+                {"Category": "Engine and Cooling", "Part Name": "Hydraulic Belt Tensioner", "OEM Part Number": "13033AA042", "Quantity": 1, "Price": 95.00, "Notes": "GMB / OEM-supplier hydraulic timing belt tensioner."},
+                {"Category": "Engine and Cooling", "Part Name": "Thermostat Gasket", "OEM Part Number": "21236AA050", "Quantity": 1, "Price": 5.50, "Notes": "Molded rubber thermostat housing seal ring."},
+                {"Category": "Engine and Cooling", "Part Name": "Engine Air Filter Element", "OEM Part Number": "16546AA12A", "Quantity": 1, "Price": 22.00, "Notes": "Pleated dry fiber element for optimal engine intake filtration."},
+                {"Category": "Engine and Cooling", "Part Name": "Exhaust Gasket (Manifold to Head)", "OEM Part Number": "44011AC030", "Quantity": 2, "Price": 14.50, "Notes": "Multi-layer steel gasket between block and exhaust manifold."},
+                {"Category": "Engine and Cooling", "Part Name": "Center Pipe Gasket (Donut)", "OEM Part Number": "44616AA200", "Quantity": 1, "Price": 18.00, "Notes": "Exhaust center pipe sealing gasket."},
+                {"Category": "Engine and Cooling", "Part Name": "Intake Manifold Gasket", "OEM Part Number": "14035AA580", "Quantity": 2, "Price": 12.50, "Notes": "High-temperature gasket between intake runners and head."},
+                {"Category": "Engine and Cooling", "Part Name": "EGR Pipe Gasket", "OEM Part Number": "14852AA040", "Quantity": 1, "Price": 6.00, "Notes": "Metal gasket for exhaust gas recirculation pipe."},
+                {"Category": "Engine and Cooling", "Part Name": "Water Pipe O-Ring", "OEM Part Number": "14738AA150", "Quantity": 1, "Price": 3.50, "Notes": "Engine cooling bypass pipe sealing ring."},
+                {"Category": "Engine and Cooling", "Part Name": "Chain Cover O-Ring", "OEM Part Number": "806912190", "Quantity": 3, "Price": 2.50, "Notes": "Sealing O-ring for front timing chain/belt cover."},
+                {"Category": "Engine and Cooling", "Part Name": "Chain Cover O-Ring (Small)", "OEM Part Number": "806924120", "Quantity": 1, "Price": 1.80, "Notes": "Smaller timing cover fluid passage seal."},
+                {"Category": "Engine and Cooling", "Part Name": "Tensioner O-Ring", "OEM Part Number": "806916080", "Quantity": 1, "Price": 2.20, "Notes": "Fluid block off O-ring for hydraulic timing tensioner."},
+                {"Category": "Engine and Cooling", "Part Name": "Spark Plug Tube Seal", "OEM Part Number": "10966AA040", "Quantity": 4, "Price": 7.50, "Notes": "Rubber gasket sealing spark plug wells inside valve cover."},
+                {"Category": "Engine and Cooling", "Part Name": "Rocker Cover Gasket (RH)", "OEM Part Number": "13270AA27A", "Quantity": 1, "Price": 24.00, "Notes": "Premium rubber valve cover gasket (passenger side)."},
+                {"Category": "Engine and Cooling", "Part Name": "Rocker Cover Gasket (LH)", "OEM Part Number": "13272AA21A", "Quantity": 1, "Price": 24.00, "Notes": "Premium rubber valve cover gasket (driver side)."},
+                {"Category": "Engine and Cooling", "Part Name": "Cam Carrier O-Ring", "OEM Part Number": "806915170", "Quantity": 4, "Price": 3.20, "Notes": "Sealing ring for EJ257 camshaft carrier housing."},
+                {"Category": "Engine and Cooling", "Part Name": "Cylinder Head Gasket (RH)", "OEM Part Number": "11044AA790", "Quantity": 1, "Price": 55.00, "Notes": "Multi-layer steel (MLS) head gasket for extreme combustion pressures."},
+                {"Category": "Engine and Cooling", "Part Name": "Cylinder Head Gasket (LH)", "OEM Part Number": "10944AA080", "Quantity": 1, "Price": 55.00, "Notes": "Multi-layer steel (MLS) head gasket (driver side)."},
+                {"Category": "Engine and Cooling", "Part Name": "Connecting Rod Bolt", "OEM Part Number": "12109AA120", "Quantity": 8, "Price": 8.50, "Notes": "High-tensile Torque-to-Yield (TTY) connecting rod bolt (must replace once used)."},
+                {"Category": "Engine and Cooling", "Part Name": "Upper Oil Pan O-Ring", "OEM Part Number": "806932030", "Quantity": 3, "Price": 4.50, "Notes": "Crankcase-to-oil-pan fluid passage sealing ring."},
+                {"Category": "Engine and Cooling", "Part Name": "Crankshaft Extension O-Ring", "OEM Part Number": "806939060", "Quantity": 1, "Price": 3.00, "Notes": "Timing gear snout spacer seal."},
+                {"Category": "Engine and Cooling", "Part Name": "Front Crankshaft Oil Seal", "OEM Part Number": "806750080", "Quantity": 1, "Price": 9.50, "Notes": "Vital oil seal located behind the crankshaft timing sprocket."},
+                {"Category": "Engine and Cooling", "Part Name": "Fuel Injector O-Ring (Upper)", "OEM Part Number": "16608KA000", "Quantity": 4, "Price": 4.50, "Notes": "Seal between top fuel rail and fuel injector."},
+                {"Category": "Engine and Cooling", "Part Name": "Fuel Injector O-Ring (Lower)", "OEM Part Number": "16698AA110", "Quantity": 4, "Price": 5.00, "Notes": "Seal between injector nozzle and intake manifold."},
+                {"Category": "Engine and Cooling", "Part Name": "Oil Filter Assembly (Domestic Blue)", "OEM Part Number": "15208AA15A", "Quantity": 1, "Price": 8.50, "Notes": "Alternative standard blue paper-endcap filter element."},
+                {"Category": "Engine and Cooling", "Part Name": "Oil Drain Plug Gasket (Copper Flat)", "OEM Part Number": "803916010", "Quantity": 1, "Price": 1.50, "Notes": "Alternative flat metal drain plug washer."},
+                {"Category": "Engine and Cooling", "Part Name": "Turbo Oil Return Line Hose", "OEM Part Number": "K04535-TurboHose", "Quantity": 1, "Price": 21.00, "Notes": "Heat-resistant hose routing oil from turbo back to cylinder head block."},
+                {"Category": "Engine and Cooling", "Part Name": "Intercooler Stay Grommet", "OEM Part Number": "K04535-Grommet", "Quantity": 1, "Price": 10.00, "Notes": "Rubber isolation stay grommet for top-mount intercooler."},
+                {"Category": "Engine and Cooling", "Part Name": "Upper Evap/Vacuum Line", "OEM Part Number": "GD-EvapLine", "Quantity": 1, "Price": 9.22, "Notes": "Evaporative purge vacuum line assembly."},
+
+                # Maintenance
+                {"Category": "Maintenance", "Part Name": "Spark Plug Set (NGK Laser Iridium)", "OEM Part Number": "22401AA670", "Quantity": 4, "Price": 60.00, "Notes": "NGK SILFR6A (7913) gapped to 0.030\". Replace every 30,000 to 60,000 miles."},
+                {"Category": "Maintenance", "Part Name": "Engine Cabin Air Filter", "OEM Part Number": "72880FG000", "Quantity": 1, "Price": 25.00, "Notes": "Multi-layer HEPA Active Carbon filter. Replace every 12 to 24 months."},
+                {"Category": "Maintenance", "Part Name": "Subaru OEM Touch-Up Paint", "OEM Part Number": "SOA326-Paint", "Quantity": 1, "Price": 31.00, "Notes": "Color-matched touch-up brush for chip repair."},
+
+                # Suspension and Brakes
+                {"Category": "Suspension and Brakes", "Part Name": "Front Brembo Brake Rotor (Each)", "OEM Part Number": "26300FE070", "Quantity": 2, "Price": 150.00, "Notes": "High-carbon vented cast iron 326mm brake rotor."},
+                {"Category": "Suspension and Brakes", "Part Name": "Rear Brembo Brake Pad Set", "OEM Part Number": "26696FG000", "Quantity": 1, "Price": 95.00, "Notes": "High-performance pads. Includes multi-layer backing shims."},
+                {"Category": "Suspension and Brakes", "Part Name": "Front Brembo Caliper Bolt (Each)", "OEM Part Number": "901120103", "Quantity": 4, "Price": 6.00, "Notes": "High-strength Grade 10.9 steel caliper-to-knuckle bolt."},
+                {"Category": "Suspension and Brakes", "Part Name": "Rear Brembo Caliper Mounting Bolt", "OEM Part Number": "901120102", "Quantity": 4, "Price": 5.00, "Notes": "High-strength steel caliper mounting bolt."},
+                {"Category": "Suspension and Brakes", "Part Name": "Caliper Bleeder Screws", "OEM Part Number": "M8/M10-Bleeder", "Quantity": 1, "Price": 12.00, "Notes": "Caliper hydraulic air bleed valves (Set of 4)."},
+                {"Category": "Suspension and Brakes", "Part Name": "Brake Hose Banjo Bolt", "OEM Part Number": "M10-Banjo", "Quantity": 1, "Price": 8.00, "Notes": "Fluid delivery banjo bolt with fresh copper washers."},
+                {"Category": "Suspension and Brakes", "Part Name": "Brembo Caliper Bolt Set", "OEM Part Number": "SOA-BremboBolt", "Quantity": 1, "Price": 6.00, "Notes": "Replacement bolt for brake bracket."},
+
+                # Manual Transmission
+                {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug (T70 Torx)", "OEM Part Number": "32103AA080", "Quantity": 1, "Price": 10.00, "Notes": "Magnetic drain plug for TY856 transmission case."},
+                {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug Crush Washer", "OEM Part Number": "32103AA012", "Quantity": 1, "Price": 4.50, "Notes": "Sealing gasket for manual transmission drain plug."},
+                {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug (Early Spec)", "OEM Part Number": "32103AA070", "Quantity": 1, "Price": 15.00, "Notes": "Early model year 6-speed magnetic plug."},
+                {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug Gasket (Copper)", "OEM Part Number": "32103AA011", "Quantity": 1, "Price": 9.00, "Notes": "Copper sealing washer for manual transmission drain plug."},
+                {"Category": "Manual Transmission", "Part Name": "Mach V Braided Clutch Line", "OEM Part Number": "MachV-ClutchLine", "Quantity": 1, "Price": 29.00, "Notes": "Stainless steel braided high-pressure clutch hydraulic line."},
+                {"Category": "Manual Transmission", "Part Name": "OEM Quality Clutch Slave Cylinder", "OEM Part Number": "Slave-Cylinder", "Quantity": 1, "Price": 49.00, "Notes": "Hydraulic clutch actuator cylinder assembly."},
+                {"Category": "Manual Transmission", "Part Name": "Subaru Bell Housing Bolts/Studs", "OEM Part Number": "Bellhousing-Bolt", "Quantity": 1, "Price": 4.43, "Notes": "High-tensile bellhousing to manual transmission mounting stud."},
+
+                # Driveline and Differential
+                {"Category": "Driveline and Differential", "Part Name": "Motul STI 6-Speed Transmission Fluid Kit", "OEM Part Number": "Motul-6MT-Kit", "Quantity": 1, "Price": 165.00, "Notes": "Full fluid kit with gearbox and rear differential lubricants."},
+                {"Category": "Driveline and Differential", "Part Name": "Hubcentric Rings (Set of 4)", "OEM Part Number": "Hub-Rings", "Quantity": 1, "Price": 11.00, "Notes": "Custom polymer alignment rings for aftermarket wheels."},
+
+                # Heating and Air Conditioning
+                {"Category": "Heating and Air Conditioning", "Part Name": "AC Drive Stretch Belt Kit", "OEM Part Number": "11718AA082", "Quantity": 1, "Price": 45.00, "Notes": "Replaces 11718AA081. Specialty EPDM belt (includes plastic guide installer tool)."},
+
+                # Steering
+                {"Category": "Steering", "Part Name": "Alternator / Power Steering Belt", "OEM Part Number": "809218460", "Quantity": 1, "Price": 28.00, "Notes": "V-Ribbed EPDM accessory drive belt."},
+
+                # Electrical
+                {"Category": "Electrical", "Part Name": "Hanshin OEM Ignition Coil Pack", "OEM Part Number": "22433AA641", "Quantity": 4, "Price": 110.00, "Notes": "Hanshin OEM Service Component. Prevents misfires under boost."},
+
+                # Body
+                {"Category": "Body", "Part Name": "Transmission Crossmember Bolt Kit", "OEM Part Number": "Crossmember-Bolts", "Quantity": 1, "Price": 18.00, "Notes": "High-tensile fasteners for subframe crossmember mounting."},
+                {"Category": "Body", "Part Name": "Bumper Vents Set", "OEM Part Number": "Bumper-Vents", "Quantity": 1, "Price": 43.63, "Notes": "Bumper outer vents trim kit."},
+                {"Category": "Body", "Part Name": "Front Bumper Side Support", "OEM Part Number": "Bumper-Support", "Quantity": 1, "Price": 12.82, "Notes": "Bumper fascia side attachment guide bracket."},
+
+                # Door
+                {"Category": "Door", "Part Name": "Door Hinge Lubricant", "OEM Part Number": "White Lithium Grease", "Quantity": 1, "Price": 8.00, "Notes": "Applied to door hinge assemblies and latching pins."}
+            ]
+
+            import pandas as pd
+            df_catalog = pd.DataFrame(parts_catalog)
+            
+            # Interactive search & filter controls
+            col_search, col_cat = st.columns([2, 1])
+            with col_search:
+                search_query = st.text_input("🔍 Search parts by name or part number:", "").strip().lower()
+            with col_cat:
+                category_list = ["All Categories"] + sorted(list(set(df_catalog["Category"].tolist())))
+                selected_category = st.selectbox("📂 Filter by category:", category_list)
+            
+            # Filter the dataframe
+            filtered_df = df_catalog.copy()
+            if selected_category != "All Categories":
+                filtered_df = filtered_df[filtered_df["Category"] == selected_category]
+            
+            if search_query:
+                filtered_df = filtered_df[
+                    filtered_df["Part Name"].str.lower().str.contains(search_query) | 
+                    filtered_df["OEM Part Number"].str.lower().str.contains(search_query)
+                ]
+            
+            # Interactive Shopping List Calculator
+            st.markdown("#### 🛒 Interactive Shopping List & Cost Calculator")
+            st.write("Select the parts you are planning to purchase to calculate the total estimated cost, tax rate, and shipping:")
+            
+            # Render dataframe with checkboxes or let users select using a multi-select
+            selected_part_names = st.multiselect(
+                "Select parts to add to your cart:",
+                options=filtered_df["Part Name"].tolist(),
+                help="Start typing or select parts from the dropdown to calculate a combined estimated cost."
+            )
+            
+            if selected_part_names:
+                selected_rows = df_catalog[df_catalog["Part Name"].isin(selected_part_names)].copy()
+                
+                # Let user configure quantities
+                st.write("🔧 **Configure quantities for selected parts:**")
+                quantities = {}
+                col_part_header, col_qty_header = st.columns([3, 1])
+                with col_part_header:
+                    st.write("**Part Name**")
+                with col_qty_header:
+                    st.write("**Quantity**")
+                    
+                for idx, row in selected_rows.iterrows():
+                    col_p, col_q = st.columns([3, 1])
+                    with col_p:
+                        st.write(f"{row['Part Name']} (`{row['OEM Part Number']}`) — ${row['Price']:.2f} each")
+                    with col_q:
+                        quantities[row['Part Name']] = st.number_input(
+                            "", 
+                            min_value=1, 
+                            max_value=20, 
+                            value=int(row['Quantity']), 
+                            key=f"qty_{row['Part Name']}",
+                            label_visibility="collapsed"
+                        )
+                
+                # Calculate costs
+                subtotal = 0.0
+                calc_rows = []
+                for idx, row in selected_rows.iterrows():
+                    q = quantities[row['Part Name']]
+                    item_total = row['Price'] * q
+                    subtotal += item_total
+                    calc_rows.append({
+                        "Part Name": row["Part Name"],
+                        "OEM Part Number": row["OEM Part Number"],
+                        "Unit Price": f"${row['Price']:.2f}",
+                        "Quantity": q,
+                        "Total Price": f"${item_total:.2f}"
+                    })
+                
+                df_calc = pd.DataFrame(calc_rows)
+                st.dataframe(df_calc, use_container_width=True, hide_index=True)
+                
+                # Tax and shipping sliders
+                col_tax, col_ship = st.columns(2)
+                with col_tax:
+                    tax_rate = st.slider("State Sales Tax Rate (%)", min_value=0.0, max_value=15.0, value=6.5, step=0.5)
+                with col_ship:
+                    shipping_cost = st.number_input("Estimated Shipping Cost ($)", min_value=0.0, max_value=200.0, value=0.0, step=5.0)
+                
+                tax_amount = subtotal * (tax_rate / 100.0)
+                grand_total = subtotal + tax_amount + shipping_cost
+                
+                # Display cost summary box
+                st.markdown(
+                    f"""
+                    <div style='background-color:#f0f2f6;padding:15px;border-radius:10px;margin-top:10px;'>
+                        <table style='width:100%; border:none; border-collapse:collapse;'>
+                            <tr style='border:none;'><td style='border:none;'><b>Subtotal:</b></td><td style='text-align:right; border:none;'><b>${subtotal:.2f}</b></td></tr>
+                            <tr style='border:none;'><td style='border:none;'>Sales Tax ({tax_rate}%):</td><td style='text-align:right; border:none;'>${tax_amount:.2f}</td></tr>
+                            <tr style='border:none;'><td style='border:none;'>Shipping:</td><td style='text-align:right; border:none;'>${shipping_cost:.2f}</td></tr>
+                            <tr style='border:none; border-top:1px solid #ccc;'><td style='border:none; padding-top:5px;'><h4>Grand Total:</h4></td><td style='text-align:right; border:none; padding-top:5px;'><h4>${grand_total:.2f}</h4></td></tr>
+                        </table>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+            else:
+                st.info("🛒 Your shopping list is currently empty. Select parts from the filterable list above to calculate costs!")
+                
+            # Render filterable catalog
+            st.markdown("#### 📂 Filtered OEM Parts Reference Catalog")
+            
+            # Format Prices for display in table
+            display_df = filtered_df.copy()
+            display_df["Price"] = display_df["Price"].apply(lambda x: f"${x:.2f}")
+            st.dataframe(display_df, use_container_width=True, hide_index=True)
     # Fluids Tab
     with tab_fluids:
         st.subheader("🛢️ Subaru Recommended Fluids, Grades & Capacities")
