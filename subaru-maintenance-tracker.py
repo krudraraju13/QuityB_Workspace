@@ -3,6 +3,9 @@ import sys
 import json
 import datetime
 import pandas as pd
+import re
+
+HISTORY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "subaru_maintenance_history.json")
 
 # Attempt to import optional libraries
 try:
@@ -22,7 +25,7 @@ try:
 except ImportError:
     HAS_RICH = False
 
-HISTORY_FILE = "subaru_maintenance_history.json"
+
 
 def load_history():
     if os.path.exists(HISTORY_FILE):
@@ -206,7 +209,125 @@ class MaintenanceScheduler:
 
 # --- STREAMLIT WEB APP RUNTIME ---
 if HAS_STREAMLIT and st.runtime.exists():
+    
+    # Set page layout config
     st.set_page_config(page_title="Subaru STI Maintenance Tracker", page_icon="🏎️", layout="wide")
+
+    # Global CSS customization for fonts, responsiveness, align, spacing, and colors
+    st.markdown(
+        """
+        <style>
+        /* Import premium system fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap');
+        
+        html, body, [data-testid="stAppViewContainer"] {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0f172a !important; /* Dark Slate background */
+            color: #cbd5e1 !important;
+        }
+
+        h1, h2, h3, h4, h5, h6, [class*="header"] {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #f8fafc !important;
+        }
+
+        /* Customize Streamlit Tabs */
+        button[data-baseweb="tab"] {
+            font-family: 'Montserrat', sans-serif !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            color: #94a3b8 !important;
+            border-bottom: 2px solid transparent !important;
+            padding: 10px 16px !important;
+            transition: all 0.3s ease !important;
+        }
+
+        button[data-baseweb="tab"]:hover {
+            color: #ffc13b !important;
+        }
+
+        button[data-baseweb="tab"][aria-selected="true"] {
+            color: #ffc13b !important;
+            border-bottom: 3px solid #ffc13b !important;
+            background-color: rgba(255, 193, 59, 0.05) !important;
+            border-top-left-radius: 4px !important;
+            border-top-right-radius: 4px !important;
+        }
+
+        /* Beautiful responsive card containers */
+        .custom-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-left: 5px solid #ffc13b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .custom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #475569;
+        }
+
+        /* Highlight card for crucial warnings */
+        .warning-card {
+            background-color: #311c1c;
+            border: 1px solid #6b2121;
+            border-left: 5px solid #e10600;
+            border-radius: 8px;
+            padding: 18px;
+            margin: 15px 0;
+        }
+
+        /* Styled list elements */
+        ul {
+            padding-left: 20px !important;
+            margin-bottom: 10px !important;
+        }
+        li {
+            margin-bottom: 6px !important;
+            line-height: 1.5 !important;
+        }
+
+        /* Align center util */
+        .align-center {
+            text-align: center;
+        }
+
+        /* Make dataframes highly readable and fit containers */
+        div[data-testid="stDataFrame"] {
+            background-color: #1a202c !important;
+            border-radius: 8px !important;
+            border: 1px solid #2d3748 !important;
+            overflow: hidden !important;
+        }
+        
+        /* Adjust expander headers */
+        .streamlit-expanderHeader {
+            font-family: 'Montserrat', sans-serif !important;
+            font-weight: 600 !important;
+            font-size: 15px !important;
+            background-color: #1e293b !important;
+            border: 1px solid #334155 !important;
+            border-radius: 4px !important;
+            margin-bottom: 5px !important;
+            color: #f1f5f9 !important;
+        }
+        .streamlit-expanderContent {
+            background-color: #0f172a !important;
+            border: 1px solid #334155 !important;
+            border-top: none !important;
+            border-bottom-left-radius: 4px !important;
+            border-bottom-right-radius: 4px !important;
+            padding: 15px !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
     @st.dialog("Confirm Service Log")
     def confirm_save_dialog(completed_list, mileage, severe):
@@ -228,15 +349,97 @@ if HAS_STREAMLIT and st.runtime.exists():
             if st.button("Cancel", use_container_width=True):
                 st.rerun()
 
-    st.markdown(
-        """
-        <div style='background-color:#1e3d59;padding:15px;border-radius:10px;text-align:center;'>
-            <h1 style='color:white;margin:0;'>🏎️ Subaru WRX STI Maintenance Tracker</h1>
-            <p style='color:#ffc13b;margin:5px 0 0 0;font-size:1.1em;'>Keep your boxer engine in optimal performance. Real schedules, custom alerts, torque specs, and local logging.</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+
+    # Responsive Brand Logo Header Block
+    logo_col, title_col = st.columns([1, 2.5])
+    with logo_col:
+        st.markdown("""
+<svg viewBox="0 0 500 120" width="100%" height="100" style="max-width: 320px; display: block; margin: auto;">
+  <defs>
+    <radialGradient id="blue-grad" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#0066cc" />
+      <stop offset="40%" stop-color="#0033aa" />
+      <stop offset="85%" stop-color="#001166" />
+      <stop offset="100%" stop-color="#000833" />
+    </radialGradient>
+    <linearGradient id="silver-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#e1e1e1"/>
+      <stop offset="70%" stop-color="#9d9d9d"/>
+      <stop offset="100%" stop-color="#696969"/>
+    </linearGradient>
+    <linearGradient id="chrome-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#aaaaaa"/>
+      <stop offset="51%" stop-color="#777777"/>
+      <stop offset="100%" stop-color="#333333"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <!-- Outer Bezel -->
+  <ellipse cx="250" cy="60" rx="242" ry="57" fill="url(#chrome-grad)"/>
+  <ellipse cx="250" cy="60" rx="238" ry="53" fill="#000822"/>
+  <!-- Blue Oval Body -->
+  <ellipse cx="250" cy="60" rx="230" ry="46" fill="url(#blue-grad)"/>
+  <!-- Silver Inner Accent Rim -->
+  <ellipse cx="250" cy="60" rx="222" ry="38" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <!-- Symmetrical Constellation Stars -->
+  <g filter="url(#glow)">
+    <!-- Large Star (Main Left) -->
+    <g transform="translate(132, 60)">
+      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
+      <circle cx="0" cy="0" r="4" fill="#ffffff"/>
+    </g>
+    <!-- Five Small Stars (Clustered Right) -->
+    <!-- Star 1 -->
+    <g transform="translate(230, 42) scale(0.42)">
+      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
+      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
+    </g>
+    <!-- Star 2 -->
+    <g transform="translate(270, 52) scale(0.45)">
+      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
+      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
+    </g>
+    <!-- Star 3 -->
+    <g transform="translate(242, 72) scale(0.40)">
+      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
+      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
+    </g>
+    <!-- Star 4 -->
+    <g transform="translate(285, 76) scale(0.48)">
+      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
+      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
+    </g>
+    <!-- Star 5 -->
+    <g transform="translate(272, 94) scale(0.38)">
+      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
+      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
+    </g>
+  </g>
+  <!-- Connecting links (light grey constellation lines) -->
+  <line x1="172" y1="60" x2="213" y2="42" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <line x1="172" y1="60" x2="225" y2="72" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <line x1="230" y1="42" x2="270" y2="52" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <line x1="270" y1="52" x2="285" y2="76" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <line x1="242" y1="72" x2="272" y2="94" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+</svg>""", unsafe_allow_html=True)
+    with title_col:
+        st.markdown(
+            """
+            <div style='padding-top:10px;'>
+                <h1 style='color:#f8fafc;margin:0;font-size:2.2em;letter-spacing:-0.5px;'>🏎️ Subaru WRX STI Maintenance Tracker</h1>
+                <p style='color:#ffc13b;margin:5px 0 0 0;font-size:1.15em;font-family:"Montserrat",sans-serif;font-weight:600;'>
+                    Symmetrical All-Wheel Drive Performance Suite &bull; Factory Specifications &bull; Interactive Log
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    st.markdown("<hr style='margin:10px 0 20px 0; border-color:#334155;'/>", unsafe_allow_html=True)
 
     # Tabs layout
     tab_checklist, tab_procedures, tab_parts, tab_fluids, tab_history, tab_manual = st.tabs([
@@ -591,6 +794,9 @@ if HAS_STREAMLIT and st.runtime.exists():
             category_list = ["All Categories"] + sorted(list(set(df_catalog["Category"].tolist())))
             selected_category = st.selectbox("📂 Filter by category:", category_list)
         
+        # Security Input Sanitization: strip HTML tags and hazardous characters to prevent XSS
+        sanitized_query = "".join([c for c in search_query if c not in '<>"\'\\;']) if search_query else ""
+        
         # Filter the dataframe
         filtered_df = df_catalog.copy()
         if selected_category != "All Categories":
@@ -599,7 +805,7 @@ if HAS_STREAMLIT and st.runtime.exists():
         # Expand search functionality to search across all columns! (Service Status and Required Qty removed)
         if search_query:
             filtered_df = filtered_df[
-                filtered_df["Part Name"].str.lower().str.contains(search_query) |                 filtered_df["OEM Part Number"].str.lower().str.contains(search_query) |                filtered_df["Category"].str.lower().str.contains(search_query) |                filtered_df["Quantity"].astype(str).str.lower().str.contains(search_query) |                filtered_df["Notes"].str.lower().str.contains(search_query)
+                filtered_df["Part Name"].str.lower().str.contains(sanitized_query) |                 filtered_df["OEM Part Number"].str.lower().str.contains(sanitized_query) |                filtered_df["Category"].str.lower().str.contains(sanitized_query) |                filtered_df["Quantity"].astype(str).str.lower().str.contains(sanitized_query) |                filtered_df["Notes"].str.lower().str.contains(sanitized_query)
             ]
         
         # Format Prices and reorder columns for display
@@ -653,7 +859,59 @@ if HAS_STREAMLIT and st.runtime.exists():
         df_fluids = pd.DataFrame(fluids_data)
         st.dataframe(df_fluids, use_container_width=True, hide_index=True)
         
-        st.info("💡 **The 5-Minute Dipstick Rule (NHTSA TSB):** Wait at least 5 minutes after turning off a warm engine on level ground. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate dipstick measurement.")
+        st.write("")
+        col_tip, col_seals = st.columns([1.2, 1])
+        with col_tip:
+            st.info("💡 **The 5-Minute Dipstick Rule (NHTSA TSB):** Wait at least 5 minutes after turning off a warm engine on level ground. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate dipstick measurement.")
+            st.markdown(
+                '''
+                <div class="custom-card" style="margin-top:10px;">
+                    🔧 <b>API Shear Stability Recommendation:</b> EJ257 engines run high heat. Standard factory 5W-30 synthetic degrades to 20-weight viscosity under load. Builders advise <b>API Certified SN/SM full synthetic 5W-40 weight</b> (such as Motul 8100 or Shell Rotella T6) to protect crankshaft journals.
+                </div>
+                ''',
+                unsafe_allow_html=True
+            )
+        with col_seals:
+            st.markdown('''
+<svg viewBox="0 0 450 180" width="100%" height="90" style="max-width: 400px; display:block; margin:auto; background-color: #0f172a; border-radius: 8px; border: 1px solid #334155; padding: 10px;">
+  <!-- Left Starburst Seal -->
+  <g transform="translate(110, 90)">
+    <!-- Scalloped Starburst Base (using radial spikes) -->
+    <path d="M 0,-65 L 5,-60 L 15,-63 L 18,-55 L 28,-55 L 28,-45 L 37,-42 L 34,-32 L 42,-26 L 36,-17 L 42,-9 L 34,-2 L 37,8 L 28,11 L 28,21 L 18,21 L 15,29 L 5,26 L 0,31 L -5,26 L -15,29 L -18,21 L -28,21 L -28,11 L -37,8 L -34,-2 L -42,-9 L -36,-17 L -42,-26 L -34,-32 L -37,-42 L -28,-45 L -28,-55 L -18,-55 L -15,-63 L -5,-60 Z" fill="#ffffff" stroke="#003399" stroke-width="2"/>
+    <circle cx="0" cy="-15" r="50" fill="#ffffff" stroke="#003399" stroke-width="1.5"/>
+    <circle cx="0" cy="-15" r="42" fill="none" stroke="#003399" stroke-dasharray="2,2"/>
+    <text x="0" y="-30" fill="#003399" font-family="'Montserrat', sans-serif" font-size="8" font-weight="bold" text-anchor="middle">AMERICAN</text>
+    <text x="0" y="-20" fill="#003399" font-family="'Montserrat', sans-serif" font-size="8" font-weight="bold" text-anchor="middle">PETROLEUM</text>
+    <text x="0" y="-10" fill="#003399" font-family="'Montserrat', sans-serif" font-size="8" font-weight="bold" text-anchor="middle">INSTITUTE</text>
+    <text x="0" y="3" fill="#003399" font-family="'Montserrat', sans-serif" font-size="9" font-weight="800" text-anchor="middle">CERTIFIED</text>
+    <text x="0" y="16" fill="#003399" font-family="'Montserrat', sans-serif" font-size="7" font-weight="bold" text-anchor="middle">FOR GASOLINE</text>
+    <text x="0" y="24" fill="#003399" font-family="'Montserrat', sans-serif" font-size="7" font-weight="bold" text-anchor="middle">ENGINES</text>
+  </g>
+
+  <!-- Right Donut Seal -->
+  <g transform="translate(310, 90)">
+    <circle cx="0" cy="-15" r="52" fill="#ffffff" stroke="#000000" stroke-width="2.5"/>
+    <!-- Outer ring space -->
+    <circle cx="0" cy="-15" r="32" fill="#ffffff" stroke="#000000" stroke-width="2"/>
+    <circle cx="0" cy="-15" r="14" fill="#ffffff" stroke="#000000" stroke-width="1.5"/>
+    
+    <!-- Texts -->
+    <text x="0" y="-38" fill="#000000" font-family="'Montserrat', sans-serif" font-size="8" font-weight="bold" text-anchor="middle">API SERVICE SM</text>
+    <!-- Center Viscosity weight -->
+    <text x="0" y="-11" fill="#000000" font-family="'Montserrat', sans-serif" font-size="9" font-weight="800" text-anchor="middle">5W-40</text>
+    <!-- Bottom Segment -->
+    <text x="0" y="8" fill="#000000" font-family="'Montserrat', sans-serif" font-size="7" font-weight="bold" text-anchor="middle">ENERGY</text>
+    <text x="0" y="16" fill="#000000" font-family="'Montserrat', sans-serif" font-size="7" font-weight="bold" text-anchor="middle">CONSERVING</text>
+  </g>
+</svg>''', unsafe_allow_html=True)
+            st.markdown(
+                '''
+                <div style='text-align:center; padding:10px; font-size:0.9em; color:#94a3b8;'>
+                    <i>Certification Symbols: Verify of oil canisters carrying the API Certified Starburst (on front) and the API Service Donut (on rear) to guarantee warranty validation.</i>
+                </div>
+                ''',
+                unsafe_allow_html=True
+            )
 
     # History Tab
     with tab_history:
@@ -897,25 +1155,88 @@ if HAS_STREAMLIT and st.runtime.exists():
 
         # Section 4: Cylinder Head sequence
         with st.expander("🔩 DOHC EJ257 Cylinder Head Bolt Tightening Sequence"):
-            st.markdown(
-                """
-                ### ⚙️ 10-Step Cylinder Head Elastic-Plastic Tightening Procedure
-                Always use brand new, clean, and dry OEM **Torque-To-Yield (TTY)** head bolts lightly lubricated with engine oil on the threads and flange faces prior to insertion. Tighten strictly in the designated cross-pattern sequence (center outward):
-                
-                1.  **Stage 1:** Torque all bolts in sequence to **40 N-m (29.5 ft-lbs)**.
-                2.  **Stage 2:** Torque all bolts in sequence to **95 N-m (70 ft-lbs)**.
-                3.  **Stage 3:** Loosen all bolts by **180°** in reverse sequence.
-                4.  **Stage 4:** Loosen all bolts an additional **180°** to release pre-tension completely.
-                5.  **Stage 5:** Torque all bolts in sequence to **10 N-m (7.4 ft-lbs)**.
-                6.  **Stage 6:** Torque all bolts in sequence to **30 N-m (22 ft-lbs)**.
-                7.  **Stage 7:** Torque all bolts in sequence to **70 N-m (51.6 ft-lbs)**.
-                8.  **Stage 8:** Rotate all bolts **80° to 90°** in sequence.
-                9.  **Stage 9:** Rotate all bolts an additional **40° to 45°** in sequence.
-                10. **Stage 10:** Rotate center bolts (1 and 2 only) a final **40° to 45°**.
-                
-                ⚠️ **Warning:** Never reuse stretched TTY head bolts, doing so almost guarantees an uneven seal and immediate head gasket failure!
-                """
-            )
+            head_col, head_svg_col = st.columns([1.2, 1])
+            with head_col:
+                st.markdown(
+                    '''
+                    ### ⚙️ 10-Step Cylinder Head Elastic-Plastic Tightening Procedure
+                    Always use brand new, clean, and dry OEM **Torque-To-Yield (TTY)** head bolts lightly lubricated with engine oil on the threads and flange faces prior to insertion. Tighten strictly in the designated cross-pattern sequence (center outward) as illustrated:
+                    
+                    1.  **Stage 1:** Torque all bolts in sequence to **40 N-m (29.5 ft-lbs)**.
+                    2.  **Stage 2:** Torque all bolts in sequence to **95 N-m (70 ft-lbs)**.
+                    3.  **Stage 3:** Loosen all bolts by **180°** in reverse sequence.
+                    4.  **Stage 4:** Loosen all bolts an additional **180°** to release pre-tension completely.
+                    5.  **Stage 5:** Torque all bolts in sequence to **10 N-m (7.4 ft-lbs)**.
+                    6.  **Stage 6:** Torque all bolts in sequence to **30 N-m (22 ft-lbs)**.
+                    7.  **Stage 7:** Torque all bolts in sequence to **70 N-m (51.6 ft-lbs)**.
+                    8.  **Stage 8:** Rotate all bolts **80° to 90°** in sequence.
+                    9.  **Stage 9:** Rotate all bolts an additional **40° to 45°** in sequence.
+                    10. **Stage 10:** Rotate center bolts (1 and 2 only) a final **40° to 45°**.
+                    
+                    <div class="warning-card">
+                        ⚠️ <b>TTY Fastener Warning:</b> Never reuse stretched Torque-To-Yield (TTY) head bolts. Reusing old bolts compromises clamping force, leading to immediate head gasket failure!
+                    </div>
+                    ''',
+                    unsafe_allow_html=True
+                )
+            with head_svg_col:
+                st.write("")
+                st.markdown('''
+<svg viewBox="0 0 450 220" width="100%" height="100" style="max-width: 420px; display:block; margin:auto; background-color: #0f172a; border-radius: 8px; border: 1px solid #334155; padding: 12px;">
+  <!-- Cylinder block outline -->
+  <rect x="15" y="35" width="420" height="150" rx="8" fill="#1e293b" stroke="#ffc13b" stroke-width="2"/>
+  <text x="225" y="24" fill="#ffc13b" font-family="'Montserrat', sans-serif" font-size="12" font-weight="bold" text-anchor="middle">🔩 DOHC EJ257 HEAD BOLT LAYOUT & SEQUENCE</text>
+  
+  <!-- Bolts as circles with sequence numbers inside -->
+  <!-- Bolt 1 (Center top) -->
+  <circle cx="225" cy="75" r="20" fill="#e10600" stroke="#ffffff" stroke-width="2"/>
+  <text x="225" y="81" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">1</text>
+  <text x="225" y="47" fill="#94a3b8" font-size="9" text-anchor="middle">Center Top</text>
+
+  <!-- Bolt 2 (Center bottom) -->
+  <circle cx="225" cy="145" r="20" fill="#e10600" stroke="#ffffff" stroke-width="2"/>
+  <text x="225" y="151" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">2</text>
+  <text x="225" y="181" fill="#94a3b8" font-size="9" text-anchor="middle">Center Btm</text>
+
+  <!-- Bolt 3 (Left top) -->
+  <circle cx="115" cy="75" r="20" fill="#ffc13b" stroke="#ffffff" stroke-width="2"/>
+  <text x="115" y="81" fill="#0f172a" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">3</text>
+  <text x="115" y="47" fill="#94a3b8" font-size="9" text-anchor="middle">Left Top</text>
+
+  <!-- Bolt 4 (Right bottom) -->
+  <circle cx="335" cy="145" r="20" fill="#ffc13b" stroke="#ffffff" stroke-width="2"/>
+  <text x="335" y="151" fill="#0f172a" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">4</text>
+  <text x="335" y="181" fill="#94a3b8" font-size="9" text-anchor="middle">Right Btm</text>
+
+  <!-- Bolt 5 (Left bottom) -->
+  <circle cx="115" cy="145" r="20" fill="#475569" stroke="#ffffff" stroke-width="2"/>
+  <text x="115" y="151" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">5</text>
+  <text x="115" y="181" fill="#94a3b8" font-size="9" text-anchor="middle">Left Btm</text>
+
+  <!-- Bolt 6 (Right top) -->
+  <circle cx="335" cy="75" r="20" fill="#475569" stroke="#ffffff" stroke-width="2"/>
+  <text x="335" y="81" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">6</text>
+  <text x="335" y="181" fill="#94a3b8" font-size="9" text-anchor="middle">Right Top</text>
+
+  <!-- Center out arrows -->
+  <path d="M 225,100 L 225,120" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#sm-arrow)"/>
+  <path d="M 200,75 L 140,75" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#sm-arrow)"/>
+  <path d="M 250,145 L 310,145" stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#sm-arrow)"/>
+
+  <defs>
+    <marker id="sm-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0,1 L 10,5 L 0,9 z" fill="#ffffff"/>
+    </marker>
+  </defs>
+</svg>''', unsafe_allow_html=True)
+                st.markdown(
+                    '''
+                    <div style='text-align:center; padding:10px; font-size:0.9em; color:#94a3b8;'>
+                        <i>Diagram: Center-out spiral tightening pattern balances thermal expansion and structural gasket load.</i>
+                    </div>
+                    ''',
+                    unsafe_allow_html=True
+                )
 
         # Section 5: Critical Vulnerabilities & Engineering Solutions
         with st.expander("🛠️ Diagnostics of Critical Vulnerabilities & Field Engineering Solutions"):
@@ -944,6 +1265,91 @@ if HAS_STREAMLIT and st.runtime.exists():
                 *   **The Fix:** Remove the intercooler, peel back the slave cylinder rubber boot, and apply high-temperature white lithium grease directly to the release fork and pivot ball socket. If noise persists, replace with an updated pedal bracket assembly per **TSB 12-190-15 and TSB 03-79-18R**.
                 """
             )
+
+        
+        # Section 7: Piston Ring Gap Alignment (Reworked and Illustrated)
+        with st.expander("⭕ EJ257 High-Performance Piston Ring End Gap Alignment"):
+            pist_col, pist_svg_col = st.columns([1.2, 1])
+            with pist_col:
+                st.markdown(
+                    '''
+                    ### 📐 Cylinder Wall Piston Ring End Gap Orientations
+                    When assembling or rebuilding an EJ257 high-performance engine block, spacing out your ring end gaps at specific offsets is mandatory to prevent exhaust blow-by, excessive oil consumption, and localized hot spots:
+                    
+                    *   **Gap A (Top Compression Ring):** Positioned at **45°** to the top-right relative to the wrist-pin axis, pointing toward the right-front of the cylinder deck.
+                    *   **Gap B (Second Compression Ring):** Aligned exactly **180° away** from Gap A, pointing toward the left-rear of the block.
+                    *   **Gap C (Upper Oil Scraper Side Rail):** Positioned at **45°** to the top-left, pointing toward the left-front of the cylinder wall.
+                    *   **Gap G (Lower Oil Scraper Side Rail):** Spaced out at **120°** relative to Gap C (pointing to bottom-right, e.g. at **45°** to the bottom-right).
+                    *   **Gap F (Oil Control Spacer Expander):** Positioned directly on the lower wrist-pin vertical axis, offset from all scraper rails.
+                    
+                    <div class="custom-card">
+                        💡 <b>Assembly Advice:</b> Confirm all top and second compression rings turn freely in the piston grooves prior to block insertion. Use a professional ring compressor to prevent micro-fracturing the delicate rings.
+                    </div>
+                    ''',
+                    unsafe_allow_html=True
+                )
+            with pist_svg_col:
+                st.write("")
+                st.markdown('''
+<svg viewBox="0 0 400 400" width="100%" height="100" style="max-width: 320px; display:block; margin:auto; background-color: #0f172a; border-radius: 8px; border: 1px solid #334155; padding: 12px;">
+  <!-- Cylinder Bore -->
+  <circle cx="200" cy="200" r="165" fill="none" stroke="#475569" stroke-width="4"/>
+  <circle cx="200" cy="200" r="150" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+  
+  <!-- Wrist Pin Axis -->
+  <rect x="175" y="100" width="50" height="200" rx="6" fill="#1e1e2e" stroke="#4a5568" stroke-width="1.5" opacity="0.3"/>
+  <circle cx="200" cy="200" r="8" fill="#64748b"/>
+  <line x1="200" y1="50" x2="200" y2="350" stroke="#475569" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="50" y1="200" x2="350" y2="200" stroke="#475569" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Front of Engine Arrow -->
+  <path d="M 200,90 L 200,45" stroke="#ffc13b" stroke-width="3" fill="none" marker-end="url(#front-arrow)"/>
+  <text x="200" y="32" fill="#ffc13b" font-family="'Montserrat', sans-serif" font-size="10" font-weight="bold" text-anchor="middle">FRONT OF ENGINE (→)</text>
+
+  <!-- Gap A: Top Compression Ring -->
+  <line x1="200" y1="200" x2="306" y2="94" stroke="#e10600" stroke-width="2" stroke-dasharray="3,3"/>
+  <circle cx="306" cy="94" r="11" fill="#e10600"/>
+  <text x="306" y="100" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="11" font-weight="bold" text-anchor="middle">A</text>
+  <text x="322" y="88" fill="#e10600" font-size="11" font-weight="bold">Top Ring</text>
+
+  <!-- Gap B: Second Compression Ring -->
+  <line x1="200" y1="200" x2="94" y2="306" stroke="#ffc13b" stroke-width="2" stroke-dasharray="3,3"/>
+  <circle cx="94" cy="306" r="11" fill="#ffc13b"/>
+  <text x="94" y="312" fill="#0f172a" font-family="'Montserrat', sans-serif" font-size="11" font-weight="bold" text-anchor="middle">B</text>
+  <text x="45" y="325" fill="#ffc13b" font-size="11" font-weight="bold">Second Ring</text>
+
+  <!-- Gap C: Upper Side Rail -->
+  <line x1="200" y1="200" x2="94" y2="94" stroke="#48bb78" stroke-width="2" stroke-dasharray="3,3"/>
+  <circle cx="94" cy="94" r="10" fill="#48bb78"/>
+  <text x="94" y="99" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="10" font-weight="bold" text-anchor="middle">C</text>
+  <text x="45" y="80" fill="#48bb78" font-size="11" font-weight="bold">Upper Rail</text>
+
+  <!-- Gap G: Lower Side Rail -->
+  <line x1="200" y1="200" x2="306" y2="306" stroke="#3182ce" stroke-width="2" stroke-dasharray="3,3"/>
+  <circle cx="306" cy="306" r="10" fill="#3182ce"/>
+  <text x="306" y="311" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="10" font-weight="bold" text-anchor="middle">G</text>
+  <text x="320" y="325" fill="#3182ce" font-size="11" font-weight="bold">Lower Rail</text>
+
+  <!-- Gap F: Spacer Expander -->
+  <line x1="200" y1="200" x2="200" y2="340" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3,3"/>
+  <circle cx="200" cy="340" r="10" fill="#94a3b8"/>
+  <text x="200" y="345" fill="#0f172a" font-family="'Montserrat', sans-serif" font-size="10" font-weight="bold" text-anchor="middle">F</text>
+  <text x="200" y="365" fill="#94a3b8" font-size="9" text-anchor="middle">Spacer Expander</text>
+
+  <defs>
+    <marker id="front-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0,1 L 10,5 L 0,9 z" fill="#ffc13b"/>
+    </marker>
+  </defs>
+</svg>''', unsafe_allow_html=True)
+                st.markdown(
+                    '''
+                    <div style='text-align:center; padding:10px; font-size:0.9em; color:#94a3b8;'>
+                        <i>Diagram: Radial distribution of piston ring end gaps prevents any gas paths from aligning.</i>
+                    </div>
+                    ''',
+                    unsafe_allow_html=True
+                )
 
         # Section 6: Engine Class Action Settlement & Recalls
         with st.expander("⚖️ Regulatory Safety Recalls & The EJ257 Catastrophic Engine Settlement"):
