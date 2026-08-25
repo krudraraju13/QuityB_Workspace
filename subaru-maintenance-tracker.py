@@ -339,24 +339,20 @@ if HAS_STREAMLIT and st.runtime.exists():
                     st.markdown(f"#### {cat_title}")
                     for item in cat_items:
                         # Construct status and completion details
-                        last_str = f" (Last completed: {item['last_completed']:,} mi)" if item['last_completed'] is not None else " (Never completed)"
+                        last_str = f" (Last: {item['last_completed']:,} mi)" if item['last_completed'] is not None else ""
+                        due_tag = " ⚠️ (Due)" if item["due"] else ""
                         
                         if item["name"] in completed_items_at_current_mileage:
                             # Already logged at this exact mileage
                             st.checkbox(
-                                f"🟢 **Logged:** **{item['name']}**{last_str} — Interval: every {item['interval']:,} mi", 
+                                f"🟢 **{item['name']}**{last_str} — Logged", 
                                 value=True, 
                                 disabled=True, 
                                 key=f"logged_{item['name']}"
                             )
                         else:
                             # Not logged yet
-                            if item["due"]:
-                                label = f"🚨 **DUE NOW:** **{item['name']}**{last_str} — Interval: every {item['interval']:,} mi"
-                            else:
-                                due_in = item['interval'] - (mileage - (item['last_completed'] or 0))
-                                label = f"🕒 **Upcoming in {due_in:,} mi:** **{item['name']}**{last_str} — Due at: {((item['last_completed'] or 0) + item['interval']):,} mi"
-                            
+                            label = f"**{item['name']}**{due_tag}{last_str} — every {item['interval']:,} mi"
                             checked = st.checkbox(label, key=f"check_{item['name']}")
                             if checked:
                                 completed_list.append(item["name"])
