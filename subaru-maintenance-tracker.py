@@ -220,66 +220,71 @@ if HAS_STREAMLIT and st.runtime.exists():
         /* Import premium system fonts */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap');
         
+        /* Base dark/light compatible styling */
         html, body, [data-testid="stAppViewContainer"] {
             font-family: 'Roboto', sans-serif;
-            background-color: #0f172a !important; /* Dark Slate background */
-            color: #cbd5e1 !important;
+            color: var(--text-color) !important;
         }
 
         h1, h2, h3, h4, h5, h6, [class*="header"] {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            color: #f8fafc !important;
+            color: var(--text-color) !important;
         }
 
-        /* Customize Streamlit Tabs */
+        /* Customize Streamlit Tabs with STI theme colors */
         button[data-baseweb="tab"] {
             font-family: 'Montserrat', sans-serif !important;
             font-weight: 600 !important;
             font-size: 14px !important;
-            color: #94a3b8 !important;
+            color: var(--text-color) !important;
+            opacity: 0.6;
             border-bottom: 2px solid transparent !important;
             padding: 10px 16px !important;
             transition: all 0.3s ease !important;
         }
 
         button[data-baseweb="tab"]:hover {
-            color: #ffc13b !important;
+            color: #FF007F !important;
+            opacity: 1;
         }
 
         button[data-baseweb="tab"][aria-selected="true"] {
-            color: #ffc13b !important;
-            border-bottom: 3px solid #ffc13b !important;
-            background-color: rgba(255, 193, 59, 0.05) !important;
+            color: #FF007F !important;
+            opacity: 1;
+            border-bottom: 3px solid #FF007F !important;
+            background-color: rgba(255, 0, 127, 0.08) !important;
             border-top-left-radius: 4px !important;
             border-top-right-radius: 4px !important;
         }
 
-        /* Beautiful responsive card containers */
+        /* Custom cards styled around the STI color scheme */
         .custom-card {
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            border-left: 5px solid #ffc13b;
+            background-color: var(--secondary-background-color);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            border-left: 5px solid #FF007F !important; /* STI Cherry Blossom Pink */
             border-radius: 8px;
             padding: 20px;
             margin: 15px 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            color: var(--text-color) !important;
         }
         .custom-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-color: #475569;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+            border-color: #FF007F !important;
         }
 
         /* Highlight card for crucial warnings */
         .warning-card {
-            background-color: #311c1c;
-            border: 1px solid #6b2121;
-            border-left: 5px solid #e10600;
+            background-color: rgba(255, 0, 127, 0.05);
+            border: 1px solid rgba(255, 0, 127, 0.2);
+            border-left: 5px solid #FF007F !important;
             border-radius: 8px;
             padding: 18px;
             margin: 15px 0;
+            color: var(--text-color) !important;
         }
 
         /* Styled list elements */
@@ -350,89 +355,50 @@ if HAS_STREAMLIT and st.runtime.exists():
                 st.rerun()
 
 
-    # Responsive Brand Logo Header Block
+    # Responsive Brand Logo Header Block (Custom high-fidelity STI vector emblem)
     logo_col, title_col = st.columns([1, 2.5])
     with logo_col:
         st.markdown("""
-<svg viewBox="0 0 500 120" width="100%" height="100" style="max-width: 320px; display: block; margin: auto;">
+<svg viewBox="0 0 320 120" width="100%" height="100" style="max-width: 280px; display: block; margin: auto;">
   <defs>
-    <radialGradient id="blue-grad" cx="40%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#0066cc" />
-      <stop offset="40%" stop-color="#0033aa" />
-      <stop offset="85%" stop-color="#001166" />
-      <stop offset="100%" stop-color="#000833" />
-    </radialGradient>
-    <linearGradient id="silver-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="30%" stop-color="#e1e1e1"/>
-      <stop offset="70%" stop-color="#9d9d9d"/>
-      <stop offset="100%" stop-color="#696969"/>
+    <!-- Vibrant STI Pink Gradient -->
+    <linearGradient id="sti-pink-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5CA3" />
+      <stop offset="50%" stop-color="#FF007F" />
+      <stop offset="100%" stop-color="#C2005F" />
     </linearGradient>
-    <linearGradient id="chrome-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="50%" stop-color="#aaaaaa"/>
-      <stop offset="51%" stop-color="#777777"/>
-      <stop offset="100%" stop-color="#333333"/>
+    <!-- Brushed Chrome / Metal Gradient for border -->
+    <linearGradient id="metal-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#D1D1D6" />
+      <stop offset="70%" stop-color="#8E8E93" />
+      <stop offset="100%" stop-color="#3A3A3C" />
     </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+    <filter id="sti-glow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="3.5" result="blur"/>
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
   </defs>
-  <!-- Outer Bezel -->
-  <ellipse cx="250" cy="60" rx="242" ry="57" fill="url(#chrome-grad)"/>
-  <ellipse cx="250" cy="60" rx="238" ry="53" fill="#000822"/>
-  <!-- Blue Oval Body -->
-  <ellipse cx="250" cy="60" rx="230" ry="46" fill="url(#blue-grad)"/>
-  <!-- Silver Inner Accent Rim -->
-  <ellipse cx="250" cy="60" rx="222" ry="38" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
-  <!-- Symmetrical Constellation Stars -->
-  <g filter="url(#glow)">
-    <!-- Large Star (Main Left) -->
-    <g transform="translate(132, 60)">
-      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
-      <circle cx="0" cy="0" r="4" fill="#ffffff"/>
-    </g>
-    <!-- Five Small Stars (Clustered Right) -->
-    <!-- Star 1 -->
-    <g transform="translate(230, 42) scale(0.42)">
-      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
-      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
-    </g>
-    <!-- Star 2 -->
-    <g transform="translate(270, 52) scale(0.45)">
-      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
-      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
-    </g>
-    <!-- Star 3 -->
-    <g transform="translate(242, 72) scale(0.40)">
-      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
-      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
-    </g>
-    <!-- Star 4 -->
-    <g transform="translate(285, 76) scale(0.48)">
-      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
-      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
-    </g>
-    <!-- Star 5 -->
-    <g transform="translate(272, 94) scale(0.38)">
-      <path d="M 0,-40 Q 0,0 40,0 Q 0,0 0,40 Q 0,0 -40,0 Q 0,0 0,-40 Z" fill="url(#silver-grad)"/>
-      <circle cx="0" cy="0" r="3" fill="#ffffff"/>
-    </g>
+  <!-- Background panel to frame the logo beautifully -->
+  <g transform="skewX(-14) translate(15, 15)">
+    <!-- Outer metallic styled ring -->
+    <rect x="0" y="0" width="235" height="90" rx="14" fill="none" stroke="url(#metal-grad)" stroke-width="4.5" filter="url(#sti-glow)" />
+    <!-- Letter S (Italic paths for crisp resolution) -->
+    <path d="M 52,24 C 38,24 28,29 25,37 L 37,39 C 39,35 44,32 51,32 C 57,32 60,35 60,39 C 60,43 55,45 46,47 C 33,50 25,56 25,65 C 25,76 35,82 49,82 C 63,82 72,76 75,67 L 63,65 C 61,69 57,72 50,72 C 44,72 39,70 39,65 C 39,61 44,59 52,57 C 65,54 74,48 74,40 C 74,30 64,24 52,24 Z" fill="url(#sti-pink-grad)" />
+    <!-- Letter T -->
+    <path d="M 82,26 L 138,26 L 135,36 L 117,36 L 111,80 L 98,80 L 104,36 L 85,36 Z" fill="url(#sti-pink-grad)" />
+    <!-- Letter I -->
+    <path d="M 148,26 L 163,26 L 154,80 L 139,80 Z" fill="url(#sti-pink-grad)" />
+    <!-- Under accent line -->
+    <line x1="172" y1="52" x2="218" y2="52" stroke="url(#sti-pink-grad)" stroke-width="6" stroke-linecap="round" />
   </g>
-  <!-- Connecting links (light grey constellation lines) -->
-  <line x1="172" y1="60" x2="213" y2="42" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <line x1="172" y1="60" x2="225" y2="72" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <line x1="230" y1="42" x2="270" y2="52" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <line x1="270" y1="52" x2="285" y2="76" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
-  <line x1="242" y1="72" x2="272" y2="94" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
 </svg>""", unsafe_allow_html=True)
     with title_col:
         st.markdown(
             """
             <div style='padding-top:10px;'>
-                <h1 style='color:#f8fafc;margin:0;font-size:2.2em;letter-spacing:-0.5px;'>🏎️ Subaru WRX STI Maintenance Tracker</h1>
-                <p style='color:#ffc13b;margin:5px 0 0 0;font-size:1.15em;font-family:"Montserrat",sans-serif;font-weight:600;'>
+                <h1 style='color:var(--text-color);margin:0;font-size:2.2em;letter-spacing:-0.5px;'>🏎️ Subaru WRX STI Maintenance Tracker</h1>
+                <p style='color:#FF007F;margin:5px 0 0 0;font-size:1.15em;font-family:"Montserrat",sans-serif;font-weight:700;'>
                     Symmetrical All-Wheel Drive Performance Suite &bull; Factory Specifications &bull; Interactive Log
                 </p>
             </div>
@@ -873,7 +839,7 @@ if HAS_STREAMLIT and st.runtime.exists():
             )
         with col_seals:
             st.markdown('''
-<svg viewBox="0 0 450 180" width="100%" height="90" style="max-width: 400px; display:block; margin:auto; background-color: #0f172a; border-radius: 8px; border: 1px solid #334155; padding: 10px;">
+<svg viewBox="0 0 450 180" width="100%" height="90" style="max-width: 400px; display:block; margin:auto; background-color: var(--secondary-background-color); border-radius: 8px; border: 1px solid rgba(128,128,128,0.2); padding: 10px;">
   <!-- Left Starburst Seal -->
   <g transform="translate(110, 90)">
     <!-- Scalloped Starburst Base (using radial spikes) -->
@@ -1182,30 +1148,30 @@ if HAS_STREAMLIT and st.runtime.exists():
             with head_svg_col:
                 st.write("")
                 st.markdown('''
-<svg viewBox="0 0 450 220" width="100%" height="100" style="max-width: 420px; display:block; margin:auto; background-color: #0f172a; border-radius: 8px; border: 1px solid #334155; padding: 12px;">
+<svg viewBox="0 0 450 220" width="100%" height="100" style="max-width: 420px; display:block; margin:auto; background-color: var(--secondary-background-color); border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); padding: 12px;">
   <!-- Cylinder block outline -->
-  <rect x="15" y="35" width="420" height="150" rx="8" fill="#1e293b" stroke="#ffc13b" stroke-width="2"/>
-  <text x="225" y="24" fill="#ffc13b" font-family="'Montserrat', sans-serif" font-size="12" font-weight="bold" text-anchor="middle">🔩 DOHC EJ257 HEAD BOLT LAYOUT & SEQUENCE</text>
+  <rect x="15" y="35" width="420" height="150" rx="8" fill="rgba(128, 128, 128, 0.05)" stroke="#FF007F" stroke-width="2"/>
+  <text x="225" y="24" fill="#FF007F" font-family="'Montserrat', sans-serif" font-size="12" font-weight="bold" text-anchor="middle">🔩 DOHC EJ257 HEAD BOLT LAYOUT & SEQUENCE</text>
   
   <!-- Bolts as circles with sequence numbers inside -->
   <!-- Bolt 1 (Center top) -->
-  <circle cx="225" cy="75" r="20" fill="#e10600" stroke="#ffffff" stroke-width="2"/>
+  <circle cx="225" cy="75" r="20" fill="#FF007F" stroke="#ffffff" stroke-width="2"/>
   <text x="225" y="81" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">1</text>
   <text x="225" y="47" fill="#94a3b8" font-size="9" text-anchor="middle">Center Top</text>
 
   <!-- Bolt 2 (Center bottom) -->
-  <circle cx="225" cy="145" r="20" fill="#e10600" stroke="#ffffff" stroke-width="2"/>
+  <circle cx="225" cy="145" r="20" fill="#FF007F" stroke="#ffffff" stroke-width="2"/>
   <text x="225" y="151" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">2</text>
   <text x="225" y="181" fill="#94a3b8" font-size="9" text-anchor="middle">Center Btm</text>
 
   <!-- Bolt 3 (Left top) -->
-  <circle cx="115" cy="75" r="20" fill="#ffc13b" stroke="#ffffff" stroke-width="2"/>
-  <text x="115" y="81" fill="#0f172a" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">3</text>
+  <circle cx="115" cy="75" r="20" fill="#94a3b8" stroke="#ffffff" stroke-width="2"/>
+  <text x="115" y="81" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">3</text>
   <text x="115" y="47" fill="#94a3b8" font-size="9" text-anchor="middle">Left Top</text>
 
   <!-- Bolt 4 (Right bottom) -->
-  <circle cx="335" cy="145" r="20" fill="#ffc13b" stroke="#ffffff" stroke-width="2"/>
-  <text x="335" y="151" fill="#0f172a" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">4</text>
+  <circle cx="335" cy="145" r="20" fill="#94a3b8" stroke="#ffffff" stroke-width="2"/>
+  <text x="335" y="151" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="16" font-weight="bold" text-anchor="middle">4</text>
   <text x="335" y="181" fill="#94a3b8" font-size="9" text-anchor="middle">Right Btm</text>
 
   <!-- Bolt 5 (Left bottom) -->
@@ -1291,32 +1257,32 @@ if HAS_STREAMLIT and st.runtime.exists():
             with pist_svg_col:
                 st.write("")
                 st.markdown('''
-<svg viewBox="0 0 400 400" width="100%" height="100" style="max-width: 320px; display:block; margin:auto; background-color: #0f172a; border-radius: 8px; border: 1px solid #334155; padding: 12px;">
+<svg viewBox="0 0 400 400" width="100%" height="100" style="max-width: 320px; display:block; margin:auto; background-color: var(--secondary-background-color); border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); padding: 12px;">
   <!-- Cylinder Bore -->
-  <circle cx="200" cy="200" r="165" fill="none" stroke="#475569" stroke-width="4"/>
-  <circle cx="200" cy="200" r="150" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+  <circle cx="200" cy="200" r="165" fill="none" stroke="rgba(128, 128, 128, 0.3)" stroke-width="4"/>
+  <circle cx="200" cy="200" r="150" fill="rgba(128, 128, 128, 0.05)" stroke="rgba(128, 128, 128, 0.2)" stroke-width="2"/>
   
   <!-- Wrist Pin Axis -->
-  <rect x="175" y="100" width="50" height="200" rx="6" fill="#1e1e2e" stroke="#4a5568" stroke-width="1.5" opacity="0.3"/>
-  <circle cx="200" cy="200" r="8" fill="#64748b"/>
-  <line x1="200" y1="50" x2="200" y2="350" stroke="#475569" stroke-width="1" stroke-dasharray="4,4"/>
-  <line x1="50" y1="200" x2="350" y2="200" stroke="#475569" stroke-width="1" stroke-dasharray="4,4"/>
+  <rect x="175" y="100" width="50" height="200" rx="6" fill="rgba(128, 128, 128, 0.1)" stroke="rgba(128, 128, 128, 0.3)" stroke-width="1.5" opacity="0.3"/>
+  <circle cx="200" cy="200" r="8" fill="#94a3b8"/>
+  <line x1="200" y1="50" x2="200" y2="350" stroke="rgba(128, 128, 128, 0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="50" y1="200" x2="350" y2="200" stroke="rgba(128, 128, 128, 0.2)" stroke-width="1" stroke-dasharray="4,4"/>
 
   <!-- Front of Engine Arrow -->
-  <path d="M 200,90 L 200,45" stroke="#ffc13b" stroke-width="3" fill="none" marker-end="url(#front-arrow)"/>
-  <text x="200" y="32" fill="#ffc13b" font-family="'Montserrat', sans-serif" font-size="10" font-weight="bold" text-anchor="middle">FRONT OF ENGINE (→)</text>
+  <path d="M 200,90 L 200,45" stroke="#FF007F" stroke-width="3" fill="none" marker-end="url(#front-arrow)"/>
+  <text x="200" y="32" fill="#FF007F" font-family="'Montserrat', sans-serif" font-size="10" font-weight="bold" text-anchor="middle">FRONT OF ENGINE (→)</text>
 
   <!-- Gap A: Top Compression Ring -->
-  <line x1="200" y1="200" x2="306" y2="94" stroke="#e10600" stroke-width="2" stroke-dasharray="3,3"/>
-  <circle cx="306" cy="94" r="11" fill="#e10600"/>
+  <line x1="200" y1="200" x2="306" y2="94" stroke="#FF007F" stroke-width="2" stroke-dasharray="3,3"/>
+  <circle cx="306" cy="94" r="11" fill="#FF007F"/>
   <text x="306" y="100" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="11" font-weight="bold" text-anchor="middle">A</text>
-  <text x="322" y="88" fill="#e10600" font-size="11" font-weight="bold">Top Ring</text>
+  <text x="322" y="88" fill="#FF007F" font-size="11" font-weight="bold">Top Ring</text>
 
   <!-- Gap B: Second Compression Ring -->
-  <line x1="200" y1="200" x2="94" y2="306" stroke="#ffc13b" stroke-width="2" stroke-dasharray="3,3"/>
-  <circle cx="94" cy="306" r="11" fill="#ffc13b"/>
-  <text x="94" y="312" fill="#0f172a" font-family="'Montserrat', sans-serif" font-size="11" font-weight="bold" text-anchor="middle">B</text>
-  <text x="45" y="325" fill="#ffc13b" font-size="11" font-weight="bold">Second Ring</text>
+  <line x1="200" y1="200" x2="94" y2="306" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3,3"/>
+  <circle cx="94" cy="306" r="11" fill="#94a3b8"/>
+  <text x="94" y="312" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="11" font-weight="bold" text-anchor="middle">B</text>
+  <text x="45" y="325" fill="#94a3b8" font-size="11" font-weight="bold">Second Ring</text>
 
   <!-- Gap C: Upper Side Rail -->
   <line x1="200" y1="200" x2="94" y2="94" stroke="#48bb78" stroke-width="2" stroke-dasharray="3,3"/>
@@ -1333,12 +1299,12 @@ if HAS_STREAMLIT and st.runtime.exists():
   <!-- Gap F: Spacer Expander -->
   <line x1="200" y1="200" x2="200" y2="340" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3,3"/>
   <circle cx="200" cy="340" r="10" fill="#94a3b8"/>
-  <text x="200" y="345" fill="#0f172a" font-family="'Montserrat', sans-serif" font-size="10" font-weight="bold" text-anchor="middle">F</text>
+  <text x="200" y="345" fill="#ffffff" font-family="'Montserrat', sans-serif" font-size="10" font-weight="bold" text-anchor="middle">F</text>
   <text x="200" y="365" fill="#94a3b8" font-size="9" text-anchor="middle">Spacer Expander</text>
 
   <defs>
     <marker id="front-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
-      <path d="M 0,1 L 10,5 L 0,9 z" fill="#ffc13b"/>
+      <path d="M 0,1 L 10,5 L 0,9 z" fill="#FF007F"/>
     </marker>
   </defs>
 </svg>''', unsafe_allow_html=True)
