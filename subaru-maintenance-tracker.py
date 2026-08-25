@@ -358,7 +358,7 @@ if HAS_STREAMLIT and st.runtime.exists():
     # Responsive Brand Logo Header Block (STI Image Logo from Wallpaper URL)
     logo_col, title_col = st.columns([1, 2.5])
     with logo_col:
-        st.image("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.baltana.com%2Ffiles%2Fcars-1%2FSTI-Subaru-Logo-Wallpaper-72803.jpg&f=1&nofb=1&ipt=75aaa2bc867af8d48ec7b8da2ea8ec53ae1642275a3e083fea462e0e1776ed9f", use_container_width=True)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original", use_container_width=True)
     with title_col:
         st.markdown(
             """
