@@ -356,10 +356,10 @@ if HAS_STREAMLIT and st.runtime.exists():
 
 
     # Responsive Brand Logo Header Block (STI Image Logo from Wallpaper URL)
-    logo_col, title_col = st.columns([1, 3.5])
+    logo_col, title_col = st.columns([3, 3.5])
     with logo_col:
         st.write("") # small vertical spacer
-        st.image("https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original", width=140)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original", width=160)
     with title_col:
         st.markdown(
             """
