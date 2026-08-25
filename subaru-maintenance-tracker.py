@@ -494,6 +494,17 @@ if HAS_STREAMLIT and st.runtime.exists():
             {"Category": "Engine and Cooling", "Part Name": "Turbo Oil Return Line Hose", "OEM Part Number": "K04535-TurboHose", "Quantity": 1, "Price": 21.00, "Notes": "Heat-resistant hose routing oil from turbo back to cylinder head block."},
             {"Category": "Engine and Cooling", "Part Name": "Intercooler Stay Grommet", "OEM Part Number": "K04535-Grommet", "Quantity": 1, "Price": 10.00, "Notes": "Rubber isolation stay grommet for top-mount intercooler."},
             {"Category": "Engine and Cooling", "Part Name": "Upper Evap/Vacuum Line", "OEM Part Number": "GD-EvapLine", "Quantity": 1, "Price": 9.22, "Notes": "Evaporative purge vacuum line assembly."},
+            {"Category": "Engine and Cooling", "Part Name": "PCV Hose Assembly", "OEM Part Number": "11815AA120", "Quantity": 1, "Price": 28.00, "Notes": "Standard PCV hose routing for crankcase ventilation."},
+            {"Category": "Engine and Cooling", "Part Name": "Timing Belt Idler Pulley (Smooth)", "OEM Part Number": "13073AA142", "Quantity": 2, "Price": 45.00, "Notes": "Smooth idler pulley for DOHC EJ timing chain/belt assembly."},
+            {"Category": "Engine and Cooling", "Part Name": "Timing Belt Idler Pulley (Toothed)", "OEM Part Number": "13085AA080", "Quantity": 1, "Price": 52.00, "Notes": "Toothed idler pulley to guide the timing belt."},
+            {"Category": "Engine and Cooling", "Part Name": "Mishimoto X-Line Aluminum Radiator", "OEM Part Number": "Mishimoto-Rad", "Quantity": 1, "Price": 285.00, "Notes": "All-aluminum dual-core high performance radiator."},
+            {"Category": "Engine and Cooling", "Part Name": "Cylinder 4 Chamber Cooling System Kit", "OEM Part Number": "GDT-Cooling", "Quantity": 1, "Price": 79.00, "Notes": "Bypasses hot coolant from rear cylinder head to heater core line."},
+            {"Category": "Engine and Cooling", "Part Name": "IAG Air/Oil Separator (AOS)", "OEM Part Number": "IAG-AOS", "Quantity": 1, "Price": 399.00, "Notes": "Centrifugal swirl pot returning blow-by oil to the oil pan."},
+            {"Category": "Engine and Cooling", "Part Name": "Tomei Expreme Ti Titanium Cat-Back Exhaust", "OEM Part Number": "Tomei-Expreme", "Quantity": 1, "Price": 1090.00, "Notes": "Full titanium lightweight cat-back exhaust system."},
+            {"Category": "Engine and Cooling", "Part Name": "Invidia Gemini R400 Quad Tip Exhaust", "OEM Part Number": "Invidia-R400", "Quantity": 1, "Price": 1150.00, "Notes": "High-performance stainless steel exhaust with deep quad tips."},
+            {"Category": "Engine and Cooling", "Part Name": "COBB SF Intake + Airbox Combo", "OEM Part Number": "COBB-Intake", "Quantity": 1, "Price": 375.00, "Notes": "Air filter intake assembly with protective composite heat shield."},
+            {"Category": "Engine and Cooling", "Part Name": "GrimmSpeed StealthBox Cold Air Intake", "OEM Part Number": "GrimmSpeed-Stealth", "Quantity": 1, "Price": 325.00, "Notes": "Red cold air intake with low-profile high-flow box layout."},
+            {"Category": "Engine and Cooling", "Part Name": "Perrin Top Mount Intercooler (TMIC)", "OEM Part Number": "Perrin-TMIC", "Quantity": 1, "Price": 690.00, "Notes": "Large high-capacity intercooler core resists heat soak."},
 
             # Maintenance
             {"Category": "Maintenance", "Part Name": "Spark Plug Set (NGK Laser Iridium)", "OEM Part Number": "22401AA670", "Quantity": 4, "Price": 60.00, "Notes": "NGK SILFR6A (7913) gapped to 0.030\". Replace every 30,000 to 60,000 miles."},
@@ -508,6 +519,11 @@ if HAS_STREAMLIT and st.runtime.exists():
             {"Category": "Suspension and Brakes", "Part Name": "Caliper Bleeder Screws", "OEM Part Number": "M8/M10-Bleeder", "Quantity": 1, "Price": 12.00, "Notes": "Caliper hydraulic air bleed valves (Set of 4)."},
             {"Category": "Suspension and Brakes", "Part Name": "Brake Hose Banjo Bolt", "OEM Part Number": "M10-Banjo", "Quantity": 1, "Price": 8.00, "Notes": "Fluid delivery banjo bolt with fresh copper washers."},
             {"Category": "Suspension and Brakes", "Part Name": "Brembo Caliper Bolt Set", "OEM Part Number": "SOA-BremboBolt", "Quantity": 1, "Price": 6.00, "Notes": "Replacement bolt for brake bracket."},
+            {"Category": "Suspension and Brakes", "Part Name": "BC Racing BR Series Coilovers (Adjustable)", "OEM Part Number": "Coilovers", "Quantity": 1, "Price": 1195.00, "Notes": "30-way damping and ride height adjustable coilover struts."},
+            {"Category": "Suspension and Brakes", "Part Name": "Time-Sert M12x1.5 Metric Thread Repair Kit", "OEM Part Number": "Time-Sert-1215", "Quantity": 1, "Price": 85.00, "Notes": "Steel insert kit to repair stripped Brembo caliper ears."},
+            {"Category": "Suspension and Brakes", "Part Name": "Front Sway Bar 24mm Stabilizer Bushing", "OEM Part Number": "20401VA000", "Quantity": 2, "Price": 14.00, "Notes": "Molded rubber bushing for front anti-roll bar."},
+            {"Category": "Suspension and Brakes", "Part Name": "Rear Sway Bar 20mm Stabilizer Bushing", "OEM Part Number": "20451VA000", "Quantity": 2, "Price": 12.00, "Notes": "Molded rubber bushing for rear anti-roll bar."},
+            {"Category": "Suspension and Brakes", "Part Name": "Front Stabilizer Sway Bar Endlink", "OEM Part Number": "20470AJ010", "Quantity": 2, "Price": 29.50, "Notes": "Heavy-duty connecting links for front stabilizer bar."},
 
             # Manual Transmission
             {"Category": "Manual Transmission", "Part Name": "6-Speed MT Drain Plug (T70 Torx)", "OEM Part Number": "32103AA080", "Quantity": 1, "Price": 10.00, "Notes": "Magnetic drain plug for TY856 transmission case."},
@@ -517,28 +533,49 @@ if HAS_STREAMLIT and st.runtime.exists():
             {"Category": "Manual Transmission", "Part Name": "Mach V Braided Clutch Line", "OEM Part Number": "MachV-ClutchLine", "Quantity": 1, "Price": 29.00, "Notes": "Stainless steel braided high-pressure clutch hydraulic line."},
             {"Category": "Manual Transmission", "Part Name": "OEM Quality Clutch Slave Cylinder", "OEM Part Number": "Slave-Cylinder", "Quantity": 1, "Price": 49.00, "Notes": "Hydraulic clutch actuator cylinder assembly."},
             {"Category": "Manual Transmission", "Part Name": "Subaru Bell Housing Bolts/Studs", "OEM Part Number": "Bellhousing-Bolt", "Quantity": 1, "Price": 4.43, "Notes": "High-tensile bellhousing to manual transmission mounting stud."},
+            {"Category": "Manual Transmission", "Part Name": "Exedy Stage 1 Organic Performance Clutch Kit", "OEM Part Number": "FJK1001", "Quantity": 1, "Price": 425.00, "Notes": "Includes pressure plate, organic disc, and bearings."},
+            {"Category": "Manual Transmission", "Part Name": "Standard Flywheel Assembly DOHC EJ257", "OEM Part Number": "12310AA410", "Quantity": 1, "Price": 225.00, "Notes": "Factory standard single-mass flywheel assembly."},
 
             # Driveline and Differential
             {"Category": "Driveline and Differential", "Part Name": "Motul STI 6-Speed Transmission Fluid Kit", "OEM Part Number": "Motul-6MT-Kit", "Quantity": 1, "Price": 165.00, "Notes": "Full fluid kit with gearbox and rear differential lubricants."},
             {"Category": "Driveline and Differential", "Part Name": "Hubcentric Rings (Set of 4)", "OEM Part Number": "Hub-Rings", "Quantity": 1, "Price": 11.00, "Notes": "Custom polymer alignment rings for aftermarket wheels."},
+            {"Category": "Driveline and Differential", "Part Name": "Rear Differential Rear Crossmember Bushing Insert Kit", "OEM Part Number": "KDT903", "Quantity": 1, "Price": 45.00, "Notes": "Urethane inserts to stiffen differential cradle mounting."},
+            {"Category": "Driveline and Differential", "Part Name": "Torque Solution Pitch Stop Mount", "OEM Part Number": "TS-PS-002", "Quantity": 1, "Price": 110.00, "Notes": "Billet aluminum pitch stop mount to reduce drivetrain slop."},
 
             # Heating and Air Conditioning
             {"Category": "Heating and Air Conditioning", "Part Name": "AC Drive Stretch Belt Kit", "OEM Part Number": "11718AA082", "Quantity": 1, "Price": 45.00, "Notes": "Replaces 11718AA081. Specialty EPDM belt (includes plastic guide installer tool)."},
 
             # Steering
             {"Category": "Steering", "Part Name": "Alternator / Power Steering Belt", "OEM Part Number": "809218460", "Quantity": 1, "Price": 28.00, "Notes": "V-Ribbed EPDM accessory drive belt."},
+            {"Category": "Steering", "Part Name": "Hydraulic Power Steering Pump Assembly", "OEM Part Number": "34430FG010", "Quantity": 1, "Price": 295.00, "Notes": "Factory OEM hydraulic power steering pump."},
+            {"Category": "Steering", "Part Name": "High-Durometer Steering Rack Bushing Kit", "OEM Part Number": "16.1010", "Quantity": 1, "Price": 35.00, "Notes": "Polyurethane bushings to eliminate play in the steering rack."},
+            {"Category": "Steering", "Part Name": "Updated Steering Gearbox Rattle Tension Spring", "OEM Part Number": "34130VA000", "Quantity": 1, "Price": 12.50, "Notes": "TSB 04-17-17-R tension spring to fix gearbox rattle."},
 
             # Electrical
             {"Category": "Electrical", "Part Name": "Hanshin OEM Ignition Coil Pack", "OEM Part Number": "22433AA641", "Quantity": 4, "Price": 110.00, "Notes": "Hanshin OEM Service Component. Prevents misfires under boost."},
+            {"Category": "Electrical", "Part Name": "Lead-Acid Group 35 Battery", "OEM Part Number": "Battery-Group35", "Quantity": 1, "Price": 140.00, "Notes": "Cold weather starting battery with 550-640 CCA."},
+            {"Category": "Electrical", "Part Name": "Starlink 3G DCM Parasitic Battery Drain Bypass Harness", "OEM Part Number": "Starlink-Bypass", "Quantity": 1, "Price": 49.00, "Notes": "Loops audio around the DCM to stop battery draw."},
+
+            # Interior
+            {"Category": "Interior", "Part Name": "Glovebox Damper Clip / Hinge pin", "OEM Part Number": "Glovebox-Clip", "Quantity": 1, "Price": 8.50, "Notes": "OEM dashboard glovebox damper hinge retention pin."},
+            {"Category": "Interior", "Part Name": "STI Leather/Alcantara Weighted Shift Knob", "OEM Part Number": "Shift-Knob", "Quantity": 1, "Price": 125.00, "Notes": "Genuine weighted shift knob for the TY856 transmission."},
+            {"Category": "Interior", "Part Name": "Updated Clutch/Brake Pedal Bracket Assembly", "OEM Part Number": "Pedal-Assembly", "Quantity": 1, "Price": 195.00, "Notes": "TSB 12-190-15 reinforced bracket to resolve creaking noise."},
 
             # Body
             {"Category": "Body", "Part Name": "Transmission Crossmember Bolt Kit", "OEM Part Number": "Crossmember-Bolts", "Quantity": 1, "Price": 18.00, "Notes": "High-tensile fasteners for subframe crossmember mounting."},
             {"Category": "Body", "Part Name": "Bumper Vents Set", "OEM Part Number": "Bumper-Vents", "Quantity": 1, "Price": 43.63, "Notes": "Bumper outer vents trim kit."},
             {"Category": "Body", "Part Name": "Front Bumper Side Support", "OEM Part Number": "Bumper-Support", "Quantity": 1, "Price": 12.82, "Notes": "Bumper fascia side attachment guide bracket."},
+            {"Category": "Body", "Part Name": "Under-Engine Shield Cover Splash Guard", "OEM Part Number": "56410VA000", "Quantity": 1, "Price": 75.00, "Notes": "Molded composite splash cover protecting the engine oil pan."},
 
             # Door
-            {"Category": "Door", "Part Name": "Door Hinge Lubricant", "OEM Part Number": "White Lithium Grease", "Quantity": 1, "Price": 8.00, "Notes": "Applied to door hinge assemblies and latching pins."}
+            {"Category": "Door", "Part Name": "Door Hinge Lubricant", "OEM Part Number": "White Lithium Grease", "Quantity": 1, "Price": 8.00, "Notes": "Applied to door hinge assemblies and latching pins."},
+            {"Category": "Door", "Part Name": "Front Door Checker/Stay Assembly", "OEM Part Number": "61280VA000", "Quantity": 2, "Price": 24.50, "Notes": "OEM door checker stay to hold the door in open positions."},
+            {"Category": "Door", "Part Name": "Door Outer Window Belt Weatherstrip (Front RH)", "OEM Part Number": "61280VA010", "Quantity": 1, "Price": 45.00, "Notes": "Molded window belt moulding to seal the door glass."},
+
+            # Automatic Transmission
+            {"Category": "Automatic Transmission", "Part Name": "N/A (STI is exclusively 6MT manual)", "OEM Part Number": "N/A", "Quantity": 0, "Price": 0.00, "Notes": "S4 tS CVT variant uses ATF-HP (system capacity ~7.7 Liters)."}
         ]
+
 
         # Consolidate service requirements into the catalog dynamically
         required_quantities = []
