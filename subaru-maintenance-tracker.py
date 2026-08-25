@@ -480,21 +480,39 @@ if HAS_STREAMLIT and st.runtime.exists():
                 """
                 | Category | Part Name | OEM Part Number | Quantity | Description / Notes |
                 | :--- | :--- | :--- | :--- | :--- |
-                | **Filters** | Tokyo Roki JDM Black Engine Oil Filter | `15208AA100` | 1 | Features all-metal bypass valve calibrated to 23 PSI to match high Subaru oil pump pressures. |
-                | **Filters** | Oil Pan Drain Crush Washer | `11126AA000` | 1 | Direct fit copper crush ring. Prevent oil pan thread strip-out. |
-                | **Filters** | Engine Cabin Air Filter | `72880FG000` | 1 | Multi-layer HEPA Active Carbon filter protects HVAC quality. |
-                | **Filters** | Engine Air Filter Element | `16546AA090 / AA10A` | 1 | Pleated dry fiber element for clean induction air flow. |
-                | **Ignition** | Spark Plug Set (Laser Iridium) | `22401AA670` | 4 (Full Set) | NGK SILFR6A / P/N 7913. Torque strictly to 13–17 ft-lb dry (no anti-seize!). |
-                | **Ignition** | Ignition Coil Pack (Single) | `22433AA641` | 4 | Hanshin OEM Service Component. Prevents misfires under boost. |
-                | **Timing & Engine** | Timing Belt (Individual) | `13028AA250` | 1 | Mitsuboshi timing belt for DOHC EJ257. |
-                | **Timing & Engine** | Complete Timing Belt Kit | `TKF-012` | 1 | Aisin kit (contains NTN, NSK, Koyo idlers/tensioner) for optimal bearing life. |
-                | **Timing & Engine** | Water Pump Assembly | `21111AA240` | 1 | Aisin WPF-023 water pump. |
-                | **Timing & Engine** | Hydraulic Belt Tensioner | `13033AA042` | 1 | GMB / OEM supplier hydraulic timing tensioner. |
-                | **Belts** | AC Drive Stretch Belt Kit | `11718AA082` | 1 | Replaces 11718AA081. Must use specialized plastic installation guide tool to prevent rib damage. |
-                | **Belts** | Alternator / Power Steering Belt | `809218460` | 1 | Standard V-Ribbed EPDM accessory drive belt. |
-                | **Brakes** | Rear Brembo Brake Pad Set | `26696FG000` | 1 (Set of 4) | High-performance pads. Includes multi-layer backing shims. |
-                | **Brakes** | Front Brembo Brake Rotor (Each) | `26300FE070` | 2 | High-carbon vented cast iron brake rotor. |
-                | **Brakes** | Front Brembo Caliper Bolt (Each) | `901120103` | 4 | High-strength Grade 10.9 steel caliper-to-knuckle bolts. |
+                | **Engine and Cooling** | Tokyo Roki JDM Black Engine Oil Filter | `15208AA100` | 1 | Calibrated 23 PSI metal bypass valve matches high Subaru oil pump pressure. |
+                | **Engine and Cooling** | Oil Pan Drain Crush Washer | `11126AA000` | 1 | Direct fit copper crush ring. Prevents oil pan thread stripout during service. |
+                | **Engine and Cooling** | Mitsuboshi Timing Belt (Individual) | `13028AA250` | 1 | High-tensile reinforced timing belt for DOHC EJ257 engines. |
+                | **Engine and Cooling** | Complete Timing Belt Kit | `TKF-012` | 1 | Aisin timing kit with water pump, tensioners, and NSK/Koyo pulleys. |
+                | **Engine and Cooling** | Water Pump Assembly | `21111AA240` | 1 | Aisin WPF-023 water pump with premium gasket. |
+                | **Engine and Cooling** | Hydraulic Belt Tensioner | `13033AA042` | 1 | GMB / OEM-supplier hydraulic timing belt tensioner. |
+                | **Engine and Cooling** | Thermostat Gasket | `21236AA050` | 1 | Molded rubber thermostat housing seal ring. |
+                | **Engine and Cooling** | Engine Air Filter Element | `16546AA12A` | 1 | Pleated dry fiber element for optimal engine intake filtration. |
+                | **Maintenance** | Tokyo Roki JDM Black Engine Oil Filter | `15208AA100` | 1 | Core filtration component for regular 3,000 to 6,000 mile oil changes. |
+                | **Maintenance** | Oil Pan Drain Crush Washer | `11126AA000` | 1 | Critical sealing washer replaced on every oil change. |
+                | **Maintenance** | Spark Plug Set (Laser Iridium) | `22401AA670` | 4 (Full Set) | NGK SILFR6A (7913) gapped to 0.030". Replace every 30,000 to 60,000 miles. |
+                | **Maintenance** | Engine Cabin Air Filter | `72880FG000` | 1 | Multi-layer HEPA Active Carbon filter. Replace every 12 to 24 months. |
+                | **Maintenance** | Engine Air Filter Element | `16546AA12A` | 1 | Intake air filter element. Inspect every 15,000 miles; replace at 30,000 miles. |
+                | **Suspension and Brakes** | Front Brembo Brake Rotor (Each) | `26300FE070` | 2 | High-carbon vented cast iron 326mm brake rotor. |
+                | **Suspension and Brakes** | Rear Brembo Brake Pad Set | `26696FG000` | 1 (Set of 4) | High-performance pads. Includes multi-layer backing shims. |
+                | **Suspension and Brakes** | Front Brembo Caliper Bolt (Each) | `901120103` | 4 | High-strength Grade 10.9 steel caliper-to-knuckle bolt. |
+                | **Suspension and Brakes** | Rear Brembo Caliper Mounting Bolt | `901120102` | 4 | High-strength steel caliper mounting bolt. |
+                | **Suspension and Brakes** | Caliper Bleeder Screws | `M8 / M10 Screws` | As required | Caliper hydraulic air bleed valves. |
+                | **Suspension and Brakes** | Brake Hose Banjo Bolt | `M10 Banjo Bolt` | As required | Fluid delivery banjo bolt with fresh copper washers. |
+                | **Manual Transmission** | Motul Gear 300 75W-90 Gear Oil | `API GL-5` | ~3.5 Quarts | High shear-stable gear oil for transaxle & front differential. |
+                | **Manual Transmission** | 6-Speed MT Drain Plug (T70 Torx) | `32103AA080` | 1 | Magnetic drain plug for TY856 transmission case. |
+                | **Manual Transmission** | 6-Speed MT Drain Plug Crush Washer | `32103AA012` | 1 | Sealing gasket for manual transmission drain plug. |
+                | **Driveline and Differential** | Motul 90PA Rear Differential Fluid | `SAE 90 / 75W-90` | 1.0 Quart | High-performance GL-5 hypoid gear oil for Torsen rear LSD. |
+                | **Driveline and Differential** | Rear Diff Fill / Drain Plugs | `M20 Plugs` | 2 | Dual plugs for rear housing. Apply liquid Teflon thread sealant. |
+                | **Heating and Air Conditioning** | AC Drive Stretch Belt Kit | `11718AA082` | 1 | Replaces 11718AA081. Specialty EPDM belt (includes plastic guide installer tool). |
+                | **Heating and Air Conditioning** | Engine Cabin Air Filter | `72880FG000` | 1 | HEPA Active Carbon filter protects HVAC quality and evaporator core. |
+                | **Steering** | Alternator / Power Steering Belt | `809218460` | 1 | V-Ribbed EPDM accessory drive belt. |
+                | **Electrical** | Hanshin OEM Ignition Coil Pack | `22433AA641` | 4 | Hanshin OEM Service Component. Prevents misfires under boost. |
+                | **Electrical** | Spark Plug Set (Laser Iridium) | `22401AA670` | 4 (Full Set) | NGK SILFR6A (7913) direct ignition plugs. |
+                | **Interior** | Engine Cabin Air Filter | `72880FG000` | 1 | HEPA Active Carbon cabin air filter located behind the glovebox. |
+                | **Body** | Subframe Cross Member Bolt Kit | `Grade 10.9 Bolts` | 1 Kit | High-tensile fasteners for subframe crossmember mounting. |
+                | **Door** | Door Hinge Lubricant | `White Lithium Grease` | As required | Applied to door hinge assemblies and latching pins. |
+                | **Automatic Transmission** | N/A (STI is exclusively 6MT manual) | `N/A` | N/A | STI models use the TY856 Series 6-Speed Manual Transmission. |
                 """
             )
 
