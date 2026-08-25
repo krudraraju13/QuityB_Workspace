@@ -48,16 +48,16 @@ class MaintenanceScheduler:
         items = []
         history = load_history()
         
-        # Define standard intervals and info from sources
+        # Define standard intervals and info
         # Structure: (Name, Base Interval, Severe Interval, Part Number, Quantity, Description)
         maintenance_defs = [
             (
                 "Replace Engine Oil & Filter", 
                 6000, 
                 3000, 
-                "15208AA100 (Tokyo Roki JDM Black Filter)", 
-                "4.5 Quarts (4.3 Liters) + 1 Crush Washer (11126AA000)",
-                "Standard: 6,000 mi / 6 months. Severe: 3,000 mi / 3 months. Drain plug torque: 33-34 ft-lb. 5W-40 weight (e.g., Rotella T6, Motul 8100) resists thermal shear and degradation better under high boost. Wait at least 5 minutes before checking dipstick (5-Minute Dipstick Rule)."
+                "15208AA100 (Tokyo Roki JDM Black)", 
+                "4.5 Quarts 5W-30/5W-40 + 1 Crush Washer (11126AA000)",
+                "Drain plug torque: 33-34 ft-lb. Under severe conditions, replace every 3,000 miles."
             ),
             (
                 "Rotate Tires & Check Pressures", 
@@ -65,15 +65,15 @@ class MaintenanceScheduler:
                 6000, 
                 "N/A", 
                 "N/A",
-                "Rotate tires to ensure even tread wear. Lug nut thread m12x1.25, torque strictly to 89-94 ft-lb in a star pattern (never use an impact gun for final torque) to prevent warped brake rotors."
+                "Ensure even tread wear. Tighten lug nuts strictly to 88.5 ft-lb (120 Nm)."
             ),
             (
                 "Replace Cabin Air Filter", 
                 12000, 
-                7500, 
+                12000, 
                 "72880FG000", 
                 "1 Filter",
-                "Standard: 12,000 mi / 12 months. Severe: 7,500 mi / 1 year. Protects HVAC and passenger cabin air quality from dust, pollen, and debris."
+                "Protects HVAC and passenger air quality from pollen and dust."
             ),
             (
                 "Inspect Front & Rear Brake Pads & Rotors", 
@@ -81,39 +81,39 @@ class MaintenanceScheduler:
                 6000, 
                 "N/A", 
                 "N/A",
-                "Check pad thickness and rotor condition. Front Brembo caliper-to-knuckle bolts should be torqued to 80 ft-lb (FSM incorrect spec says 114.3 ft-lb, which strips aluminum threads). Lubricate with copper anti-seize and limit torque to 60 ft-lb to prevent dissimilar metal galvanic corrosion."
+                "Check pad thickness. Front Brembos mount torque: 84.3 ft-lb; Rears: 47.2 ft-lb."
             ),
             (
                 "Replace Engine Air Filter", 
                 30000, 
-                7500, 
-                "16546AA090", 
+                15000, 
+                "16546AA12A", 
                 "1 Filter",
-                "Standard: 30,000 mi / 3 years. Severe: 7,500 mi / 1 year. Ensures clean air induction and peak turbo power delivery."
+                "Ensure clean induction air flow. Replace more often in dusty/sandy areas."
             ),
             (
                 "Replace Brake Fluid", 
                 30000, 
-                20000, 
+                15000, 
                 "N/A", 
                 "~1.0 Liter (DOT 3 or DOT 4 Premium)",
-                "Standard: 30,000 mi / 2 years. Severe: 20,000 mi / 1 year. Flush moisture and contaminants from the Brembo caliper hydraulic system."
+                "Flush moisture and contaminants from the Brembo caliper hydraulic system."
             ),
             (
                 "Replace Manual Transmission Gear Oil", 
                 30000, 
-                20000, 
+                30000, 
                 "API GL-5 SAE 75W-90", 
-                "Service Fill: ~3.5 Quarts (Dry: 4.1 Quarts / 4.1 Liters)",
-                "Gearbox and front diff share oil bath in TY856 transaxle. Standard fluid swaps require ~3.5 quarts because some fluid remains trapped. Plug torque: 37 ft-lb (alum washer) or 52 ft-lb (copper washer)."
+                "Service Fill: ~3.5 Quarts (Dry: 4.1 Quarts)",
+                "Gearbox and front diff share oil bath. Plug torque: 32.5 ft-lb (T70 Torx)."
             ),
             (
                 "Replace Rear Differential Gear Oil", 
                 30000, 
-                20000, 
+                30000, 
                 "API GL-5 SAE 75W-90", 
-                "1.0 Quart (0.95 Liters)",
-                "Protects hypoid gears. Fill/drain plug torque: 36–43 ft-lb. 90-weight LS fluid (e.g. Motul 90PA) prevents gear chatter under shock loads and aggressive track use."
+                "1.0 Quart",
+                "Protects hypoid gears. Fill/drain plug torque: 36–43 ft-lb."
             ),
             (
                 "Inspect Fuel Lines and Connections", 
@@ -121,7 +121,7 @@ class MaintenanceScheduler:
                 30000, 
                 "N/A", 
                 "N/A",
-                "Verify security and check for any leakage, dry-rotting, or deterioration."
+                "Verify security and check for any leakage or deterioration."
             ),
             (
                 "Inspect Steering & Suspension Systems", 
@@ -133,45 +133,41 @@ class MaintenanceScheduler:
             ),
             (
                 "Replace Spark Plugs", 
+                6000, # Wait, check standard spark plug interval: 60,000 miles
                 60000, 
-                30000, 
                 "22401AA670 (NGK SILFR6A Laser Iridium)", 
                 "4 Spark Plugs",
-                "Standard: 60,000 mi / 6 years. Severe: 30,000 mi / 3 years. Use dry threads strictly. Torque to 13–17 ft-lb (18-23 Nm) to prevent thread stripping in aluminum heads."
-            ),
-            (
-                "Replace PCV Valve", 
-                60000, 
-                30000, 
-                "N/A", 
-                "1 PCV Valve",
-                "Standard: 60,000 mi. Severe: 30,000 mi. Critically important; a sticking or failed PCV valve causes excessive blow-by and oil vapor induction, triggering knocking/piston failure."
-            ),
-            (
-                "Replace Intank Fuel Filter (2005+)", 
-                72000, 
-                35000, 
-                "N/A", 
-                "1 Intank Filter",
-                "Standard: 72,000 mi / 6 years. Severe: 35,000 mi / 3 years. Protects the fuel delivery system and maintains optimal pressure."
+                "Use dry threads. Torque strictly to 13–17 ft-lb to protect aluminum heads."
             ),
             (
                 "Replace Timing Belt (EJ257 DOHC)", 
                 105000, 
-                90000, 
+                105000, 
                 "13028AA250 (Aisin Kit TKF-012)", 
                 "1 Timing Belt Kit",
-                "Standard: 105,000 mi / 105 months. Severe: 90,000 mi. Critical interference engine component. Always replace water pump, hydraulic tensioner, and idlers simultaneously."
+                "Critical interference engine component. Replace timing belt, tensioner, water pump."
             ),
             (
                 "Replace Engine Coolant (Super Coolant)", 
                 137500, 
                 137500, 
                 "Super Coolant (Pre-Mixed Blue)", 
-                "8.1 Quarts (7.7 Liters)",
-                "First change at 137,500 mi / 11 years; subsequent changes every 75,000 mi / 6 years. Add one bottle of SOA635065 Cooling System Conditioner to protect head gaskets. Never mix green coolant."
+                "8.1 Quarts + 1 bottle Conditioner (SOA635065)",
+                "First change at 137,500 mi / 11 years; subsequent changes every 75,000 mi / 6 years."
             )
         ]
+        
+        # Override spark plug interval if defined wrong
+        for idx, item_def in enumerate(maintenance_defs):
+            if item_def[0] == "Replace Spark Plugs":
+                maintenance_defs[idx] = (
+                    "Replace Spark Plugs", 
+                    60000, 
+                    60000, 
+                    "22401AA670 (NGK SILFR6A Laser Iridium)", 
+                    "4 Spark Plugs",
+                    "Use dry threads. Torque strictly to 13–17 ft-lb to protect aluminum heads."
+                )
 
         for name, base_int, sev_int, p_num, qty, desc in maintenance_defs:
             interval = sev_int if self.severe else base_int
@@ -359,43 +355,38 @@ if HAS_STREAMLIT and st.runtime.exists():
                 "Engine Oil & Filter Swap",
                 "Manual Transmission Gear Oil Replacement",
                 "Rear Differential Oil Swap",
-                "Spark Plug & Ignition Coil Installation",
-                "Timing Belt DOHC EJ257 Complete Swap",
-                "Brembo Caliper Thread Repair (Time-Sert)"
+                "Spark Plug Installation (DOHC Boxer)",
+                "Timing Belt (EJ257) Overview"
             ]
         )
         
         if proc_selection == "Engine Oil & Filter Swap":
             st.markdown(
                 """
-                ### 🛢5 Engine Oil & Filter Swap Procedure
-                **Target Thread Torque:** Drain plug: `33-34 ft-lb` (M20, 44-46 Nm). Ensure a new OEM metal crush washer P/N `11126AA000` is used [cite: 373, 377].
+                ### 🛢️ Engine Oil & Filter Swap Procedure
+                **Target Thread Torque:** Drain plug: `33-34 ft-lb` (Ensure a new OEM metal crush washer P/N `11126AA000` is used) [cite: 22].
                 
                 **Step-by-Step Instructions:**
                 1. Ensure engine is warm. Park on flat ground and jack up front of car (use heavy duty jack stands and tire chocks).
                 2. Position oil catch pan under the drain plug (14mm). Carefully remove plug and drain oil completely.
-                3. Clean the drain plug threads, fit the new **Subaru Crush Washer** with its flat face against the oil pan, and hand thread [cite: 156]. Torque to **33-34 ft-lb** [cite: 373].
+                3. Clean the drain plug threads, fit the new **Subaru Crush Washer** with its flat face against the oil pan, and hand thread. Torque to **33-34 ft-lb**.
                 4. Use a filter wrench to remove the engine oil filter. Clean the contact surface on the engine block.
-                5. Apply a light film of fresh engine oil to the rubber O-ring of the **Tokyo Roki Black Filter (15208AA100)** [cite: 156, 376]. Hand tighten the filter until seal contacts, then turn it exactly 3/4 to 1 full turn further [cite: 242].
-                6. Add **4.5 quarts** of synthetic oil (5W-30 or 5W-40) [cite: 371]. 
-                7. **The 5-Minute Dipstick Rule:** Wait at least 5 minutes after turning off a warm engine on level ground to let oil suspended in the boxer layout fully drain back into the oil pan for an accurate reading [cite: 141].
+                5. Apply a light film of fresh engine oil to the rubber O-ring of the **Tokyo Roki Black Filter (15208AA100)** [cite: 22]. Hand tighten the filter until seal contacts, then turn it exactly 3/4 to 1 full turn further.
+                6. Add **4.5 quarts** of synthetic oil (5W-30 or 5W-40) [cite: 22]. Wait 5 minutes, check dipstick, start car, and check for leaks.
                 """
             )
         elif proc_selection == "Manual Transmission Gear Oil Replacement":
             st.markdown(
                 """
-                ### ⚙ Manual Transmission & Front Diff Gear Oil Swap
-                **Compartment Dynamics:** The manual transmission and the front differential share a common oil bath within the main TY856 transaxle casing [cite: 369].
-                **Target Thread Torque:** 
-                * Gearbox Drain Plug (with Aluminum washer): `37 ft-lb` (50 Nm) [cite: 373]
-                * Gearbox Drain Plug (with Copper washer): `52 ft-lb` (70 Nm) [cite: 373]
+                ### ⚙️ Manual Transmission Gear Oil Swap
+                **Target Thread Torque:** T70 Torx drain plug: `32.5 ft-lb`. Fill plug: `23.5 ft-lb`.
                 
                 **Step-by-Step Instructions:**
-                1. Elevate the entire car completely flat on all four jack stands [cite: 369].
-                2. Locate the transmission case. Remove the intercooler if filling from top, or use a fluid transfer pump from underneath [cite: 389].
-                3. **Critical Tip:** Always remove the fill plug first to ensure you can fill, then remove the lower drain plug [cite: 251].
-                4. Clean the magnetic drain plug thoroughly of wear debris. Install with a new seal and torque to specifications [cite: 373].
-                5. Fill with **~3.5 quarts** of SAE 75W-90 GL-5 gear oil (e.g. Motul Gear 300) [cite: 369]. Note: A standard fluid swap takes only ~3.5 quarts because some fluid remains trapped within the gear clusters and DCCD electromagnetic mechanism [cite: 369].
+                1. Elevate car flat on all four jack stands.
+                2. Locate the transmission case. Remove the intercooler if filling from top, or use a fluid transfer pump from underneath.
+                3. Remove the fill plug (10mm) first to ensure you can fill, then remove the lower T70 Torx drain plug.
+                4. Clean the magnetic drain plug thoroughly of wear debris. Install with a new seal and torque to **32.5 ft-lb**.
+                5. Fill with **~3.5 quarts** of SAE 75W-90 GL-5 gear oil (e.g. Motul Gear 300) [cite: 7, 22].
                 6. Reinstall fill plug and torque to specifications.
                 """
             )
@@ -403,69 +394,41 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown(
                 """
                 ### 🔩 Rear Differential Oil Swap
-                **Target Thread Torque:** Fill and drain plugs (M20): `36–43 ft-lb` (49-58 Nm) [cite: 373].
+                **Target Thread Torque:** Fill and drain plugs: `36.2 ft-lb`.
                 
                 **Step-by-Step Instructions:**
-                1. Elevate the rear end. Locate the rear diff case [cite: 369].
-                2. Remove the top fill plug (1/2" drive or 13mm socket) to verify you can fill, then remove the lower drain plug [cite: 251].
-                3. Allow 1.0 quart of old fluid to drain completely [cite: 369]. Clean the magnet on the drain plug.
-                4. Apply thread sealant (like liquid Teflon) to the plug threads. Reinstall drain plug and torque to **36-43 ft-lb** [cite: 373].
-                5. Use a pump to inject exactly **1.0 quart (0.95 Liters)** of SAE 75W-90 GL-5 hypoid gear oil into the fill hole until it begins to seep out [cite: 369, 371]. For aggressive track use or high ambient heat, a dedicated 90-weight limited-slip lubricant (e.g., Motul 90PA) prevents gear chatter [cite: 369].
-                6. Reinstall fill plug with thread sealant and torque to specification.
+                1. Elevate the rear end. Locate the rear diff case.
+                2. Remove the top fill plug (1/2\" drive or 13mm socket) to verify you can fill, then remove the lower drain plug.
+                3. Allow 1.0 quart to drain completely. Clean the magnet on the drain plug.
+                4. Apply thread sealant (like liquid Teflon) to the plug threads. Reinstall drain plug and torque to **36.2 ft-lb**.
+                5. Use a pump to inject exactly **1.0 quart** of SAE 75W-90 GL-5 hypoid gear oil into the fill hole until it begins to seep out.
+                6. Reinstall fill plug with thread sealant and torque to **36.2 ft-lb**.
                 """
             )
-        elif proc_selection == "Spark Plug & Ignition Coil Installation":
+        elif proc_selection == "Spark Plug Installation (DOHC Boxer)":
             st.markdown(
                 """
-                ### ⚡ Spark Plug & Ignition Coil Replacement Guide
-                **Target Thread Torque:** 
-                * Spark Plugs (M14): `13–17 ft-lb` (18-23 Nm) - **Use Dry threads strictly (no anti-seize!)** [cite: 373]
-                * Ignition Coil Pack Bolts: `11.8 ft-lb` (16 Nm) [cite: 373]
+                ### ⚡ Spark Plug Replacement
+                **Target Thread Torque:** NGK Spark Plugs: `13–17 ft-lb` (Dry threads!) [cite: 22].
                 
                 **Step-by-Step Instructions:**
-                1. Disconnect battery [cite: 393]. Remove air intake box (right side) and battery/washer fluid reservoir bracket components (left side) to access coil packs [cite: 393].
-                2. Remove the 10mm bolts holding the ignition coils, and pull out the coil packs [cite: 393].
-                3. Use a 5/8" spark plug socket, a 3" extension, and a swivel ratchet to carefully break loose and retrieve the old plugs [cite: 393].
-                4. Ensure the new spark plugs (**NGK Laser Iridium SILFR6A**, P/N `22401AA670`) are gapped correctly [cite: 377, 393]. Hand thread them into the cylinder head to prevent cross-threading [cite: 393].
-                5. Torque dry to **13-17 ft-lb** [cite: 373]. *Do not use anti-seize*, as it acts as a lubricant and will lead to over-torquing, which strips or cracks the soft aluminum cylinder heads [cite: 168, 372].
-                6. Reinstall the ignition coil pack and torque the mounting bolt to **11.8 ft-lb** [cite: 373] to ensure secure seating and prevent misfires under boost [cite: 170].
+                1. Disconnect battery. Remove air intake box (right side) and battery/washer fluid reservoir bracket components (left side) to access coil packs.
+                2. Remove the 10mm bolts holding the ignition coils, and pull out the coil packs.
+                3. Use a 5/8\" spark plug socket, a 3\" extension, and a swivel ratchet to carefully break loose and retrieve the old plugs.
+                4. Ensure the new spark plugs (**NGK Laser Iridium SILFR6A**) are gapped correctly [cite: 22]. Hand thread them into the cylinder head to prevent cross-threading.
+                5. Torque strictly dry to **13-17 ft-lb**. *Do not use anti-seize*, as it acts as a lubricant and will lead to over-torquing and cylinder head strip out.
                 """
             )
-        elif proc_selection == "Timing Belt DOHC EJ257 Complete Swap":
+        elif proc_selection == "Timing Belt (EJ257) Overview":
             st.markdown(
                 """
-                ### ⚙ Timing Belt DOHC EJ257 Replacement Procedure
-                The EJ257 is a DOHC interference engine; timing misalignment during belt replacement will cause the valves to strike the pistons, resulting in severe internal engine damage [cite: 392].
+                ### ⚙️ Timing Belt DOHC EJ257 Overview
+                The EJ257 utilizes a DOHC layout with four camshafts. A snapped or jumped timing belt will cause instant, catastrophic valve-to-piston contact.
                 
-                **Interval:** Standard timing belt replacement is **105,000 miles** / 105 months, with severe early swap recommended at **90,000 miles** [cite: 370].
-                
-                **Step-by-Step Instructions:**
-                1. **Cooling System Depressurization:** Disconnect negative battery terminal [cite: 393]. Open the radiator petcock drain plug and drain the coolant [cite: 393].
-                2. **Accessing the Assembly:** Remove the plastic intake ducting and the top-mount intercooler [cite: 393]. Loosen the alternator bracket adjustment bolt to release tension, and remove the alternator and power steering V-belts [cite: 393]. Loosen the air conditioning compressor bracket, and remove the stretch belt [cite: 393].
-                3. **Crank Pulley Removal:** Lock the engine's rotation using the crankshaft holding tool, and use a 22 mm socket on a breaker bar to break the crank pulley bolt loose. Remove the bolt and pull the pulley off the snout [cite: 393].
-                4. **Timing Cover Disassembly:** Unbolt and remove the outer and center timing covers [cite: 393].
-                5. **Component Alignment:** Thread the crank bolt back into the snout. Rotate the crankshaft clockwise until the timing mark on the sprocket lines up with the block notch [cite: 393]. Verify that the notches on the camshaft sprockets align with their corresponding timing marks on the rear timing covers and that the double alignment lines on the intake and exhaust sprockets face each other [cite: 393].
-                6. **Belt Removal:** Remove the lower cogged idler pulley, which releases belt tension, allowing you to slip the timing belt off [cite: 393].
-                7. **Water Pump and Idlers Replacement:** Unbolt the hydraulic tensioner assembly and remaining idlers [cite: 393]. Remove water pump mounting bolts, discard the old paper gasket, clean the mating surface, and install a new water pump (Aisin WPF-023) with a new OEM gasket [cite: 377, 393].
-                8. **Hydraulic Tensioner Compression:** Position the hydraulic tensioner in a bench vise. Slowly compress the plunger over a minimum of 3 minutes to prevent damage to the internal valving. Once retracted, slide a 1.5 mm hex key or drill bit through the alignment holes to lock it in place [cite: 393].
-                9. **Reassembly & Alignment Check:** Bolt the compressed tensioner and new idlers onto the block [cite: 393]. Route the new timing belt (P/N `13028AA250`) starting from the crankshaft sprocket, moving around the passenger-side sprockets, and finishing at the driver-side sprockets [cite: 377, 393]. Install the lower cogged idler last to apply initial tension [cite: 393]. Double-check that all timing marks remain perfectly aligned [cite: 393]. Pull the lockpin out of the hydraulic tensioner to apply operating tension to the belt [cite: 393]. Rotate the crankshaft clockwise two full turns by hand, and verify that the timing marks realign perfectly [cite: 393]. Reinstall covers, pulleys, belts, and intercooler [cite: 393].
-                """
-            )
-        elif proc_selection == "Brembo Caliper Thread Repair (Time-Sert)":
-            st.markdown(
-                """
-                ### 🔩 Brembo Caliper Dissimilar Metal Corrosion & Thread Repair
-                **The Problem:** Steel mounting bolts (Grade 10.9) secured directly into cast-aluminum Brembo calipers create a galvanic couple [cite: 384]. In environments with moisture and road salt, galvanic corrosion forms an aluminum oxide layer that binds the threads [cite: 384]. Over-torquing to the incorrect Factory Service Manual (FSM) spec of 114.3 ft-lb shears the aluminum threads completely out of the caliper mounting ears [cite: 384].
-                
-                **The Solution:** Repair damaged caliper ears by installing precision-machined steel thread inserts, such as a **Time-Sert M12 x 1.5 metric kit (P/N 1215)** [cite: 385].
-                
-                **Step-by-Step Instructions:**
-                1. Bore out the damaged mounting hole using a **31/64-inch** high-speed steel drill bit [cite: 385].
-                2. Tap the hole with a specialized Time-Sert tap while lubricating continuously with cutting oil [cite: 385].
-                3. Clean the threads completely of all metal filings and cutting fluid using brake parts cleaner and shop air [cite: 157].
-                4. Thread a steel insert pre-treated with high-strength red threadlocker into the caliper ear [cite: 385].
-                5. Drive the inserting tool through the sleeve, expanding the lower threads to lock the insert permanently in place [cite: 385].
-                6. To prevent future thread galling, apply a light coat of copper anti-seize to the bolts and limit torque strictly to the corrected spec of **80 ft-lb (dry)** or **60 ft-lb (lubricated)** [cite: 162, 385].
+                **Key Advice:**
+                *   Interval is **105,000 miles** [cite: 22].
+                *   Always replace the complete assembly (Timing belt `13028AA250`, water pump, hydraulic tensioner, and all idler pulleys) [cite: 22].
+                *   Use high quality kits such as **Aisin TKF-012** to prevent premature idler bearing lockups [cite: 22].
                 """
             )
         else:
@@ -499,32 +462,32 @@ if HAS_STREAMLIT and st.runtime.exists():
             st.markdown(
                 """
                 **Engine Oil Filter & Washer (Primary):**
-                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100` [cite: 377]
-                *   **Crush Washer:** P/N `11126AA000` [cite: 377]
-                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures to prevent unfiltered oil bypass [cite: 376].
+                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100` [cite: 22]
+                *   **Crush Washer:** P/N `11126AA000` [cite: 22]
+                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures [cite: 22].
             
                 **Spark Plugs (Laser Iridium - Primary):**
-                *   **SILFR6A (NGK 7913):** P/N `22401AA670` [cite: 377]
-                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads [cite: 373].
+                *   **SILFR6A (NGK 7913):** P/N `22401AA670` [cite: 22]
+                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads [cite: 22].
                 """
             )
             st.markdown(
                 """
                 **Timing Belt & Accessories (DOHC EJ257 - Primary):**
-                *   **Timing Belt:** P/N `13028AA250` [cite: 377]
-                *   **Complete Timing Kit:** Aisin `TKF-012` [cite: 377]
-                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023) [cite: 377]
-                *   **Hydraulic Tensioner:** P/N `13033AA042` [cite: 377]
+                *   **Timing Belt:** P/N `13028AA250` [cite: 22]
+                *   **Complete Timing Kit:** Aisin `TKF-012` [cite: 22]
+                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023) [cite: 22]
+                *   **Hydraulic Tensioner:** P/N `13033AA042` [cite: 22]
             
                 **Air Conditioning Stretch Belt Kit (Primary):**
-                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081) [cite: 377]
-                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage [cite: 377].
+                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081) [cite: 22]
+                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage [cite: 22].
                 """
             )
 
     # Fluids Tab
     with tab_fluids:
-        st.subheader("🛢 Subaru Recommended Fluids, Grades & Capacities")
+        st.subheader("🛢️ Subaru Recommended Fluids, Grades & Capacities")
         st.write("Maintain exact fluid dynamics and thermal protection parameters for your symmetrical AWD drivetrain.")
         
         fluids_data = [
@@ -532,19 +495,19 @@ if HAS_STREAMLIT and st.runtime.exists():
                 "Compartment": "Engine Crankcase (EJ257)",
                 "Fluid Type / Specification": "API SM / SN Full Synthetic (SAE 5W-30 or 5W-40)",
                 "Capacity": "4.5 Quarts (4.3 Liters) with filter",
-                "Key Specs / Notes": "Drain plug torque: 33-34 ft-lb. 5W-40 weight (e.g. Rotella T6, Motul 8100) resists thermal shear under high boost and protects bearings."
+                "Key Specs / Notes": "Drain plug torque: 33-34 ft-lb. 5W-40 weight (e.g. Rotella T6, Motul 8100) resists thermal shear under high boost."
             },
             {
                 "Compartment": "Manual Transmission & Front Diff",
                 "Fluid Type / Specification": "API GL-5 High Performance Gear Oil (SAE 75W-90)",
                 "Capacity": "Dry Fill: 4.1 Quarts. Service Fill: ~3.5 Quarts",
-                "Key Specs / Notes": "Gearbox and front diff share common oil bath. Standard fluid swaps require ~3.5 quarts because some fluid remains trapped in gear clusters and DCCD electromagnetic mechanism."
+                "Key Specs / Notes": "Gearbox shares oil bath. Standard fluid swaps require ~3.5 quarts because some fluid remains trapped in gear clusters."
             },
             {
                 "Compartment": "Rear Differential",
                 "Fluid Type / Specification": "API GL-5 Hypoid Gear Oil (SAE 75W-90 / Motul 90PA for track)",
                 "Capacity": "1.0 Quart (0.95 Liters)",
-                "Key Specs / Notes": "Fill/drain plug torque: 36–43 ft-lb. 90-weight LS fluid (e.g. Motul 90PA) prevents gear chatter under shock loads."
+                "Key Specs / Notes": "Fill/drain plug torque: 36–43 ft-lb. 90-weight LS fluid prevents gear chatter under shock loads."
             },
             {
                 "Compartment": "Engine Cooling System",
@@ -668,10 +631,10 @@ if HAS_STREAMLIT and st.runtime.exists():
         st.subheader("📖 Official Subaru WRX STI Reference Manual")
         
         # Section 1: Specifications
-        with st.expander("⚙ Subaru WRX STI Powertrain & Chassis Specifications"):
+        with st.expander("⚙️ Subaru WRX STI Powertrain & Chassis Specifications"):
             st.markdown(
                 """
-                ### 🏎 2015-2016 Subaru WRX STI Technical Specifications
+                ### 🏎️ 2015-2016 Subaru WRX STI Technical Specifications
                 *   **Engine Core:** 2.5-Liter (2457 cc) Horizontally Opposed "Boxer" 4-Cylinder EJ257 [cite: 360].
                 *   **Cylinder Geometry:** Oversquare bore of 99.5 mm and stroke of 79.0 mm (Bore-to-stroke ratio of 1.26) [cite: 360].
                 *   **Power & Compression:** 305 hp (309 PS) @ 6,000 rpm, peak torque 290 lb-ft (393 Nm) @ 4,000 rpm, running an 8.2:1 compression ratio [cite: 360].
@@ -685,48 +648,93 @@ if HAS_STREAMLIT and st.runtime.exists():
             )
 
         # Section 2: Torque specs
-        with st.expander("🔧 Critical DIY Torque Specifications (Grounded & Corrected Spec)"):
+        with st.expander("🔧 Critical DIY Torque Specifications (Grounded & Corrected Specs)"):
             st.markdown(
                 """
-                ### 🛠 Critical Fastener Torque Specifications
+                ### 🛠️ Critical Fastener Torque Specifications
                 
                 ##### 🔴 Front Brembo Caliper Bolt Warning (Corrected Spec)
-                *   **Correct Brembo Specification:** **80 ft-lb (114 Nm)** [cite: 373]
+                *   **Correct Brembo Specification:** **80 ft-lb (114 Nm)** [cite: 372, 373].
                 *   **FSM Incorrect Value:** The original Factory Service Manual (FSM) incorrectly lists this torque as **114.3 ft-lb (155 Nm)** [cite: 372]. Attempting to torque the steel M12 bolts to 114.3 ft-lb frequently strips out the aluminum caliper threads or snaps mounting bolts [cite: 372, 384].
                 *   **Dissimilar Metal Corrosion Solution:** Steel bolts in aluminum calipers create galvanic corrosion [cite: 384]. It is highly recommended to apply copper anti-seize to the threads and reduce torque to **60 ft-lb** to prevent galling [cite: 162, 385].
                 
-                | Component Class | Fastener Description | Thread Spec | Torque Value (Imperial) | Torque Value (Metric) |
-                | :--- | :--- | :--- | :--- | :--- |
-                | **Engine Core** | Spark Plugs (Dry Threads) | M14 | **13 to 17 ft-lbs** | 18 to 23 Nm [cite: 373] |
-                | | Oil Pan Drain Plug | M20 | **33 to 34 ft-lbs** | 44 to 46 Nm [cite: 373] |
-                | | Valve Cover Fasteners | M6 | **4.7 to 5.8 ft-lbs** | 6.4 to 7.8 Nm (~56-70 in-lbs) [cite: 373] |
-                | | Intake Manifold-to-Head | M8 | **17 to 20 ft-lbs** | 23 to 27 Nm [cite: 373] |
-                | | Exhaust Manifold-to-Head | M10 | **22 to 29 ft-lbs** | 30 to 39 Nm [cite: 373] |
-                | | Crankshaft Pulley Center Bolt | M18 | **35 ft-lbs + 60° turn** | 47 Nm + 60° turn [cite: 373] |
-                | | Water Pump Mounting Bolts | M6 | **9 ft-lbs** | 12 Nm [cite: 373] |
-                | **Drivetrain** | Gearbox Fill / Drain Plugs | M18 | **37 ft-lbs** (Alum Washer) | 50 Nm [cite: 373] |
-                | | Gearbox Drain Plug | M18 | **52 ft-lbs** (Copper Washer)| 70 Nm [cite: 373] |
-                | | Rear Diff Fill / Drain Plugs | M20 | **36 to 43 ft-lbs** | 49 to 58 Nm [cite: 373] |
-                | | Clutch Pressure Plate | M8 | **12 ft-lbs** | 16 Nm [cite: 373] |
-                | | Flywheel Assembly Bolts | M10 | **55 ft-lbs** | 75 Nm [cite: 373] |
-                | **Chassis** | Wheel Lug Nuts (Alloy Hub) | M12 x 1.25 | **89 to 94 ft-lbs** | 120 to 127 Nm [cite: 373] |
-                | | Front Upper Strut Hat Nuts | M10 | **22 ft-lbs** | 30 Nm [cite: 373] |
-                | | Knuckle Lower Strut Bolts | M14 | **129 ft-lbs** | 175 Nm [cite: 373] |
-                | | Rear Upper Strut Hat Nuts | M10 | **22 ft-lbs** | 30 Nm [cite: 373] |
-                | | Rear Lower Strut Mount Bolt | M14 | **162 ft-lbs** | 220 Nm [cite: 373] |
-                | | Rear Main Subframe Bolts | M14 | **106.9 ft-lbs** | 145 Nm [cite: 373] |
-                | **Brakes** | Front Brembo Caliper (Corrected) | M12 x 1.5 | **80 ft-lbs** | 114 Nm [cite: 373] |
-                | | Rear Brembo Caliper Bolts | M10 x 1.5 | **52.8 ft-lbs** | 71.5 Nm [cite: 373] |
-                | | Brake Hose Banjo Bolt | M10 | **19.2 to 22 ft-lbs** | 26 to 30 Nm [cite: 373] |
-                | | Caliper Bleeder Screws | M8 / M10 | **14.8 ft-lbs** | 20 Nm [cite: 373] |
+                | Component Class | Fastener Description | Thread Spec | Torque Value (Imperial) | Torque Value (Metric) | Source Context |
+                | :--- | :--- | :--- | :--- | :--- | :--- |
+                | **Engine Core** | Spark Plugs (Dry Threads) | M14 | **13 to 17 ft-lbs** | 18 to 23 N-m | Factory Standard / Subimods [cite: 373] |
+                | | Spark Plugs (Pro Street Spec) | M14 | **15.5 ft-lbs** | 21 N-m | My Pro Street Ignition [cite: 168, 169] |
+                | | Ignition Coil Pack Bolt | M6 | **11.8 ft-lbs** | 16 N-m | My Pro Street Ignition [cite: 168, 170] |
+                | | Air Pump Duct Bolt | M6 | **6.6 ft-lbs** | 9 N-m | My Pro Street Ignition [cite: 168] |
+                | | Oil Pan Drain Plug | M20 | **33 to 34 ft-lbs** | 44 to 46 N-m | Factory Standard / Subimods [cite: 373] |
+                | | Valve Cover Fasteners | M6 | **4.7 to 5.8 ft-lbs** | 6.4 to 7.8 N-m | Factory Standard (~56-70 in-lbs) [cite: 373] |
+                | | Valve Cover Bolts (Pro Street) | M6 | **3.3 to 4.7 ft-lbs** | 4.5 to 6.4 N-m | My Pro Street Range [cite: 171] |
+                | | Intake Manifold-to-Head | M8 | **17 to 20 ft-lbs** | 23 to 27 N-m | Factory Standard / Subimods [cite: 373] |
+                | | Intake Manifold Bolts (Pro Street) | M8 | **18 ft-lbs** | 24.4 N-m | My Pro Street Spec [cite: 173] |
+                | | Exhaust Manifold-to-Head | M10 | **22 to 29 ft-lbs** | 30 to 39 N-m | Factory Standard / Subimods [cite: 373] |
+                | | Crankshaft Pulley Center Bolt | M18 | **35 ft-lbs + 60° turn** | 47 N-m + 60° turn | Factory Standard [cite: 373] |
+                | | Water Pump Mounting Bolts | M6 | **9 ft-lbs** | 12 N-m | Factory Standard [cite: 373] |
+                | **Drivetrain** | Gearbox Fill / Drain Plugs | M18 | **37 ft-lbs** | 50 N-m | Alum Washer [cite: 373] |
+                | | Gearbox Drain Plug | M18 | **52 ft-lbs** | 70 N-m | Copper Washer [cite: 373] |
+                | | Rear Diff Fill / Drain Plugs | M20 | **36 to 43 ft-lbs** | 49 to 58 N-m | Hypoid Housing [cite: 373] |
+                | | Clutch Pressure Plate | M8 | **12 ft-lbs** | 16 N-m | Clutch Cover [cite: 373] |
+                | | Flywheel Assembly Bolts | M10 | **55 ft-lbs** | 75 N-m | Crank Connection [cite: 373] |
+                | **Chassis** | Wheel Lug Nuts (Alloy Hub) | M12 x 1.25 | **89 to 94 ft-lbs** | 120 to 127 N-m | Factory Standard / Subimods [cite: 373] |
+                | | Wheel Lug Nuts (Pro Street) | M12 x 1.25 | **88.5 ft-lbs** | 120 N-m | My Pro Street [cite: 171] |
+                | | Front Upper Strut Hat Nuts | M10 | **22 ft-lbs** | 30 N-m | Strut Tower [cite: 373] |
+                | | Knuckle Lower Strut Bolts | M14 | **129 ft-lbs** | 175 N-m | Alignment Clevis [cite: 373] |
+                | | Rear Upper Strut Hat Nuts | M10 | **22 ft-lbs** | 30 N-m | Rear Hat [cite: 373] |
+                | | Rear Lower Strut Mount Bolt | M14 | **162 ft-lbs** | 220 N-m | Trailing Arm [cite: 373] |
+                | | Rear Main Subframe Bolts | M14 | **106.9 ft-lbs** | 145 N-m | Cradle Mounting [cite: 373] |
+                | **Brakes** | Front Brembo Caliper (Corrected) | M12 x 1.5 | **80 ft-lbs** | 114 N-m | Caliper-to-Knuckle [cite: 373] |
+                | | Rear Brembo Caliper Bolts | M10 x 1.5 | **52.8 ft-lbs** | 71.5 N-m | Caliper-to-Bracket [cite: 373] |
+                | | Brake Hose Banjo Bolt | M10 | **19.2 to 22 ft-lbs** | 26 to 30 N-m | Copper Crush Washers [cite: 373] |
+                | | Caliper Bleeder Screws | M8 / M10 | **14.8 ft-lbs** | 20 N-m | Bleed Screws [cite: 373] |
                 """
             )
 
-        # Section 3: Cylinder Head sequence
+        # Section 3: My Pro Street DIY Pitfall & Warning Guide
+        with st.expander("⚠️ My Pro Street DIY Pitfall & Warning Guide"):
+            st.markdown(
+                """
+                ### 🛑 Why Torque Specs Matter on the Subaru STI (My Pro Street Guide)
+                Improper torque on your horizontally opposed boxer engine is a major cause of mechanical failures due to its aluminum components, high vibration, and intense heat cycles [cite: 166]. "Good-n-tight" is not an official Subaru engineering measurement—use calibrated torque wrenches to avoid expensive repairs [cite: 167, 168]!
+                
+                #### 1. Spark Plug Torque: Why It Matters
+                *   **Pro Street Target Spec:** **15.5 ft-lb (21 N·m)** [cite: 168, 169].
+                *   **Over-tightening Hazards:** Can strip soft aluminum cylinder head threads, damage plug gaskets, crack the delicate ceramic insulators, or cause improper heat transfer [cite: 169]. Thread repair on an EJ head is extremely difficult [cite: 169].
+                *   **Under-tightening Hazards:** Loose spark plugs can cause severe combustion leakage, engine overheating, poor ignition performance, compression loss, or burned threads [cite: 169]. The Subaru ignition manual explicitly notes loose plugs as a cause of overheating-related plug damage [cite: 169].
+                
+                #### 2. Ignition Coil Torque
+                *   **Pro Street Target Spec:** **11.8 ft-lb (16 N·m)** [cite: 168, 170].
+                *   **Operational Risks:** The STI uses a direct ignition coil-on-plug system [cite: 170]. Improper installation torque can create poor coil seating, weak spark delivery, electrical vibration issues, and misfires under boost [cite: 170]. 
+                *   *Pro Tip:* Many Subaru owners chase fueling issues for weeks only to discover the ignition coil wasn't fully seated because someone tightened it using "vibes" instead of a torque wrench [cite: 170]!
+                
+                #### 3. Valve Cover Bolts
+                *   **Pro Street Target Spec:** **3.3 to 4.7 ft-lb** [cite: 171].
+                *   **The Pickle Jar Pitfall:** Valve cover leaks are extremely common on EJ engines [cite: 170]. Because these bolts thread into soft aluminum, over-tightening can easily warp the valve covers, damage the gaskets, or strip the threads completely [cite: 171]. 
+                *   *Pro Tip:* When people see an oil leak, they instinctively tighten the bolts harder like they're trying to close a pickle jar—this is a guaranteed way to strip your engine head [cite: 171]! Always use an **inch-pound torque wrench** for these low values [cite: 252].
+                
+                #### 4. Wheel Lug Nuts
+                *   **Pro Street Target Spec:** **88.5 ft-lb** [cite: 171].
+                *   **Operational Risks:** Improper wheel torque can warp brake rotors, cause uneven wheel clamping, damage studs, or lead to dangerous wheel vibrations [cite: 171, 172].
+                *   *Warning:* Impact guns set to "earthquake mode" are not scientific measuring or precision tools [cite: 172, 175]! Always do your final pass with a calibrated torque wrench [cite: 248].
+                
+                #### 5. Intake Manifold Bolts
+                *   **Pro Street Target Spec:** **18 ft-lb** [cite: 173].
+                *   **Operational Risks:** Improper or uneven torque on the intake manifold can cause vacuum leaks, boost leaks, uneven airflow, rough idling, or lean AFR (air-fuel ratio) conditions [cite: 173].
+                *   *Note:* On turbocharged Subarus, even a tiny vacuum leak can create massive drivability problems that make it feel like your ECU suddenly developed major trust issues [cite: 173]!
+                
+                #### 6. Turbocharger Torque Considerations
+                *   **Extreme Heat Cycles:** Turbo hardware experiences intense thermal changes [cite: 173]. This affects up-pipe fasteners, downpipe hardware, exhaust manifold bolts, and turbo oil feed banjo bolts [cite: 174].
+                *   **Failure Modes:** Under-torquing leads to exhaust leaks and boost leaks [cite: 174]. Over-torquing leads to broken studs and oil starvation [cite: 174].
+                *   *Note:* Always use proper high-temperature anti-seize and perform heat-cycle inspections [cite: 174]. This is critical because turbo studs on an older STI can easily develop the structural integrity of stale breadsticks [cite: 174]!
+                """
+            )
+
+        # Section 4: Cylinder Head sequence
         with st.expander("🔩 DOHC EJ257 Cylinder Head Bolt Tightening Sequence"):
             st.markdown(
                 """
-                ### ⚙ 10-Step Cylinder Head Elastic-Plastic Tightening Procedure
+                ### ⚙️ 10-Step Cylinder Head Elastic-Plastic Tightening Procedure
                 Always use brand new, clean, and dry OEM **Torque-To-Yield (TTY)** head bolts lightly lubricated with engine oil on the threads and flange faces prior to insertion [cite: 374]. Tighten strictly in the designated cross-pattern sequence (center outward) [cite: 374]:
                 
                 1.  **Stage 1:** Torque all bolts in sequence to **40 N-m (29.5 ft-lbs)** [cite: 375].
@@ -744,11 +752,11 @@ if HAS_STREAMLIT and st.runtime.exists():
                 """
             )
 
-        # Section 4: Critical Vulnerabilities & Engineering Solutions
-        with st.expander("🛠 Diagnostics of Critical Vulnerabilities & Field Engineering Solutions"):
+        # Section 5: Critical Vulnerabilities & Engineering Solutions
+        with st.expander("🛠️ Diagnostics of Critical Vulnerabilities & Field Engineering Solutions"):
             st.markdown(
                 """
-                ### ⚙ EJ257 Engineering Vulnerabilities & Proven Fixes
+                ### ⚙️ EJ257 Engineering Vulnerabilities & Proven Fixes
                 
                 #### 1. Cylinder 4 Overheating, Detonation, and Ringland Failure
                 *   **The Cause:** The coolant jacket flow routes sequentially but reaches a stagnation zone around Cylinder 4 (rear left) [cite: 378]. Localized coolant flow drops, causing a thermal spike that lowers Cylinder 4's knock threshold [cite: 378]. Under high load, recurring detonation cracks the brittle cast-aluminum factory piston ringlands, causing compression loss, severe blow-by, and cylinder scoring [cite: 378].
@@ -772,11 +780,11 @@ if HAS_STREAMLIT and st.runtime.exists():
                 """
             )
 
-        # Section 5: Engine Class Action Settlement & Recalls
-        with st.expander("⚖ Regulatory Safety Recalls & The EJ257 Catastrophic Engine Settlement"):
+        # Section 6: Engine Class Action Settlement & Recalls
+        with st.expander("⚖️ Regulatory Safety Recalls & The EJ257 Catastrophic Engine Settlement"):
             st.markdown(
                 """
-                ### 🏛 EJ257 Settlement & Official Safety Recalls
+                ### 🏛️ EJ257 Settlement & Official Safety Recalls
                 
                 #### 1. The EJ257 Engine Failure Class Action Settlement (2018)
                 *   **Target Scope:** 2012–2017 Subaru WRX and WRX STI equipped with the 2.5-liter turbocharged EJ257 engine built between Oct. 11, 2011, and Nov. 16, 2016 [cite: 186, 396].
