@@ -588,6 +588,7 @@ if HAS_STREAMLIT and st.runtime.exists():
                 filtered_df["Part Name"].str.lower().str.contains(search_query) | 
                 filtered_df["OEM Part Number"].str.lower().str.contains(search_query) |
                 filtered_df["Category"].str.lower().str.contains(search_query) |
+                filtered_df["Quantity"].astype(str).str.lower().str.contains(search_query) |
                 filtered_df["Required Qty"].str.lower().str.contains(search_query) |
                 filtered_df["Notes"].str.lower().str.contains(search_query)
             ]
@@ -597,7 +598,7 @@ if HAS_STREAMLIT and st.runtime.exists():
         display_df["Price"] = display_df["Price"].apply(lambda x: f"${x:.2f}")
         
         # Reorder columns to showcase consolidation (Service Status removed)
-        cols_order = ["Category", "Part Name", "OEM Part Number", "Price", "Required Qty", "Notes"]
+        cols_order = ["Category", "Part Name", "OEM Part Number", "Quantity", "Price", "Required Qty", "Notes"]
         display_df = display_df[cols_order]
         
         st.dataframe(display_df, use_container_width=True, hide_index=True)
