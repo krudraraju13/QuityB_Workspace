@@ -453,28 +453,7 @@ if HAS_STREAMLIT and st.runtime.exists():
     # OEM Parts Tab
     with tab_parts:
         st.subheader("📦 OEM Parts & Part Numbers Reference")
-        if mileage is not None:
-            st.write("Parts required for your scheduled service items at this mileage:")
-            parts_data = []
-            for item in schedule_items:
-                p_num = item.get('part_number', 'N/A')
-                qty = item.get('quantity', 'N/A')
-                if p_num != 'N/A':
-                    parts_data.append({
-                        "Service Item": item["name"],
-                        "OEM Part Number / Specs": p_num,
-                        "Quantity Required": qty,
-                    })
-                
-            if parts_data:
-                import pandas as pd
-                df_parts = pd.DataFrame(parts_data)
-                st.dataframe(df_parts, use_container_width=True, hide_index=True)
-        else:
-            st.info("💡 **Tip:** Enter your current odometer mileage in the Odometer tab to see service-specific parts requirements here.")
-            
-        st.markdown("### 🔍 Critical Parts & Hardware Guide")
-        st.write("Use the search bar and category selector below to search through the consolidated list of critical parts, OEM part numbers, quantities, and pricing.")
+        st.write("Browse and search through the consolidated catalog of OEM parts, including pricing and real-time maintenance service requirements.")
         
         # Insert parts catalog
 
@@ -560,13 +539,39 @@ if HAS_STREAMLIT and st.runtime.exists():
             {"Category": "Door", "Part Name": "Door Hinge Lubricant", "OEM Part Number": "White Lithium Grease", "Quantity": 1, "Price": 8.00, "Notes": "Applied to door hinge assemblies and latching pins."}
         ]
 
+        # Consolidate service requirements into the catalog dynamically
+        required_quantities = []
+        
+        for idx, row in pd.DataFrame(parts_catalog).iterrows():
+            oem_pn = str(row["OEM Part Number"]).strip().upper()
+            
+            matched = False
+            if mileage is not None:
+                for item in schedule_items:
+                    if item.get("due"):
+                        item_pn_text = str(item.get("part_number", "")).upper()
+                        item_qty_text = str(item.get("quantity", "")).upper()
+                        item_desc_text = str(item.get("description", "")).upper()
+                        item_name_text = str(item.get("name", "")).upper()
+                        
+                        # Match OEM part number in scheduled item details
+                        if (oem_pn != "N/A" and (oem_pn in item_pn_text or oem_pn in item_qty_text)) or \
+                           (oem_pn != "N/A" and oem_pn in item_desc_text and "REPLACE" in item_name_text):
+                            required_quantities.append(item["quantity"])
+                            matched = True
+                            break
+            
+            if not matched:
+                required_quantities.append("-")
+                    
         import pandas as pd
         df_catalog = pd.DataFrame(parts_catalog)
+        df_catalog["Required Qty"] = required_quantities
         
         # Interactive search & filter controls
         col_search, col_cat = st.columns([2, 1])
         with col_search:
-            search_query = st.text_input("🔍 Search parts by name or part number:", "").strip().lower()
+            search_query = st.text_input("🔍 Search parts, categories, or notes:", "").strip().lower()
         with col_cat:
             category_list = ["All Categories"] + sorted(list(set(df_catalog["Category"].tolist())))
             selected_category = st.selectbox("📂 Filter by category:", category_list)
@@ -576,17 +581,24 @@ if HAS_STREAMLIT and st.runtime.exists():
         if selected_category != "All Categories":
             filtered_df = filtered_df[filtered_df["Category"] == selected_category]
         
+        # Expand search functionality to search across all columns! (Service Status search removed)
         if search_query:
             filtered_df = filtered_df[
                 filtered_df["Part Name"].str.lower().str.contains(search_query) | 
-                filtered_df["OEM Part Number"].str.lower().str.contains(search_query)
+                filtered_df["OEM Part Number"].str.lower().str.contains(search_query) |
+                filtered_df["Category"].str.lower().str.contains(search_query) |
+                filtered_df["Required Qty"].str.lower().str.contains(search_query) |
+                filtered_df["Notes"].str.lower().str.contains(search_query)
             ]
         
-
-        
-        # Format Prices for display in table
+        # Format Prices and reorder columns for display
         display_df = filtered_df.copy()
         display_df["Price"] = display_df["Price"].apply(lambda x: f"${x:.2f}")
+        
+        # Reorder columns to showcase consolidation (Service Status removed)
+        cols_order = ["Category", "Part Name", "OEM Part Number", "Price", "Required Qty", "Notes"]
+        display_df = display_df[cols_order]
+        
         st.dataframe(display_df, use_container_width=True, hide_index=True)
     # Fluids Tab
     with tab_fluids:
