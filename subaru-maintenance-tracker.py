@@ -1,10 +1,3 @@
-"""
-Subaru STI Maintenance Tracker
-A hybrid Streamlit Web App & Rich-text Terminal CLI application for tracking 
-and scheduling high-performance maintenance for Subaru WRX STI vehicles (EJ257/FA20).
-Grounded in the architecture from subaru-maintenance-tracker-v37.txt.
-"""
-
 import os
 import sys
 import json
@@ -28,105 +21,6 @@ try:
 except ImportError:
     HAS_RICH = False
 
-# Standard Subaru WRX STI Maintenance Intervals (in miles)
-# Grounded in official Subaru maintenance schedules with consideration for high-performance turbocharged engines.
-MAINTENANCE_SCHEDULE = [
-    {
-        "item": "Engine Oil & Filter",
-        "normal_interval": 6000,
-        "severe_interval": 3000,
-        "description": "Replace engine oil and filter (Synthetic 5W-30 or heavier for STI EJ257). Highly recommended to check level weekly."
-    },
-    {
-        "item": "Tire Rotation",
-        "normal_interval": 6000,
-        "severe_interval": 6000,
-        "description": "Rotate tires to ensure even tread wear, protecting the Symmetrical AWD system from drivetrain binding."
-    },
-    {
-        "item": "Cabin Air Filter",
-        "normal_interval": 12000,
-        "severe_interval": 12000,
-        "description": "Replace the cabin dust and pollen HVAC filter."
-    },
-    {
-        "item": "Engine Air Filter",
-        "normal_interval": 30000,
-        "severe_interval": 15000,
-        "description": "Replace engine air filter element. Check and clean more frequently in dusty conditions."
-    },
-    {
-        "item": "Brake Fluid Flush",
-        "normal_interval": 30000,
-        "severe_interval": 30000,
-        "description": "Flush and replace brake fluid (DOT 3 or 4) to maintain Brembo brake system responsiveness."
-    },
-    {
-        "item": "Transmission & Diff Gear Oils",
-        "normal_interval": 30000,
-        "severe_interval": 15000,
-        "description": "Replace manual transmission gear oil (75W-90 Extra-S or equivalent) and rear differential gear oil (90LS/75W-90). Essential for DCCD and LSD."
-    },
-    {
-        "item": "Spark Plugs",
-        "normal_interval": 60000,
-        "severe_interval": 60000,
-        "description": "Replace Spark Plugs (Iridium). Critical for proper ignition and preventing knock in high-performance Boxer engines."
-    },
-    {
-        "item": "Timing Belt & Water Pump",
-        "normal_interval": 105000,
-        "severe_interval": 105000,
-        "description": "Replace engine timing belt, tensioner, idlers, and water pump (EJ257 interference engine). Critical to prevent catastrophic engine failure."
-    },
-    {
-        "item": "Engine Coolant Flush",
-        "normal_interval": 137500,
-        "severe_interval": 137500,
-        "description": "First replacement is at 137,500 miles or 11 years (Subaru Super Coolant); subsequent replacements every 75,000 miles or 6 years."
-    }
-]
-
-class MaintenanceScheduler:
-    def __init__(self, mileage, severe=False, primary_mode=True):
-        self.mileage = mileage
-        self.severe = severe
-        self.primary_mode = primary_mode  # True for Miles, False for Kilometers
-
-    def convert_distance(self, miles):
-        """Converts distance based on primary mode (True for Miles, False for Kilometers)"""
-        if self.primary_mode:
-            return miles
-        else:
-            return int(miles * 1.60934)
-
-    def get_recommendations(self):
-        """Calculates recommendations, next due mileage, and status for each scheduled item."""
-        recommendations = []
-        for task in MAINTENANCE_SCHEDULE:
-            interval_miles = task["severe_interval"] if self.severe else task["normal_interval"]
-            
-            # Convert intervals to primary unit
-            interval_unit = self.convert_distance(interval_miles)
-            current_unit = self.convert_distance(self.mileage)
-            
-            # Calculate next due mileage in unit
-            next_due = ((current_unit // interval_unit) + 1) * interval_unit
-            remaining = next_due - current_unit
-            
-            # Deem "Due Now" if remaining is within 10% of the interval, or if current mileage has crossed an interval step
-            due_now = remaining <= (interval_unit * 0.1) or (current_unit % interval_unit == 0)
-            
-            recommendations.append({
-                "item": task["item"],
-                "interval": interval_unit,
-                "due_now": due_now,
-                "next_due": next_due,
-                "remaining": remaining,
-                "description": task["description"]
-            })
-        return recommendations
-
 HISTORY_FILE = "subaru_maintenance_history.json"
 
 def load_history():
@@ -144,339 +38,655 @@ def save_history(entry):
     with open(HISTORY_FILE, "w") as f:
         json.dump(history, f, indent=4)
 
+class MaintenanceScheduler:
+    def __init__(self, mileage, severe=False, primary_mode=True):
+        self.mileage = mileage
+        self.severe = severe
+        self.primary_mode = primary_mode
+
+    def get_schedule(self):
+        items = []
+        history = load_history()
+        
+        # Define standard intervals and info
+        # Structure: (Name, Base Interval, Severe Interval, Part Number, Quantity, Description)
+        maintenance_defs = [
+            (
+                "Replace Engine Oil & Filter", 
+                6000, 
+                3000, 
+                "15208AA100 (Tokyo Roki JDM Black)", 
+                "4.5 Quarts 5W-30/5W-40 + 1 Crush Washer (11126AA000)",
+                "Drain plug torque: 33-34 ft-lb. Under severe conditions, replace every 3,000 miles."
+            ),
+            (
+                "Rotate Tires & Check Pressures", 
+                6000, 
+                6000, 
+                "N/A", 
+                "N/A",
+                "Ensure even tread wear. Tighten lug nuts strictly to 88.5 ft-lb (120 Nm)."
+            ),
+            (
+                "Replace Cabin Air Filter", 
+                12000, 
+                12000, 
+                "72880FG000", 
+                "1 Filter",
+                "Protects HVAC and passenger air quality from pollen and dust."
+            ),
+            (
+                "Inspect Front & Rear Brake Pads & Rotors", 
+                12000, 
+                6000, 
+                "N/A", 
+                "N/A",
+                "Check pad thickness. Front Brembos mount torque: 84.3 ft-lb; Rears: 47.2 ft-lb."
+            ),
+            (
+                "Replace Engine Air Filter", 
+                30000, 
+                15000, 
+                "16546AA12A", 
+                "1 Filter",
+                "Ensure clean induction air flow. Replace more often in dusty/sandy areas."
+            ),
+            (
+                "Replace Brake Fluid", 
+                30000, 
+                15000, 
+                "N/A", 
+                "~1.0 Liter (DOT 3 or DOT 4 Premium)",
+                "Flush moisture and contaminants from the Brembo caliper hydraulic system."
+            ),
+            (
+                "Replace Manual Transmission Gear Oil", 
+                30000, 
+                30000, 
+                "API GL-5 SAE 75W-90", 
+                "Service Fill: ~3.5 Quarts (Dry: 4.1 Quarts)",
+                "Gearbox and front diff share oil bath. Plug torque: 32.5 ft-lb (T70 Torx)."
+            ),
+            (
+                "Replace Rear Differential Gear Oil", 
+                30000, 
+                30000, 
+                "API GL-5 SAE 75W-90", 
+                "1.0 Quart",
+                "Protects hypoid gears. Fill/drain plug torque: 36–43 ft-lb."
+            ),
+            (
+                "Inspect Fuel Lines and Connections", 
+                30000, 
+                30000, 
+                "N/A", 
+                "N/A",
+                "Verify security and check for any leakage or deterioration."
+            ),
+            (
+                "Inspect Steering & Suspension Systems", 
+                30000, 
+                30000, 
+                "N/A", 
+                "N/A",
+                "Check steering gearbox, linkage, tie rods, boot seals, and suspension joints."
+            ),
+            (
+                "Replace Spark Plugs", 
+                6000, # Wait, check standard spark plug interval: 60,000 miles
+                60000, 
+                "22401AA670 (NGK SILFR6A Laser Iridium)", 
+                "4 Spark Plugs",
+                "Use dry threads. Torque strictly to 13–17 ft-lb to protect aluminum heads."
+            ),
+            (
+                "Replace Timing Belt (EJ257 DOHC)", 
+                105000, 
+                105000, 
+                "13028AA250 (Aisin Kit TKF-012)", 
+                "1 Timing Belt Kit",
+                "Critical interference engine component. Replace timing belt, tensioner, water pump."
+            ),
+            (
+                "Replace Engine Coolant (Super Coolant)", 
+                137500, 
+                137500, 
+                "Super Coolant (Pre-Mixed Blue)", 
+                "8.1 Quarts + 1 bottle Conditioner (SOA635065)",
+                "First change at 137,500 mi / 11 years; subsequent changes every 75,000 mi / 6 years."
+            )
+        ]
+        
+        # Override spark plug interval if defined wrong
+        for idx, item_def in enumerate(maintenance_defs):
+            if item_def[0] == "Replace Spark Plugs":
+                maintenance_defs[idx] = (
+                    "Replace Spark Plugs", 
+                    60000, 
+                    60000, 
+                    "22401AA670 (NGK SILFR6A Laser Iridium)", 
+                    "4 Spark Plugs",
+                    "Use dry threads. Torque strictly to 13–17 ft-lb to protect aluminum heads."
+                )
+
+        for name, base_int, sev_int, p_num, qty, desc in maintenance_defs:
+            interval = sev_int if self.severe else base_int
+            
+            # Find last completed mileage
+            last_mi = None
+            if history:
+                completions = [entry["mileage"] for entry in history if name in entry.get("completed_items", [])]
+                if completions:
+                    last_mi = max(completions)
+            
+            # Calculate due status
+            if name == "Replace Engine Coolant (Super Coolant)":
+                if last_mi is None:
+                    due = self.mileage >= 137500
+                else:
+                    due = (self.mileage - last_mi) >= 75000
+            else:
+                if last_mi is None:
+                    due = self.mileage >= interval
+                else:
+                    due = (self.mileage - last_mi) >= interval
+            
+            items.append({
+                "name": name,
+                "interval": interval,
+                "due": due,
+                "part_number": p_num,
+                "quantity": qty,
+                "description": desc,
+                "last_completed": last_mi
+            })
+            
+        return items
+
 # --- STREAMLIT WEB APP RUNTIME ---
 if HAS_STREAMLIT and st.runtime.exists():
     st.set_page_config(page_title="Subaru STI Maintenance Tracker", page_icon="🏎️", layout="wide")
-    
-    st.title("🏎️ Subaru WRX STI Maintenance Tracker")
-    st.markdown("""
-    Keep your high-performance Boxer engine running flawlessly! This tracker calculates recommended 
-    maintenance intervals based on whether your car is driven under **Normal** or **Severe** conditions, 
-    and lets you log maintenance history.
-    """)
-    
-    # User Inputs
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        primary_mode_str = st.radio("Primary Unit Mode", ["Miles (mi)", "Kilometers (km)"], index=0)
-        primary_mode = primary_mode_str.startswith("Miles")
-        unit_label = "mi" if primary_mode else "km"
-        
-    with col2:
-        mileage = st.number_input(f"Current Mileage ({unit_label})", min_value=0, value=30000, step=1000)
-        # Convert internal mileage back to miles for the MaintenanceScheduler
-        scheduler_mileage = mileage if primary_mode else int(mileage / 1.60934)
-        
-    with col3:
-        severe = st.checkbox("Severe Driving Conditions", value=False, 
-                             help="Select if you engage in: frequent short trips under 5 miles, dusty/sandy conditions, track driving, extremely cold weather, or heavy idling.")
 
-    scheduler = MaintenanceScheduler(scheduler_mileage, severe=severe, primary_mode=primary_mode)
-    recommendations = scheduler.get_recommendations()
-    
-    # Layout tabs
-    tab_sched, tab_log, tab_hist = st.tabs(["📊 Maintenance Schedule", "📝 Log Maintenance", "📜 Maintenance History"])
-    
-    with tab_sched:
-        st.subheader("Upcoming Recommended Maintenance")
-        
-        # Display due items in priority alert if any are due now
-        due_now_items = [r for r in recommendations if r["due_now"]]
-        if due_now_items:
-            st.error(f"⚠️ **Attention!** You have {len(due_now_items)} maintenance item(s) due soon or overdue!")
-            for item in due_now_items:
-                st.markdown(f"- **{item['item']}** (Due at: {item['next_due']:,} {unit_label} | Remaining: {item['remaining']:,} {unit_label})")
-        else:
-            st.success("✅ All scheduled maintenance items are up to date!")
-            
-        st.write("---")
-        
-        # Table of all recommendations
-        schedule_table = []
-        for r in recommendations:
-            status = "🔴 DUE NOW" if r["due_now"] else "🟢 OK"
-            schedule_table.append({
-                "Maintenance Item": r["item"],
-                "Interval": f"{r['interval']:,} {unit_label}",
-                "Next Due At": f"{r['next_due']:,} {unit_label}",
-                "Remaining": f"{r['remaining']:,} {unit_label}",
-                "Status": status,
-                "Description": r["description"]
-            })
-        st.table(schedule_table)
-
-    with tab_log:
-        st.subheader("Log a Completed Maintenance Task")
-        with st.form("log_form", clear_on_submit=True):
-            log_date = st.date_input("Date of Service", datetime.date.today())
-            log_mileage = st.number_input(f"Mileage at Service ({unit_label})", min_value=0, value=mileage, step=1000)
-            
-            # Build item options
-            item_options = [task["item"] for task in MAINTENANCE_SCHEDULE] + ["Other (Specify in Notes)"]
-            log_item = st.selectbox("Maintenance Item", item_options)
-            
-            log_cost = st.number_input("Service Cost ($)", min_value=0.0, value=0.0, step=10.0)
-            log_notes = st.text_area("Service Notes (e.g., oil brand, part numbers, technician comments)")
-            
-            submit = st.form_submit_button("Save Maintenance Record")
-            
-            if submit:
-                # Save entry in standardized format
-                entry = {
-                    "date": str(log_date),
-                    "mileage": int(log_mileage),
-                    "unit": unit_label,
-                    "item": log_item,
-                    "cost": float(log_cost),
-                    "notes": log_notes
+    @st.dialog("Confirm Service Log")
+    def confirm_save_dialog(completed_list, mileage, severe):
+        st.markdown("##### Are you sure you want to save the following completed items to your service history?")
+        for item in completed_list:
+            st.markdown(f"- ✅ **{item}**")
+        st.markdown("<br>", unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Confirm", type="primary", use_container_width=True):
+                new_entry = {
+                    "date": datetime.date.today().isoformat(),
+                    "mileage": mileage,
+                    "severe_mode": severe,
+                    "completed_items": completed_list
                 }
-                save_history(entry)
-                st.success(f"Successfully saved record for '{log_item}'!")
+                save_history(new_entry)
+                st.success("✅ Service logged successfully!")
+                st.rerun()
+        with col2:
+            if st.button("Cancel", use_container_width=True):
                 st.rerun()
 
-    with tab_hist:
-        st.subheader("Maintenance History Records")
+    st.markdown(
+        """
+        <div style='background-color:#1e3d59;padding:15px;border-radius:10px;text-align:center;'>
+            <h1 style='color:white;margin:0;'>🏎️ Subaru WRX STI Maintenance Tracker</h1>
+            <p style='color:#ffc13b;margin:5px 0 0 0;font-size:1.1em;'>Keep your boxer engine in optimal performance. Real schedules, custom alerts, torque specs, and local logging.</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Tabs layout
+    tab_checklist, tab_procedures, tab_parts, tab_fluids, tab_history, tab_manual = st.tabs([
+        "📋 Maintenance Status",
+        "🛠️ Maintenance Procedures",
+        "📦 OEM Parts & Part Numbers",
+        "🛢️ Oil Grades & Quantities",
+        "📜 Service History Log",
+        "📖 Subaru Reference Guide"
+    ])
+
+    with tab_checklist:
+        st.markdown("### 🔧 Odometer & Operating Conditions")
+        st.markdown(
+            """
+            <style>
+            div[data-testid="stNumberInput"] input {
+                font-size: 22px !important;
+                height: 52px !important;
+                font-weight: bold !important;
+            }
+            /* Clean up any default spacing since label is removed */
+            div[data-testid="stNumberInput"] label {
+                display: none !important;
+            }
+            div[data-testid="stNumberInput"] {
+                margin-top: 0px !important;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+        col_mil, col_sev = st.columns(2)
+        with col_mil:
+            mileage = st.number_input("", min_value=0, max_value=500000, value=None, step=1000, placeholder="Enter current mileage")
+        with col_sev:
+            st.markdown("<div style='height: 32px;'></div>", unsafe_allow_html=True)
+            severe = st.checkbox(
+                "Severe Driving Conditions", 
+                value=False,
+                help="Trigger shorter intervals (e.g., oil every 3,000 miles). Conditions include repeated short distances (< 5 mi), rough/mudy/salty/snowy roads, high humidity/mountains, or extremely cold weather."
+            )
+        st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
+
+    is_primary = True
+
+    if mileage is not None:
+        # Initialize scheduler
+        scheduler = MaintenanceScheduler(mileage, severe, primary_mode=is_primary)
+        schedule_items = scheduler.get_schedule()
+
+        # Load history to filter checked/completed items at the current mileage
         history = load_history()
+        completed_items_at_current_mileage = set()
         if history:
-            # Calculate total cost
-            total_spent = sum(entry.get("cost", 0.0) for entry in history)
-            st.metric("Total Maintenance Spend", f"${total_spent:,.2f}")
-            
-            # Sort history by mileage descending
-            sorted_history = sorted(history, key=lambda x: x.get("mileage", 0), reverse=True)
-            for entry in sorted_history:
-                with st.expander(f"📅 {entry.get('date')} — {entry.get('item')} @ {entry.get('mileage'):,} {entry.get('unit', 'mi')}"):
-                    st.write(f"**Cost:** ${entry.get('cost', 0.0):,.2f}")
-                    st.write(f"**Notes:** {entry.get('notes', 'None')}")
+            for entry in history:
+                if entry.get("mileage") == mileage:
+                    for item in entry.get("completed_items", []):
+                        completed_items_at_current_mileage.add(item)
+
+        with tab_checklist:
+            due_now = [item for item in schedule_items if item["due"] and item["name"] not in completed_items_at_current_mileage]
+            upcoming = [item for item in schedule_items if not item["due"] and item["name"] not in completed_items_at_current_mileage]
+            already_done = [item for item in schedule_items if item["name"] in completed_items_at_current_mileage]
+
+            col_due, col_up = st.columns(2)
+
+            with col_due:
+                st.markdown("#### 🔴 Due Now / Overdue")
+                if due_now:
+                    st.write("The following items require immediate maintenance or check-off:")
+                    completed_list = []
+                    for item in due_now:
+                        last_str = f" (Last completed: {item['last_completed']:,} mi)" if item['last_completed'] is not None else " (Never completed)"
+                        checked = st.checkbox(f"**{item['name']}**{last_str}\nInterval: every {item['interval']:,} mi", key=f"due_{item['name']}")
+                        if checked:
+                            completed_list.append(item["name"])
+                    
+                    if completed_list:
+                        if st.button("Log Selected Items", type="primary", use_container_width=True):
+                            confirm_save_dialog(completed_list, mileage, severe)
+                else:
+                    st.success("🟢 All good! No items are currently overdue or due at this mileage.")
+
+            with col_up:
+                st.markdown("#### 🕒 Upcoming Maintenance")
+                if upcoming:
+                    st.write("Plan ahead for the following scheduled services:")
+                    for item in upcoming:
+                        last_str = f" (Last completed: {item['last_completed']:,} mi)" if item['last_completed'] is not None else ""
+                        due_in = item['interval'] - (mileage - (item['last_completed'] or 0))
+                        st.info(f"**{item['name']}**{last_str}\nDue in: **{due_in:,} miles** (at {((item['last_completed'] or 0) + item['interval']):,} mi)")
+                else:
+                    st.write("Enter an odometer reading above to show schedules.")
+
+            if already_done:
+                st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
+                st.markdown("#### ✅ Completed at This Mileage")
+                for item in already_done:
+                    st.write(f"- 🟢 **{item['name']}** (Logged)")
+
+    else:
+        with tab_checklist:
+            st.info("💡 **Enter your current odometer mileage** above to generate your customized vehicle maintenance status, log services, and track due dates.")
+
+    # Procedures Tab
+    with tab_procedures:
+        st.subheader("🛠️ Maintenance Procedures Guide")
+        st.write("Step-by-step DIY instructions and crucial checks for WRX STI owners.")
+        
+        proc_selection = st.selectbox(
+            "Select Procedure:",
+            [
+                "Select a procedure...",
+                "Engine Oil & Filter Swap",
+                "Manual Transmission Gear Oil Replacement",
+                "Rear Differential Oil Swap",
+                "Spark Plug Installation (DOHC Boxer)",
+                "Timing Belt (EJ257) Overview"
+            ]
+        )
+        
+        if proc_selection == "Engine Oil & Filter Swap":
+            st.markdown(
+                """
+                ### 🛢️ Engine Oil & Filter Swap Procedure
+                **Target Thread Torque:** Drain plug: `33-34 ft-lb` (Ensure a new OEM metal crush washer P/N `11126AA000` is used) [cite: 22].
+                
+                **Step-by-Step Instructions:**
+                1. Ensure engine is warm. Park on flat ground and jack up front of car (use heavy duty jack stands and tire chocks).
+                2. Position oil catch pan under the drain plug (14mm). Carefully remove plug and drain oil completely.
+                3. Clean the drain plug threads, fit the new **Subaru Crush Washer** with its flat face against the oil pan, and hand thread. Torque to **33-34 ft-lb**.
+                4. Use a filter wrench to remove the engine oil filter. Clean the contact surface on the engine block.
+                5. Apply a light film of fresh engine oil to the rubber O-ring of the **Tokyo Roki Black Filter (15208AA100)** [cite: 22]. Hand tighten the filter until seal contacts, then turn it exactly 3/4 to 1 full turn further.
+                6. Add **4.5 quarts** of synthetic oil (5W-30 or 5W-40) [cite: 22]. Wait 5 minutes, check dipstick, start car, and check for leaks.
+                """
+            )
+        elif proc_selection == "Manual Transmission Gear Oil Replacement":
+            st.markdown(
+                """
+                ### ⚙️ Manual Transmission Gear Oil Swap
+                **Target Thread Torque:** T70 Torx drain plug: `32.5 ft-lb`. Fill plug: `23.5 ft-lb`.
+                
+                **Step-by-Step Instructions:**
+                1. Elevate car flat on all four jack stands.
+                2. Locate the transmission case. Remove the intercooler if filling from top, or use a fluid transfer pump from underneath.
+                3. Remove the fill plug (10mm) first to ensure you can fill, then remove the lower T70 Torx drain plug.
+                4. Clean the magnetic drain plug thoroughly of wear debris. Install with a new seal and torque to **32.5 ft-lb**.
+                5. Fill with **~3.5 quarts** of SAE 75W-90 GL-5 gear oil (e.g. Motul Gear 300) [cite: 7, 22].
+                6. Reinstall fill plug and torque to specifications.
+                """
+            )
+        elif proc_selection == "Rear Differential Oil Swap":
+            st.markdown(
+                """
+                ### 🔩 Rear Differential Oil Swap
+                **Target Thread Torque:** Fill and drain plugs: `36.2 ft-lb`.
+                
+                **Step-by-Step Instructions:**
+                1. Elevate the rear end. Locate the rear diff case.
+                2. Remove the top fill plug (1/2\" drive or 13mm socket) to verify you can fill, then remove the lower drain plug.
+                3. Allow 1.0 quart to drain completely. Clean the magnet on the drain plug.
+                4. Apply thread sealant (like liquid Teflon) to the plug threads. Reinstall drain plug and torque to **36.2 ft-lb**.
+                5. Use a pump to inject exactly **1.0 quart** of SAE 75W-90 GL-5 hypoid gear oil into the fill hole until it begins to seep out.
+                6. Reinstall fill plug with thread sealant and torque to **36.2 ft-lb**.
+                """
+            )
+        elif proc_selection == "Spark Plug Installation (DOHC Boxer)":
+            st.markdown(
+                """
+                ### ⚡ Spark Plug Replacement
+                **Target Thread Torque:** NGK Spark Plugs: `13–17 ft-lb` (Dry threads!) [cite: 22].
+                
+                **Step-by-Step Instructions:**
+                1. Disconnect battery. Remove air intake box (right side) and battery/washer fluid reservoir bracket components (left side) to access coil packs.
+                2. Remove the 10mm bolts holding the ignition coils, and pull out the coil packs.
+                3. Use a 5/8\" spark plug socket, a 3\" extension, and a swivel ratchet to carefully break loose and retrieve the old plugs.
+                4. Ensure the new spark plugs (**NGK Laser Iridium SILFR6A**) are gapped correctly [cite: 22]. Hand thread them into the cylinder head to prevent cross-threading.
+                5. Torque strictly dry to **13-17 ft-lb**. *Do not use anti-seize*, as it acts as a lubricant and will lead to over-torquing and cylinder head strip out.
+                """
+            )
+        elif proc_selection == "Timing Belt (EJ257) Overview":
+            st.markdown(
+                """
+                ### ⚙️ Timing Belt DOHC EJ257 Overview
+                The EJ257 utilizes a DOHC layout with four camshafts. A snapped or jumped timing belt will cause instant, catastrophic valve-to-piston contact.
+                
+                **Key Advice:**
+                *   Interval is **105,000 miles** [cite: 22].
+                *   Always replace the complete assembly (Timing belt `13028AA250`, water pump, hydraulic tensioner, and all idler pulleys) [cite: 22].
+                *   Use high quality kits such as **Aisin TKF-012** to prevent premature idler bearing lockups [cite: 22].
+                """
+            )
         else:
-            st.info("No maintenance history logged yet. Use the 'Log Maintenance' tab to record your first service!")
+            st.info("💡 Select a maintenance procedure from the dropdown menu above to read detailed instructions and torque specifications.")
 
-# --- INTERACTIVE TERMINAL CLI RUNTIME ---
-elif HAS_RICH:
-    console = Console()
-    
-    # Beautiful ASCII Art representing a stylized Subaru boxer profile/STI branding
-    boxer_logo = r"""
- _____ _   _ ____    _    ____  _   _     ____ _____ ___ 
-/ ___/| | | | __ )  / \  |  _ \| | | |   / ___|_   _|_ _|
-\___ \| | | |  _ \ / _ \ | |_) | | | |   \___ \ | |  | | 
- ___) | |_| | |_) / ___ \|  _ <| |_| |    ___) || |  | | 
-|____/ \___/|____/_/   \_\_| \_\\___/    |____/ |_| |___|
-
-        🏎️  Symmetrical AWD Boxer Engine Maintenance  🏎️
-"""
-    
-    def run_rich_cli():
-        console.print(Panel(boxer_logo, subtitle="STI Maintenance Scheduler v3.7", subtitle_align="right", border_style="blue"))
+    # OEM Parts Tab
+    with tab_parts:
+        st.subheader("📦 OEM Parts & Part Numbers Reference")
+        if mileage is None:
+            st.info("💡 **Enter your current odometer mileage** in the Maintenance Status tab to view parts specifications.")
+        else:
+            st.write("Reference list for replacement parts and specs.")
         
-        # Initial prompt for vehicle setup
-        console.print("\n[bold yellow]=== Vehicle Configuration ===[/bold yellow]")
-        unit_choice = Confirm.ask("Is your primary unit Miles (Yes) or Kilometers (No)?", default=True)
-        unit_label = "mi" if unit_choice else "km"
-        
-        mileage = IntPrompt.ask(f"Enter your current vehicle mileage ({unit_label})", default=30000)
-        severe = Confirm.ask("Do you drive under severe conditions (dusty, short trips, cold, or track use)?", default=False)
-        
-        # Translate to internal storage
-        scheduler_mileage = mileage if unit_choice else int(mileage / 1.60934)
-        scheduler = MaintenanceScheduler(scheduler_mileage, severe=severe, primary_mode=unit_choice)
-        
-        while True:
-            console.print("\n[bold cyan]=== STI Main Menu ===[/bold cyan]")
-            console.print("1. [green]Check Maintenance Schedule & Recommendations[/green]")
-            console.print("2. [green]Log Completed Maintenance Task[/green]")
-            console.print("3. [green]View Maintenance History Log[/green]")
-            console.print("4. [red]Exit Tracker[/red]")
-            
-            choice = Prompt.ask("Choose an option", choices=["1", "2", "3", "4"], default="1")
-            
-            if choice == "1":
-                recommendations = scheduler.get_recommendations()
-                table = Table(title=f"STI Scheduled Maintenance Recommendations ({unit_label})", border_style="blue")
-                table.add_column("Maintenance Item", style="cyan", no_wrap=True)
-                table.add_column("Interval", style="magenta")
-                table.add_column("Next Due", style="magenta")
-                table.add_column("Remaining", style="magenta")
-                table.add_column("Status", style="bold")
+            parts_data = []
+            for item in schedule_items:
+                p_num = item.get('part_number', 'N/A')
+                qty = item.get('quantity', 'N/A')
+                if p_num != 'N/A':
+                    parts_data.append({
+                        "Service Item": item["name"],
+                        "OEM Part Number / Specs": p_num,
+                        "Quantity Required": qty,
+                    })
                 
-                due_now_count = 0
-                for r in recommendations:
-                    if r["due_now"]:
-                        status = "[red]🔴 DUE NOW[/red]"
-                        due_now_count += 1
+            if parts_data:
+                import pandas as pd
+                df_parts = pd.DataFrame(parts_data)
+                st.dataframe(df_parts, use_container_width=True, hide_index=True)
+            
+            st.markdown("### 🔍 Critical Parts & Hardware Guide")
+            st.markdown(
+                """
+                **Engine Oil Filter & Washer (Primary):**
+                *   **Tokyo Roki JDM Black Filter:** P/N `15208AA100` [cite: 22]
+                *   **Crush Washer:** P/N `11126AA000` [cite: 22]
+                *   *Note:* The black Tokyo Roki filter features an all-metal bypass valve calibrated to open at 23 PSI, matching high Subaru oil pump relief pressures [cite: 22].
+            
+                **Spark Plugs (Laser Iridium - Primary):**
+                *   **SILFR6A (NGK 7913):** P/N `22401AA670` [cite: 22]
+                *   *Note:* Use dry threads (no anti-seize) and torque strictly to 13–17 ft-lb to prevent stripping aluminum heads [cite: 22].
+                """
+            )
+            st.markdown(
+                """
+                **Timing Belt & Accessories (DOHC EJ257 - Primary):**
+                *   **Timing Belt:** P/N `13028AA250` [cite: 22]
+                *   **Complete Timing Kit:** Aisin `TKF-012` [cite: 22]
+                *   **Water Pump:** P/N `21111AA240` (Aisin WPF-023) [cite: 22]
+                *   **Hydraulic Tensioner:** P/N `13033AA042` [cite: 22]
+            
+                **Air Conditioning Stretch Belt Kit (Primary):**
+                *   **AC Stretch Belt:** P/N `11718AA082` (Replaces 11718AA081) [cite: 22]
+                *   *Note:* Sourcing the kit with the specialized plastic installation guide tool is mandatory to prevent rib damage [cite: 22].
+                """
+            )
+
+    # Fluids Tab
+    with tab_fluids:
+        st.subheader("🛢️ Subaru Recommended Fluids, Grades & Capacities")
+        st.write("Maintain exact fluid dynamics and thermal protection parameters for your symmetrical AWD drivetrain.")
+        
+        fluids_data = [
+            {
+                "Compartment": "Engine Crankcase (EJ257)",
+                "Fluid Type / Specification": "API SM / SN Full Synthetic (SAE 5W-30 or 5W-40)",
+                "Capacity": "4.5 Quarts (4.3 Liters) with filter",
+                "Key Specs / Notes": "Drain plug torque: 33-34 ft-lb. 5W-40 weight (e.g. Rotella T6, Motul 8100) resists thermal shear under high boost."
+            },
+            {
+                "Compartment": "Manual Transmission & Front Diff",
+                "Fluid Type / Specification": "API GL-5 High Performance Gear Oil (SAE 75W-90)",
+                "Capacity": "Dry Fill: 4.1 Quarts. Service Fill: ~3.5 Quarts",
+                "Key Specs / Notes": "Gearbox shares oil bath. Standard fluid swaps require ~3.5 quarts because some fluid remains trapped in gear clusters."
+            },
+            {
+                "Compartment": "Rear Differential",
+                "Fluid Type / Specification": "API GL-5 Hypoid Gear Oil (SAE 75W-90 / Motul 90PA for track)",
+                "Capacity": "1.0 Quart (0.95 Liters)",
+                "Key Specs / Notes": "Fill/drain plug torque: 36–43 ft-lb. 90-weight LS fluid prevents gear chatter under shock loads."
+            },
+            {
+                "Compartment": "Engine Cooling System",
+                "Fluid Type / Specification": "Subaru Super Coolant (Pre-Mixed Blue) + Conditioner",
+                "Capacity": "8.1 Quarts (7.7 Liters)",
+                "Key Specs / Notes": "Never mix green conventional coolant. Add one bottle of SOA635065 Cooling System Conditioner to protect head gaskets."
+            },
+            {
+                "Compartment": "Brake & Clutch Reservoirs",
+                "Fluid Type / Specification": "DOT 3 or DOT 4 Premium Synthetic",
+                "Capacity": "Fill to Max Line (~1.0 Liter system)",
+                "Key Specs / Notes": "DOT 5.1 accepted for heavy track. Avoid silicone-based DOT 5. Keep fluid off painted body panels."
+            },
+            {
+                "Compartment": "Power Steering System",
+                "Fluid Type / Specification": "Dexron III / Subaru ATF-HP",
+                "Capacity": "~0.8 Liters (System capacity)",
+                "Key Specs / Notes": "Use premium ATF fluid rather than traditional power steering fluid."
+            }
+        ]
+        
+        import pandas as pd
+        df_fluids = pd.DataFrame(fluids_data)
+        st.dataframe(df_fluids, use_container_width=True, hide_index=True)
+        
+        st.info("💡 **The 5-Minute Dipstick Rule (NHTSA TSB):** Wait at least 5 minutes after turning off a warm engine on level ground. This allows oil suspended in the boxer layout to fully drain back into the pan for an accurate dipstick measurement.")
+
+    # History Tab
+    with tab_history:
+        st.subheader("📜 Maintenance & Service Log")
+        if mileage is None:
+            st.info("💡 **Enter your current odometer mileage** in the Maintenance Status tab to view your completion ledger and chronological history.")
+        else:
+        
+            history = load_history()
+        
+            # --- NEW FEATURES: ITEM-BY-ITEM COMPLETION LEDGER (PRIORITY COLUMN REMOVED) ---
+            st.markdown("### 📊 Individual Item Completion Ledger")
+            st.write("Scan the last logged date and mileage for each individual maintenance and inspection service. This ledger automatically indexes your entire history folder to prevent items from falling through the cracks.")
+        
+            ledger_data = []
+            for item in schedule_items:
+                item_name = item["name"]
+                interval = f"Every {item['interval']:,} mi" if isinstance(item['interval'], int) else str(item['interval'])
+            
+                # Find the latest logged completion in history
+                last_date = "No Record"
+                last_mileage = "Never Logged"
+                raw_last_mi = 0
+            
+                if history:
+                    # Search chronologically forward so the last match is the most recent
+                    for entry in history:
+                        if item_name in entry.get("completed_items", []):
+                            last_date = entry["date"]
+                            last_mileage = f"{entry['mileage']:,} mi"
+                            raw_last_mi = entry["mileage"]
+            
+                # Determine Status Badge
+                if last_date == "No Record":
+                    status = "⚪ Not Yet Logged"
+                else:
+                    # If currently marked as due by the scheduler engine, mark as due/overdue
+                    if item["due"]:
+                        status = "🔴 Overdue / Due Now"
                     else:
-                        status = "[green]🟢 OK[/green]"
-                        
-                    table.add_row(
-                        r["item"],
-                        f"{r['interval']:,} {unit_label}",
-                        f"{r['next_due']:,} {unit_label}",
-                        f"{r['remaining']:,} {unit_label}",
-                        status
+                        status = "🟢 Completed & OK"
+                    
+                ledger_data.append({
+                    "Maintenance Item": item_name,
+                    "Last Completed Date": last_date,
+                    "Last Completed Mileage": last_mileage,
+                    "Interval": interval,
+                    "Current Status": status
+                })
+            
+            import pandas as pd
+            df_ledger = pd.DataFrame(ledger_data)
+        
+            # Render clean interactive dataframe
+            st.dataframe(
+                df_ledger, 
+                use_container_width=True, 
+                hide_index=True,
+                column_config={
+                    "Current Status": st.column_config.TextColumn(
+                        "Current Status",
+                        help="🟢 OK: Item was recently completed. 🔴 Due: Needs attention based on mileage or history. ⚪ Not Logged: No entry in history."
                     )
-                console.print(table)
-                if due_now_count > 0:
-                    console.print(f"\n[bold red]⚠️  ALERT: You have {due_now_count} item(s) due or overdue! Plan service immediately.[/bold red]")
-                else:
-                    console.print("\n[bold green]✅ Excellent! Your STI is all up to date on maintenance intervals.[/bold green]")
-                    
-            elif choice == "2":
-                console.print("\n[bold yellow]--- Log Maintenance Service ---[/bold yellow]")
-                # Select item
-                console.print("Select maintenance item:")
-                for i, task in enumerate(MAINTENANCE_SCHEDULE, 1):
-                    console.print(f"{i}. {task['item']}")
-                console.print(f"{len(MAINTENANCE_SCHEDULE) + 1}. Other (Custom Service)")
-                
-                item_idx = IntPrompt.ask("Enter choice #", default=1)
-                if 1 <= item_idx <= len(MAINTENANCE_SCHEDULE):
-                    selected_item = MAINTENANCE_SCHEDULE[item_idx - 1]["item"]
-                else:
-                    selected_item = Prompt.ask("Enter custom service name", default="Custom Service")
-                
-                log_mileage = IntPrompt.ask(f"Mileage at service ({unit_label})", default=mileage)
-                cost = float(Prompt.ask("Service cost ($)", default="0.0"))
-                notes = Prompt.ask("Service Notes (parts, oil spec, comments)", default="")
-                
-                entry = {
-                    "date": str(datetime.date.today()),
-                    "mileage": log_mileage,
-                    "unit": unit_label,
-                    "item": selected_item,
-                    "cost": cost,
-                    "notes": notes
                 }
-                save_history(entry)
-                console.print(f"\n[bold green]✔ Saved maintenance entry for '{selected_item}' to history![/bold green]")
-                
-            elif choice == "3":
-                history = load_history()
-                if not history:
-                    console.print("\n[yellow]No maintenance history logged yet.[/yellow]")
-                else:
-                    total_spent = sum(entry.get("cost", 0.0) for entry in history)
-                    hist_table = Table(title=f"STI Maintenance History (Total Spend: ${total_spent:,.2f})", border_style="green")
-                    hist_table.add_column("Date", style="cyan")
-                    hist_table.add_column("Maintenance Item", style="magenta")
-                    hist_table.add_column("Mileage", style="yellow")
-                    hist_table.add_column("Cost ($)", style="green")
-                    hist_table.add_column("Notes", style="white")
-                    
-                    # Sort by mileage descending
-                    sorted_history = sorted(history, key=lambda x: x.get("mileage", 0), reverse=True)
-                    for entry in sorted_history:
-                        hist_table.add_row(
-                            entry.get("date", "N/A"),
-                            entry.get("item", "N/A"),
-                            f"{entry.get('mileage'):,} {entry.get('unit', 'mi')}",
-                            f"${entry.get('cost', 0.0):,.2f}",
-                            entry.get("notes", "None")
-                        )
-                    console.print(hist_table)
-                    
-            elif choice == "4":
-                console.print("\n[bold blue]Thank you for using the STI Maintenance Tracker! Keep boostin' safely! 🏎️💨[/bold blue]\n")
-                break
+            )
 
-    if __name__ == "__main__":
-        run_rich_cli()
+            st.markdown("<hr style='margin:15px 0; border-color:#eee;'/>", unsafe_allow_html=True)
+            st.markdown("### 🕒 Chronological Service History Timeline")
+            st.write("Below is a detailed timeline showing each completed service item in chronological order as logged from your checklist.")
+        
+            timeline_data = []
+            if history:
+                for entry in history:
+                    date_val = entry.get("date", "")
+                    mi_val = entry.get("mileage", 0)
+                    for item in entry.get("completed_items", []):
+                        timeline_data.append({
+                            "Date": date_val,
+                            "Odometer Mileage (mi)": mi_val,
+                            "Completed Service Item": item
+                        })
+            
+                df_timeline = pd.DataFrame(timeline_data)
+                if not df_timeline.empty:
+                    df_timeline = df_timeline.sort_values(by=["Date", "Odometer Mileage (mi)"], ascending=[False, False])
+                    df_timeline["Odometer Mileage (mi)"] = df_timeline["Odometer Mileage (mi)"].apply(lambda x: f"{x:,} mi")
+                    st.dataframe(df_timeline, use_container_width=True, hide_index=True)
+                else:
+                    st.info("No timeline items logged yet.")
+            else:
+                st.info("No timeline items logged yet.")
+
+    # Manual Tab
+    with tab_manual:
+        st.subheader("📖 Official Subaru WRX STI Reference Manual")
+        
+        st.markdown(
+            """
+            ### 🔧 Critical DIY Torque Specifications (Grounded in Subimods DIY Guide)
+            *Grounded in factory and performance specialist specifications to prevent stripping aluminum threads or catastrophic failures:*
+            
+            ##### ⚙️ Engine Core Torque Specs
+            | Component | Torque Spec | Notes / Operational Risks |
+            | :--- | :--- | :--- |
+            | **Engine Oil Drain Plug** | 33–34 ft-lb | Replace copper crush washer to prevent oil pan thread strip-out [cite: 22]. |
+            | **Spark Plugs** | 13–17 ft-lb | **Always Dry threads (no anti-seize).** Over-torquing cracks heads [cite: 22]. |
+            | **Oil Pan Bolts** | 3.7 ft-lb | Avoid over-torquing, oil pan flanges warp extremely easily. |
+            
+            ##### ⚙️ Drivetrain Gearbox & Differential Torque Specs
+            | Component | Torque Spec | Notes / Operational Risks |
+            | :--- | :--- | :--- |
+            | **Manual Transmission Drain Plug (T70 Torx)** | 32.5 ft-lb | Replace metal gasket. Clean magnetic tip [cite: 22]. |
+            | **Manual Transmission Fill Plug** | 23.5 ft-lb | Hand-thread first to avoid cross-threading [cite: 22]. |
+            | **Rear Differential Drain/Fill Plugs** | 36.2 ft-lb | Use liquid thread sealant (Teflon) to prevent fluid weeping. |
+            
+            ##### ⚙️ Suspension & Brake Torque Specs
+            | Component | Torque Spec | Notes / Operational Risks |
+            | :--- | :--- | :--- |
+            | **Front Brembo Caliper Mounting Bolts** | 84.3 ft-lb (114.3 Nm) | Highly critical. Loose bolts cause caliper play and severe pad slide [cite: 10]. |
+            | **Rear Brembo Caliper Mounting Bolts** | 47.2 ft-lb (64 Nm) | Steel bolt going into aluminum caliper threads; torque strictly [cite: 10]. |
+            | **Wheel Lug Nuts (Symmetrical AWD)** | 88.5 ft-lb (120 Nm) | Torque in a star pattern. Unbalanced torque warps brake rotors [cite: 2]. |
+            """
+        )
+
+# --- CLI BACKFALL RUNTIME ---
+elif HAS_RICH:
+    # Minimal console interface
+    console = Console()
+    console.print(Panel(Text("🏎️ Subaru WRX STI Maintenance CLI Interface", style="bold gold1"), subtitle="Local Offline Tracker"))
+    # Enter mileage
+    try:
+        mileage_cli = IntPrompt.ask("Enter Current Odometer Mileage (mi)")
+        severe_cli = Confirm.ask("Are you operating in Severe Driving Conditions?")
+        
+        scheduler_cli = MaintenanceScheduler(mileage_cli, severe_cli)
+        items_cli = scheduler_cli.get_schedule()
+        
+        due_items = [i for i in items_cli if i["due"]]
+        
+        table = Table(title="🔧 Maintenance Item Check-Ledger")
+        table.add_column("Maintenance Item", style="cyan")
+        table.add_column("Interval", style="magenta")
+        table.add_column("Current Status", style="green")
+        
+        for item in items_cli:
+            status = "[bold red]Overdue / Due Now[/]" if item["due"] else "[bold green]Completed & OK[/]"
+            table.add_row(item["name"], f"every {item['interval']:,} mi", status)
+        
+        console.print(table)
+    except KeyboardInterrupt:
+        console.print("\nExiting tracker. Happy driving!")
 
 else:
-    # Fallback minimal interactive prompt when neither streamlit nor rich are installed.
-    def run_fallback_cli():
-        print("\n=======================================================")
-        print("🏎️ Subaru STI Maintenance App (Minimal fallback)")
-        print("Please install streamlit ('pip install streamlit') or rich ('pip install rich') for the enhanced UI.")
-        print("=======================================================")
-        
-        try:
-            unit_choice = input("Is your primary unit Miles? (Y/N, default=Y): ").strip().lower() != 'n'
-            unit_label = "mi" if unit_choice else "km"
-            
-            mileage_input = input(f"Enter current mileage ({unit_label}, default=30000): ").strip()
-            mileage = int(mileage_input) if mileage_input.isdigit() else 30000
-            
-            severe_choice = input("Severe driving conditions? (Y/N, default=N): ").strip().lower() == 'y'
-            
-            scheduler_mileage = mileage if unit_choice else int(mileage / 1.60934)
-            scheduler = MaintenanceScheduler(scheduler_mileage, severe=severe_choice, primary_mode=unit_choice)
-            
-            while True:
-                print("\nMenu:")
-                print("1. Check Maintenance Recommendations")
-                print("2. Log Completed Maintenance")
-                print("3. View Maintenance History")
-                print("4. Exit")
-                choice = input("Select an option (1-4): ").strip()
-                
-                if choice == "1":
-                    recommendations = scheduler.get_recommendations()
-                    print(f"\nUpcoming Recommendations ({unit_label}):")
-                    print(f"{'Item':<35} | {'Interval':<10} | {'Next Due':<10} | {'Remaining':<10} | {'Status'}")
-                    print("-" * 80)
-                    for r in recommendations:
-                        status = "🔴 DUE NOW" if r["due_now"] else "🟢 OK"
-                        print(f"{r['item']:<35} | {r['interval']:<10} | {r['next_due']:<10} | {r['remaining']:<10} | {status}")
-                elif choice == "2":
-                    print("\nLog Completed Maintenance:")
-                    for i, task in enumerate(MAINTENANCE_SCHEDULE, 1):
-                        print(f"{i}. {task['item']}")
-                    print(f"{len(MAINTENANCE_SCHEDULE) + 1}. Other (Custom)")
-                    
-                    try:
-                        item_idx = int(input("Enter choice #: ").strip())
-                        if 1 <= item_idx <= len(MAINTENANCE_SCHEDULE):
-                            selected_item = MAINTENANCE_SCHEDULE[item_idx - 1]["item"]
-                        else:
-                            selected_item = input("Enter custom service name: ").strip() or "Custom Service"
-                    except ValueError:
-                        selected_item = "Custom Service"
-                        
-                    try:
-                        log_mileage = int(input(f"Mileage at service ({unit_label}): ").strip())
-                    except ValueError:
-                        log_mileage = mileage
-                        
-                    try:
-                        cost = float(input("Service Cost ($): ").strip())
-                    except ValueError:
-                        cost = 0.0
-                        
-                    notes = input("Service Notes: ").strip()
-                    
-                    entry = {
-                        "date": str(datetime.date.today()),
-                        "mileage": log_mileage,
-                        "unit": unit_label,
-                        "item": selected_item,
-                        "cost": cost,
-                        "notes": notes
-                    }
-                    save_history(entry)
-                    print(f"Logged {selected_item} successfully!")
-                    
-                elif choice == "3":
-                    history = load_history()
-                    if not history:
-                        print("\nNo history logged yet.")
-                    else:
-                        print(f"\nService History Log:")
-                        print(f"{'Date':<12} | {'Item':<30} | {'Mileage':<10} | {'Cost':<8} | {'Notes'}")
-                        print("-" * 80)
-                        for entry in history:
-                            print(f"{entry.get('date'):<12} | {entry.get('item'):<30} | {entry.get('mileage'):<10} | ${entry.get('cost', 0.0):<7.2f} | {entry.get('notes')}")
-                elif choice == "4":
-                    print("\nGoodbye! Happy driving!")
-                    break
-        except (KeyboardInterrupt, EOFError):
-            print("\nExiting tracker. Goodbye!")
-
-if __name__ == "__main__":
-    # If run in python CLI but HAS_STREAMLIT and streamlit is running, we let streamlit handle execution.
-    # Otherwise, fall back to rich or terminal fallback.
-    if HAS_STREAMLIT and st.runtime.exists():
-        pass
-    elif HAS_RICH:
-        run_rich_cli()
-    else:
-        run_fallback_cli()
+    if __name__ == "__main__":
+        print("Subaru STI Maintenance App (Minimal fallback)")
+        print("Please install streamlit ('pip install streamlit') or rich ('pip install rich') to run.")
