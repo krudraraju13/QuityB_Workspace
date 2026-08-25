@@ -363,7 +363,7 @@ if HAS_STREAMLIT and st.runtime.exists():
     with logo_left_col:
         st.markdown(
             """
-            <div style="display: flex; justify-content: flex-start; align-items: center; height: 120px;">
+            <div style="display: flex; justify-content: flex-start; align-items: center; height: 140px;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" width="220" height="110" style="object-fit: contain;"/>
             </div>
             """,
@@ -384,8 +384,8 @@ if HAS_STREAMLIT and st.runtime.exists():
     with logo_right_col:
         st.markdown(
             """
-            <div style="display: flex; justify-content: flex-end; align-items: center; height: 120px;">
-                <img src="https://crystalpng.com/wp-content/uploads/2025/07/Subaru-Logo.png" width="250" height="110" style="object-fit: contain;"/>
+            <div style="display: flex; justify-content: flex-end; align-items: center; height: 140px;">
+                <img src="https://crystalpng.com/wp-content/uploads/2025/07/Subaru-Logo.png" width="280" height="140" style="object-fit: contain;"/>
             </div>
             """,
             unsafe_allow_html=True
