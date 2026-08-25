@@ -355,44 +355,10 @@ if HAS_STREAMLIT and st.runtime.exists():
                 st.rerun()
 
 
-    # Responsive Brand Logo Header Block (Custom high-fidelity STI vector emblem)
+    # Responsive Brand Logo Header Block (STI Image Logo from Wallpaper URL)
     logo_col, title_col = st.columns([1, 2.5])
     with logo_col:
-        st.markdown("""
-<svg viewBox="0 0 320 120" width="100%" height="100" style="max-width: 280px; display: block; margin: auto;">
-  <defs>
-    <!-- Vibrant STI Pink Gradient -->
-    <linearGradient id="sti-pink-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF5CA3" />
-      <stop offset="50%" stop-color="#FF007F" />
-      <stop offset="100%" stop-color="#C2005F" />
-    </linearGradient>
-    <!-- Brushed Chrome / Metal Gradient for border -->
-    <linearGradient id="metal-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="30%" stop-color="#D1D1D6" />
-      <stop offset="70%" stop-color="#8E8E93" />
-      <stop offset="100%" stop-color="#3A3A3C" />
-    </linearGradient>
-    <filter id="sti-glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3.5" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-  </defs>
-  <!-- Background panel to frame the logo beautifully -->
-  <g transform="skewX(-14) translate(15, 15)">
-    <!-- Outer metallic styled ring -->
-    <rect x="0" y="0" width="235" height="90" rx="14" fill="none" stroke="url(#metal-grad)" stroke-width="4.5" filter="url(#sti-glow)" />
-    <!-- Letter S (Italic paths for crisp resolution) -->
-    <path d="M 52,24 C 38,24 28,29 25,37 L 37,39 C 39,35 44,32 51,32 C 57,32 60,35 60,39 C 60,43 55,45 46,47 C 33,50 25,56 25,65 C 25,76 35,82 49,82 C 63,82 72,76 75,67 L 63,65 C 61,69 57,72 50,72 C 44,72 39,70 39,65 C 39,61 44,59 52,57 C 65,54 74,48 74,40 C 74,30 64,24 52,24 Z" fill="url(#sti-pink-grad)" />
-    <!-- Letter T -->
-    <path d="M 82,26 L 138,26 L 135,36 L 117,36 L 111,80 L 98,80 L 104,36 L 85,36 Z" fill="url(#sti-pink-grad)" />
-    <!-- Letter I -->
-    <path d="M 148,26 L 163,26 L 154,80 L 139,80 Z" fill="url(#sti-pink-grad)" />
-    <!-- Under accent line -->
-    <line x1="172" y1="52" x2="218" y2="52" stroke="url(#sti-pink-grad)" stroke-width="6" stroke-linecap="round" />
-  </g>
-</svg>""", unsafe_allow_html=True)
+        st.image("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.baltana.com%2Ffiles%2Fcars-1%2FSTI-Subaru-Logo-Wallpaper-72803.jpg&f=1&nofb=1&ipt=75aaa2bc867af8d48ec7b8da2ea8ec53ae1642275a3e083fea462e0e1776ed9f", use_container_width=True)
     with title_col:
         st.markdown(
             """
