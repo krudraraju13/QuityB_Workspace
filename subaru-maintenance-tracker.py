@@ -358,13 +358,12 @@ if HAS_STREAMLIT and st.runtime.exists():
                 st.rerun()
 
 
-    # Responsive Brand Logo Header Block (STI Image Logo from Wallpaper URL)
-    logo_col, title_col = st.columns([1, 3.5])
-    with logo_col:
-        st.write("") # small vertical spacer
+    # Responsive Brand Logo Header Block (STI & Subaru Logos flanking the Title)
+    logo_left_col, title_col, logo_right_col = st.columns([1, 3.5, 1], vertical_alignment="center")
+    with logo_left_col:
         st.markdown(
             """
-            <div style="display: flex; justify-content: center; align-items: center; height: 100px;">
+            <div style="display: flex; justify-content: flex-start; align-items: center; height: 100px;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/STi_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" width="200" height="100" style="object-fit: contain;"/>
             </div>
             """,
@@ -373,11 +372,20 @@ if HAS_STREAMLIT and st.runtime.exists():
     with title_col:
         st.markdown(
             """
-            <div style='padding-top:10px;'>
+            <div style='padding-top:10px; text-align: center;'>
                 <h1 style='color:var(--text-color);margin:0;font-size:2.2em;letter-spacing:-0.5px;'>🏎️ Subaru STI Maintenance Tracker</h1>
                 <p style='color:#FF007F;margin:5px 0 0 0;font-size:1.15em;font-family:"Montserrat",sans-serif;font-weight:700;'>
                     Symmetrical All-Wheel Drive Performance Suite &bull; Factory Specifications &bull; Interactive Log
                 </p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    with logo_right_col:
+        st.markdown(
+            """
+            <div style="display: flex; justify-content: flex-end; align-items: center; height: 100px;">
+                <img src="https://cdn.freebiesupply.com/logos/large/2x/subaru-9-logo-png-transparent.png" width="160" height="100" style="object-fit: contain;"/>
             </div>
             """,
             unsafe_allow_html=True
