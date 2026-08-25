@@ -331,26 +331,7 @@ if HAS_STREAMLIT and st.runtime.exists():
             color: var(--text-color) !important;
         }
 
-        /* Dark Mode - Overrides to achieve a premium dark grey palette (#1c1c1e) and not full black */
-        @media (prefers-color-scheme: dark) {
-            html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-                background-color: #1c1c1e !important;
-                background: #1c1c1e !important;
-            }
-            .custom-card, div[data-testid="stDataFrame"], .streamlit-expanderHeader {
-                background-color: #2c2c2e !important;
-                border: 1px solid #3a3a3c !important;
-            }
-            .streamlit-expanderContent {
-                background-color: #1c1c1e !important;
-                border: 1px solid #3a3a3c !important;
-                border-top: none !important;
-            }
-            /* Style other standard elements to fit the premium dark grey palette */
-            div[data-testid="stSidebar"] {
-                background-color: #2c2c2e !important;
-            }
-        }
+
         </style>
         """,
         unsafe_allow_html=True
