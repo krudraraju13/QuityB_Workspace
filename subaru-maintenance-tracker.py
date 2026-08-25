@@ -513,8 +513,7 @@ if HAS_STREAMLIT and st.runtime.exists():
                     confirm_save_dialog(completed_list, mileage, severe)
             else:
                 st.button("💾 Save Checked Services", type="primary", disabled=True, use_container_width=True, help="Check one or more items above to enable logging.")
-        else:
-            st.info("💡 **Enter your current odometer mileage** above to generate your customized vehicle maintenance status, log services, and track due dates.")
+
 
     # Procedures Tab
     with tab_procedures:
