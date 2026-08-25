@@ -476,6 +476,7 @@ if HAS_STREAMLIT and st.runtime.exists():
                 st.dataframe(df_parts, use_container_width=True, hide_index=True)
             
             st.markdown("### 🔍 Critical Parts & Hardware Guide")
+            st.write("Use the search bar and category selector below to search through the consolidated list of critical parts, OEM part numbers, quantities, and pricing.")
             
             # Insert parts catalog
 
@@ -583,8 +584,7 @@ if HAS_STREAMLIT and st.runtime.exists():
                     filtered_df["OEM Part Number"].str.lower().str.contains(search_query)
                 ]
             
-            # Render filterable catalog
-            st.markdown("#### 📂 Filtered OEM Parts Reference Catalog")
+
             
             # Format Prices for display in table
             display_df = filtered_df.copy()
